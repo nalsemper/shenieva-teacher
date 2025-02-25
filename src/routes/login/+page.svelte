@@ -19,7 +19,7 @@
         if (userType === 'student' && studentId === '12345' && studentPassword === '12345') {
             goto('/student'); // Redirect to student dashboard
         } else if (userType === 'teacher' && teacherId === '54321' && teacherPassword === '54321') {
-            goto('/admin/dashboard'); // Redirect to teacher dashboard
+            goto('/admin'); // Redirect to teacher dashboard
         } else {
             errorMessage = 'Invalid credentials. Try again.';
         }
@@ -44,7 +44,7 @@
                 class="w-1/2 py-2 text-sm font-medium relative z-10 transition-all duration-300 rounded-full"
                 class:text-white={userType === "teacher"}
                 class:text-gray-700={userType !== "teacher"}
-                class:bg-green-600={userType === "teacher"}
+                class:bg-lime-600={userType === "teacher"}
                 on:click={() => userType = "teacher"}>
                 TEACHER
             </button>
@@ -75,7 +75,7 @@
                             type="button" 
                             class="absolute top-9 right-3 text-gray-600"
                             on:click={() => showStudentPassword = !showStudentPassword}>
-                            {showStudentPassword ? '👁' : '👁‍🗨'}
+                            
                         </button>
                     </div>
                     <button type="submit" 
@@ -96,7 +96,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-600">Teacher ID</label>
                         <input type="text" bind:value={teacherId} required 
-                            class="w-full mt-1 px-4 py-2 border rounded-md focus:ring focus:ring-green-300" />
+                            class="w-full mt-1 px-4 py-2 border rounded-md focus:ring focus:ring-lime-300" />
                     </div>
                     <div class="mt-4 relative">
                         <label class="block text-sm font-medium text-gray-600">Password</label>
@@ -104,16 +104,15 @@
                             type={showTeacherPassword ? "text" : "password"} 
                             bind:value={teacherPassword} 
                             required 
-                            class="w-full mt-1 px-4 py-2 border rounded-md focus:ring focus:ring-green-300 pr-10" />
+                            class="w-full mt-1 px-4 py-2 border rounded-md focus:ring focus:ring-lime-300 pr-10" />
                         <button 
                             type="button" 
                             class="absolute top-9 right-3 text-gray-600"
                             on:click={() => showTeacherPassword = !showTeacherPassword}>
-                            {showTeacherPassword ? '👁' : '👁‍🗨'}
                         </button>
                     </div>
                     <button type="submit" 
-                        class="w-full px-4 py-2 mt-4 text-white bg-green-600 rounded-md hover:bg-green-800">
+                        class="w-full px-4 py-2 mt-4 text-white bg-lime-600 rounded-md hover:bg-lime-800">
                         Login
                     </button>
                 </form>

@@ -2,7 +2,7 @@
     import { onMount } from 'svelte';
     import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, TableSearch, Button, Dropdown, DropdownItem, Checkbox, ButtonGroup } from 'flowbite-svelte';
     import { Section } from 'flowbite-svelte-blocks';
-    import paginationData from '../utils/advancedTable.json'
+    import paginationData from '/src/routes/utils/advancedTable.json'
     import { PlusOutline, ChevronDownOutline, FilterSolid, ChevronRightOutline, ChevronLeftOutline } from 'flowbite-svelte-icons';
   
     let divClass='bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden';

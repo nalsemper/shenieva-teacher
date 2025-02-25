@@ -18,7 +18,7 @@
   
   let spanClass = 'flex-1 ms-3 whitespace-nowrap';
 
-  
+
 </script>
 
 <Sidebar>
@@ -26,21 +26,21 @@
     <!-- First SidebarGroup (Scrollable) -->
     <div class="flex-1 overflow-y-auto">
       <SidebarGroup>
-        <SidebarItem label="Dashboard" class="hover:bg-lime-500 hover:text-white">
+        <SidebarItem label="Dashboard" class="hover:bg-lime-500 hover:text-white group-hover:text-white" href="/admin/dashboard">
           <svelte:fragment slot="icon">
-            <ChartPieSolid class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+            <ChartPieSolid class="w-6 h-6  group-hover:text-white dark:group-hover:text-white" />
           </svelte:fragment>
         </SidebarItem>
 
-        <SidebarItem label="Students" class="hover:bg-lime-500 hover:text-white">
+        <SidebarItem label="Students" class="hover:bg-lime-500 hover:text-white" href="/admin/students">
           <svelte:fragment slot="icon">
-            <UsersSolid class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+            <UsersSolid class="w-6 h-6" />
           </svelte:fragment>
         </SidebarItem>
 
-        <SidebarDropdownWrapper label="Quizzes" class="hover:bg-lime-500 hover:text-white">
+        <SidebarDropdownWrapper label="Quizzes" class="hover:bg-lime-500 hover:text-white group-hover:text-white">
           <svelte:fragment slot="icon">
-            <FileCopyAltSolid class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+            <FileCopyAltSolid class="w-6 h-6  group-hover:text-white dark:group-hover:text-white" />
           </svelte:fragment>
           <SidebarDropdownItem label="Story 1" class="hover:bg-lime-500 hover:text-white" />
           <SidebarDropdownItem label="Story 2" class="hover:bg-lime-500 hover:text-white" />
@@ -49,17 +49,17 @@
 
         <SidebarItem label="Checking" class="hover:bg-lime-500 hover:text-white">
           <svelte:fragment slot="icon">
-            <ClipboardCheckSolid class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+            <ClipboardCheckSolid class="w-6 h-6  group-hover:text-white dark:group-hover:text-white" />
           </svelte:fragment>
         </SidebarItem>
       </SidebarGroup>
     </div>
 
     <!-- Second SidebarGroup (Fixed at Bottom) -->
-    <SidebarGroup border class="border-t">
-      <SidebarItem label="Log Out" class="hover:bg-lime-500 hover:text-white" on:click={() => (popupModal = true)}>
+    <SidebarGroup border class="border-t-gray-500">
+      <SidebarItem label="Log Out" class="hover:bg-red-500 hover:text-white" on:click={() => (popupModal = true)}>
         <svelte:fragment slot="icon">
-          <ArrowRightToBracketOutline class="w-6 h-6 text-gray-500 transition duration-75 dark:text-gray-400 group-hover:text-gray-900 dark:group-hover:text-white" />
+          <ArrowRightToBracketOutline class="w-6 h-6  dark:text-gray-400 group-hover:text-white dark:group-hover:text-white" />
         </svelte:fragment>
       </SidebarItem>
       <br><br><br>

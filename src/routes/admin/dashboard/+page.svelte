@@ -23,11 +23,11 @@
   <!-- Main Content -->
   <div class="flex-1 flex flex-col ml-64">
     <!-- Fixed Top Bar -->
-    <div class="fixed top-0 left-64 w-[calc(100%-16rem)] bg-orange-500 text-white px-6 py-3 flex justify-between items-center shadow-md z-50">
+    <div class="fixed top-0 left-64 w-[calc(100%-16rem)] bg-orange-500 text-white px-6  flex justify-between items-center shadow-md z-50">
       <h1 class="text-xl font-semibold">Dashboard</h1>
 
       <!-- Avatar & Dropdown -->
-      <div class="relative">
+      <div class="relative p-2">
         <button class="w-10 h-10 rounded-full overflow-hidden border-2 border-white" on:click={toggleMenu}>
           <img src="/avatar.png" alt="User Avatar" class="w-full h-full object-cover">
         </button>

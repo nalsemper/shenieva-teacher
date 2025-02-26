@@ -22,10 +22,14 @@
 </script>
 
 <Sidebar>
-  <SidebarWrapper class="h-screen bg-yellow-100 flex flex-col">
+  <SidebarWrapper class="h-screen bg-lime-100 flex flex-col rounded-none">
     <!-- First SidebarGroup (Scrollable) -->
+    <SidebarGroup>
+       <!-- Website Name -->
+    <h1 class="text-xl font-semibold text-orange-500 p-6">SHENIEVA READS</h1>
+    </SidebarGroup>
     <div class="flex-1 overflow-y-auto">
-      <SidebarGroup>
+      <SidebarGroup border>
         <SidebarItem label="Dashboard" class="hover:bg-lime-500 hover:text-white group-hover:text-white" href="/admin/dashboard">
           <svelte:fragment slot="icon">
             <ChartPieSolid class="w-6 h-6  group-hover:text-white dark:group-hover:text-white" />

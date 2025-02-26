@@ -11,6 +11,12 @@ importers:
       '@tailwindcss/cli':
         specifier: ^4.0.8
         version: 4.0.8
+      chart.js:
+        specifier: ^4.4.8
+        version: 4.4.8
+      svelte-chartjs:
+        specifier: ^3.1.5
+        version: 3.1.5(chart.js@4.4.8)(svelte@5.20.4)
     devDependencies:
       '@sveltejs/adapter-node':
         specifier: ^5.2.11
@@ -243,6 +249,9 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.25':
     resolution: {integrity: sha512-vNk6aEwybGtawWmy/PzwnGDOjCkLWSD2wqvjGGAgOAwCGWySYXfYoxt00IJkTF+8Lb57DwOb3Aa0o9CApepiYQ==}
+
+  '@kurkle/color@0.3.4':
+    resolution: {integrity: sha512-M5UknZPHRu3DEDWoipU6sE8PdkZ6Z/S+v4dD+Ke8IaNlpdSQah50lz1KtcFBa2vsdOnwbbnxJwVM4wty6udA5w==}
 
   '@parcel/watcher-android-arm64@2.5.1':
     resolution: {integrity: sha512-KF8+j9nNbUN8vzOFDpRMsaKBHZ/mcjEjMToVMJOhTozkDonQFFrRcfdLWn6yWKCmJKmdVxSgHiYvTCef4/qcBA==}
@@ -631,6 +640,10 @@ packages:
     resolution: {integrity: sha512-yQbXgO/OSZVD2IsiLlro+7Hf6Q18EJrKSEsdoMzKePKXct3gvD8oLcOQdIzGupr5Fj+EDe8gO/lxc1BzfMpxvA==}
     engines: {node: '>=8'}
 
+  chart.js@4.4.8:
+    resolution: {integrity: sha512-IkGZlVpXP+83QpMm4uxEiGqSI7jFizwVtF3+n5Pc3k7sMO+tkd0qxh2OzLhenM0K80xtmAONWGBn082EiBQSDA==}
+    engines: {pnpm: '>=8'}
+
   chokidar@4.0.3:
     resolution: {integrity: sha512-Qgzu8kfBvo+cA4962jnP1KkS6Dop5NS6g7R5LFYJr4b8Ub94PPQXUksCw9PvXoeXPRRddRNC5C1JQUR2SMGtnA==}
     engines: {node: '>= 14.16.0'}
@@ -961,6 +974,12 @@ packages:
     resolution: {integrity: sha512-ot0WnXS9fgdkgIcePe6RHNk1WA8+muPa6cSjeR3V8K27q9BB1rTE3R1p7Hv0z1ZyAc8s6Vvv8DIyWf681MAt0w==}
     engines: {node: '>= 0.4'}
 
+  svelte-chartjs@3.1.5:
+    resolution: {integrity: sha512-ka2zh7v5FiwfAX1oMflZ0HkNkgjHjFqANgRyC+vNYXfxtx2ku68Zo+2KgbKeBH2nS1ThDqkIACPzGxy4T0UaoA==}
+    peerDependencies:
+      chart.js: ^3.5.0 || ^4.0.0
+      svelte: ^4.0.0
+
   svelte-check@4.1.4:
     resolution: {integrity: sha512-v0j7yLbT29MezzaQJPEDwksybTE2Ups9rUxEXy92T06TiA0cbqcO8wAOwNUVkFW6B0hsYHA+oAX3BS8b/2oHtw==}
     engines: {node: '>= 18.0.0'}
@@ -1199,6 +1218,8 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.0
+
+  '@kurkle/color@0.3.4': {}
 
   '@parcel/watcher-android-arm64@2.5.1':
     optional: true
@@ -1531,6 +1552,10 @@ snapshots:
     dependencies:
       fill-range: 7.1.1
 
+  chart.js@4.4.8:
+    dependencies:
+      '@kurkle/color': 0.3.4
+
   chokidar@4.0.3:
     dependencies:
       readdirp: 4.1.2
@@ -1856,6 +1881,11 @@ snapshots:
   source-map-js@1.2.1: {}
 
   supports-preserve-symlinks-flag@1.0.0: {}
+
+  svelte-chartjs@3.1.5(chart.js@4.4.8)(svelte@5.20.4):
+    dependencies:
+      chart.js: 4.4.8
+      svelte: 5.20.4
 
   svelte-check@4.1.4(picomatch@4.0.2)(svelte@5.20.4)(typescript@5.7.3):
     dependencies:

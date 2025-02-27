@@ -1,75 +1,83 @@
 <script>
   import { Sidebar, SidebarGroup, SidebarItem, SidebarWrapper, SidebarDropdownItem, SidebarDropdownWrapper } from 'flowbite-svelte';
   import { ChartPieSolid, UsersSolid, FileCopyAltSolid, ClipboardCheckSolid, ArrowRightToBracketOutline } from 'flowbite-svelte-icons';
-  
-  // logout modal
   import { Button, Modal } from 'flowbite-svelte';
   import { ExclamationCircleOutline } from 'flowbite-svelte-icons';
   import { goto } from '$app/navigation';
+  import { page } from '$app/stores';
+  import { derived } from 'svelte/store';
+
   let popupModal = false;
+
   function logout() {
     console.log("User logged out");
-    // Clear session or local storage if needed
-    // localStorage.removeItem("user");
-
-    // Navigate to login or home page
     goto('../');
   }
-  
-  let spanClass = 'flex-1 ms-3 whitespace-nowrap';
 
+  // Reactive current path
+  const currentPath = derived(page, $page => $page.url.pathname);
 
+  function isActive(path) {
+  return $currentPath === path || ($currentPath === '/admin' && path === '/admin/dashboard')
+    ? 'bg-gray-600 text-white hover:bg-gray-700'
+    : 'hover:bg-lime-500 hover:text-white';
+}
+
+  function isDropdownActive(paths) {
+    return paths.includes($currentPath)
+      ? 'bg-gray-400 text-white hover:bg-gray-400' // Active dropdown
+      : 'hover:bg-lime-500 hover:text-white';
+  }
 </script>
 
 <Sidebar>
   <SidebarWrapper class="h-screen bg-lime-100 flex flex-col rounded-none">
-    <!-- First SidebarGroup (Scrollable) -->
     <SidebarGroup>
-       <!-- Website Name -->
-    <h1 class="text-xl font-semibold text-orange-500 p-6">SHENIEVA READS</h1>
+      <h1 class="text-xl font-bold text-orange-500 p-6">SHENIEVA READS</h1>
     </SidebarGroup>
+
     <div class="flex-1 overflow-y-auto">
       <SidebarGroup border>
-        <SidebarItem label="Dashboard" class="hover:bg-lime-500 hover:text-white group-hover:text-white" href="/admin/dashboard">
+        <SidebarItem label="Dashboard" class={isActive('/admin/dashboard')} href="/admin/dashboard">
           <svelte:fragment slot="icon">
-            <ChartPieSolid class="w-6 h-6  group-hover:text-white dark:group-hover:text-white" />
+            <ChartPieSolid class="w-6 h-6" />
           </svelte:fragment>
         </SidebarItem>
 
-        <SidebarItem label="Students" class="hover:bg-lime-500 hover:text-white" href="/admin/students">
+        <SidebarItem label="Students" class={isActive('/admin/students')} href="/admin/students">
           <svelte:fragment slot="icon">
             <UsersSolid class="w-6 h-6" />
           </svelte:fragment>
         </SidebarItem>
 
-        <SidebarDropdownWrapper label="Quizzes" class="hover:bg-lime-500 hover:text-white group-hover:text-white">
+        <SidebarDropdownWrapper label="Quizzes" class={isDropdownActive(['/admin/quizzes/story1', '/admin/quizzes/story2', '/admin/quizzes/story3'])}>
           <svelte:fragment slot="icon">
-            <FileCopyAltSolid class="w-6 h-6  group-hover:text-white dark:group-hover:text-white" />
+            <FileCopyAltSolid class="w-6 h-6" />
           </svelte:fragment>
-          <SidebarDropdownItem label="Story 1" class="hover:bg-lime-500 hover:text-white" />
-          <SidebarDropdownItem label="Story 2" class="hover:bg-lime-500 hover:text-white" />
-          <SidebarDropdownItem label="Story 3" class="hover:bg-lime-500 hover:text-white" />
+          <SidebarDropdownItem label="Story 1" class={isActive('/admin/quizzes/story1')} href="/admin/quizzes/story1" />
+          <SidebarDropdownItem label="Story 2" class={isActive('/admin/quizzes/story2')} href="/admin/quizzes/story2" />
+          <SidebarDropdownItem label="Story 3" class={isActive('/admin/quizzes/story3')} href="/admin/quizzes/story3" />
         </SidebarDropdownWrapper>
 
-        <SidebarItem label="Checking" class="hover:bg-lime-500 hover:text-white">
+        <SidebarItem label="Record" class={isActive('/admin/checking')} href="/admin/checking">
           <svelte:fragment slot="icon">
-            <ClipboardCheckSolid class="w-6 h-6  group-hover:text-white dark:group-hover:text-white" />
+            <ClipboardCheckSolid class="w-6 h-6" />
           </svelte:fragment>
         </SidebarItem>
       </SidebarGroup>
     </div>
 
-    <!-- Second SidebarGroup (Fixed at Bottom) -->
     <SidebarGroup border class="border-t-gray-500">
       <SidebarItem label="Log Out" class="hover:bg-red-500 hover:text-white" on:click={() => (popupModal = true)}>
         <svelte:fragment slot="icon">
-          <ArrowRightToBracketOutline class="w-6 h-6  dark:text-gray-400 group-hover:text-white dark:group-hover:text-white" />
+          <ArrowRightToBracketOutline class="w-6 h-6 dark:text-gray-400 group-hover:text-white dark:group-hover:text-white" />
         </svelte:fragment>
       </SidebarItem>
       <br><br><br>
     </SidebarGroup>
   </SidebarWrapper>
 </Sidebar>
+
 <Modal bind:open={popupModal} size="xs" autoclose>
   <div class="text-center">
     <ExclamationCircleOutline class="mx-auto mb-4 text-gray-400 w-12 h-12 dark:text-gray-200" />

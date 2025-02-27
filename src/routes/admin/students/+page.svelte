@@ -15,129 +15,124 @@
   let currentPosition = 0;
   const itemsPerPage = 10;
   const showPage = 5;
-  let totalPages = 0;
-  let pagesToShow = [];
   let totalItems = paginationData.length;
-  let startPage;
-  let endPage;
+  let totalPages = Math.ceil(totalItems / itemsPerPage);
+  let startPage = 1;
+  let endPage = Math.min(showPage, totalPages);
+  let pagesToShow = [];
 
-  const updateDataAndPagination = () => {
-    const currentPageItems = paginationData.slice(currentPosition, currentPosition + itemsPerPage);
-    renderPagination(currentPageItems.length);
-  }
+  // Update pagination data
+  const updatePagination = () => {
+    totalPages = Math.ceil(totalItems / itemsPerPage);
+    const currentPage = Math.ceil((currentPosition + 1) / itemsPerPage);
+
+    startPage = Math.max(1, currentPage - Math.floor(showPage / 2));
+    endPage = Math.min(startPage + showPage - 1, totalPages);
+
+    if (endPage > totalPages) {
+        endPage = totalPages;
+    }
+
+    pagesToShow = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
+  };
 
   const loadNextPage = () => {
-    if (currentPosition + itemsPerPage < paginationData.length) {
+    if (currentPosition + itemsPerPage < totalItems) {
       currentPosition += itemsPerPage;
-      updateDataAndPagination();
+      updatePagination();
     }
-  }
+  };
 
   const loadPreviousPage = () => {
     if (currentPosition - itemsPerPage >= 0) {
       currentPosition -= itemsPerPage;
-      updateDataAndPagination();
+      updatePagination();
     }
-  }
-
-  const renderPagination = (totalItems) => {
-    totalPages = Math.ceil(paginationData.length / itemsPerPage);
-    const currentPage = Math.ceil((currentPosition + 1) / itemsPerPage);
-
-    startPage = currentPage - Math.floor(showPage / 2);
-    startPage = Math.max(1, startPage);
-    endPage = Math.min(startPage + showPage - 1, totalPages);
-
-    pagesToShow = Array.from({ length: endPage - startPage + 1 }, (_, i) => startPage + i);
-  }
+  };
 
   const goToPage = (pageNumber) => {
     currentPosition = (pageNumber - 1) * itemsPerPage;
-    updateDataAndPagination();
-  }
+    updatePagination();
+  };
 
+  // Automatically update pagination when search is applied
+  $: filteredItems = paginationData.filter((item) => item.name.toLowerCase().includes(searchTerm.toLowerCase()));
+  $: totalItems = filteredItems.length;
+  $: updatePagination();
+  
+  $: currentPageItems = filteredItems.slice(currentPosition, currentPosition + itemsPerPage);
   $: startRange = currentPosition + 1;
   $: endRange = Math.min(currentPosition + itemsPerPage, totalItems);
 
   onMount(() => {
-    // Call renderPagination when the component initially mounts
-    renderPagination(paginationData.length);
+    updatePagination();
   });
-
-  $: currentPageItems = paginationData.slice(currentPosition, currentPosition + itemsPerPage);
-  $: filteredItems = paginationData.filter((item) => item.name.toLowerCase().indexOf(searchTerm.toLowerCase()) !== -1);
 </script>
 
 <div class="h-screen flex flex-col">
-<div class="text-gray-500 font-bold text-2xl pl-10">
-  <h1>Students Management</h1>
-</div>
+  <div class="text-gray-500 font-bold text-2xl pl-10">
+    <h1>Students Management</h1>
+  </div>
 
-<Section name="advancedTable" classSection='bg-gray-50 dark:bg-gray-900 p-3 sm:p-5'>
+  <Section name="advancedTable" classSection='bg-gray-50 dark:bg-gray-900 p-3 sm:p-5 '>
     <TableSearch placeholder="Search" hoverable={true} bind:inputValue={searchTerm} {divClass} {innerDivClass} {searchClass} {classInput} >
+      <div slot="header" class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0 ">
+        <Button>
+          <PlusOutline class="h-3.5 w-3.5 mr-2" />Add Student
+        </Button>
+        <Button color='alternative'>Actions<ChevronDownOutline class="w-3 h-3 ml-2 " /></Button>
+          <Dropdown class="w-44 divide-y divide-gray-100">
+            <DropdownItem>Mass Edit</DropdownItem>
+            <DropdownItem>Delete all</DropdownItem>
+          </Dropdown>
+        <Button color='alternative'>Filter<FilterSolid class="w-3 h-3 ml-2 " /></Button>
+          <Dropdown class="w-48 p-3 space-y-2 text-sm">
+            <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">Filter</h6>
+            <li>
+              <Checkbox>Male (56)</Checkbox>
+            </li>
+            <li>
+              <Checkbox>Female (16)</Checkbox>
+            </li>
+          </Dropdown>
+      </div>
 
-    <div slot="header" class="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
-      <Button>
-        <PlusOutline class="h-3.5 w-3.5 mr-2" />Add Student
-      </Button>
-      <Button color='alternative'>Actions<ChevronDownOutline class="w-3 h-3 ml-2 " /></Button>
-        <Dropdown class="w-44 divide-y divide-gray-100">
-          <DropdownItem>Mass Edit</DropdownItem>
-          <DropdownItem>Delete all</DropdownItem>
-        </Dropdown>
-      <Button color='alternative'>Filter<FilterSolid class="w-3 h-3 ml-2 " /></Button>
-        <Dropdown class="w-48 p-3 space-y-2 text-sm">
-          <h6 class="mb-3 text-sm font-medium text-gray-900 dark:text-white">Filter</h6>
-          <li>
-            <Checkbox>Male (56)</Checkbox>
-          </li>
-          <li>
-            <Checkbox>Female (16)</Checkbox>
-          </li>
-        </Dropdown>
-    </div>
       <TableHead>
         <TableHeadCell padding="px-4 py-3" scope="col">Name</TableHeadCell>
         <TableHeadCell padding="px-4 py-3" scope="col">Level</TableHeadCell>
         <TableHeadCell padding="px-4 py-3" scope="col">Ribbon</TableHeadCell>
         <TableHeadCell padding="px-4 py-3" scope="col">Collected Trash</TableHeadCell>
       </TableHead>
-      <TableBody class="divide-y ">
-        {#if searchTerm !== ''}
-          {#each filteredItems as item (item.id)}
-            <TableBodyRow>
-              <TableBodyCell tdClass="px-4 py-3 ">{item.name}</TableBodyCell>
-              <TableBodyCell tdClass="px-4 py-3">{item.level}</TableBodyCell>
-              <TableBodyCell tdClass="px-4 py-3">{item.ribbon}</TableBodyCell>
-              <TableBodyCell tdClass="px-4 py-3">{item.collected_trash}</TableBodyCell>
-            </TableBodyRow>
-          {/each}
-        {:else}
-          {#each currentPageItems as item (item.id)}
-            <TableBodyRow>
-              <TableBodyCell tdClass="px-4 py-3">{item.name}</TableBodyCell>
-              <TableBodyCell tdClass="px-4 py-3">{item.level}</TableBodyCell>
-              <TableBodyCell tdClass="px-4 py-3">{item.ribbon}</TableBodyCell>
-              <TableBodyCell tdClass="px-4 py-3">{item.collected_trash}</TableBodyCell>
-            </TableBodyRow>
-          {/each}
-        {/if}
+      
+      <TableBody class="divide-y">
+        {#each currentPageItems as item (item.id)}
+          <TableBodyRow>
+            <TableBodyCell tdClass="px-4 py-3">{item.name}</TableBodyCell>
+            <TableBodyCell tdClass="px-4 py-3">{item.level}</TableBodyCell>
+            <TableBodyCell tdClass="px-4 py-3">{item.ribbon}</TableBodyCell>
+            <TableBodyCell tdClass="px-4 py-3">{item.collected_trash}</TableBodyCell>
+          </TableBodyRow>
+        {/each}
       </TableBody>
+
       <div slot="footer" class="flex flex-col md:flex-row justify-between items-start md:items-center space-y-3 md:space-y-0 p-4" aria-label="Table navigation">
-      <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-        Showing
-        <span class="font-semibold text-gray-900 dark:text-white">{startRange}-{endRange}</span>
-        of
-        <span class="font-semibold text-gray-900 dark:text-white">{totalItems}</span>
-      </span>
+        <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
+          Showing <span class="font-semibold text-gray-900 dark:text-white">{startRange}-{endRange}</span> of <span class="font-semibold text-gray-900 dark:text-white">{totalItems}</span>
+        </span>
         <ButtonGroup>
-          <Button on:click={loadPreviousPage} disabled={currentPosition === 0}><ChevronLeftOutline size='xs' class='m-1.5'/></Button>
+          <Button on:click={loadPreviousPage} disabled={currentPosition === 0}>
+            <ChevronLeftOutline size='xs' class='m-1.5'/>
+          </Button>
           {#each pagesToShow as pageNumber}
-            <Button on:click={() => goToPage(pageNumber)}>{pageNumber}</Button>
+          <Button on:click={() => goToPage(pageNumber)} class={currentPosition === (pageNumber - 1) * itemsPerPage ? 'active' : ''}>
+              {pageNumber}
+            </Button>
           {/each}
-          <Button on:click={loadNextPage} disabled={ totalPages === endPage }><ChevronRightOutline size='xs' class='m-1.5'/></Button>
+          <Button on:click={loadNextPage} disabled={currentPosition + itemsPerPage >= totalItems}>
+            <ChevronRightOutline size='xs' class='m-1.5'/>
+          </Button>
         </ButtonGroup>
       </div>
     </TableSearch>
-</Section>
+  </Section>
 </div>

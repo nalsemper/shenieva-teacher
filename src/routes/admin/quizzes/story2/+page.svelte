@@ -55,7 +55,9 @@
     }
   </script>
   
-  <h1 class="text-2xl font-bold text-gray-500 dark:text-white pb-3">Quiz Management/Story 2</h1>
+  <div class="text-gray-500 font-bold text-2xl pl-10">
+    <h1>Quiz Management/Story 2</h1>
+  </div>
   <div class="p-6 max-w-6xl mx-auto bg-white dark:bg-gray-900 shadow-lg rounded-lg">
     <div class="flex justify-between items-center mb-6">
       <button on:click={() => showModal = true} class="bg-lime-500 text-white px-5 py-2 rounded-lg hover:bg-lime-600 shadow ">+ Add Quiz</button>

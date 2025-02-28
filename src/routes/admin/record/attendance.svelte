@@ -100,7 +100,7 @@
     <div class="max-h-[65vh] overflow-y-auto w-full">
       <table class="w-full border-collapse bg-white rounded-lg text-sm">
         <thead class="sticky top-0 z-10">
-          <tr class="bg-lime-400 text-white">
+          <tr class="bg-lime-500 text-white">
             {#each tableHeaders as header}
               <th class="p-2 cursor-pointer hover:bg-lime-500 transition" on:click={() => sortBy(header.key)}>
                 {header.label}
@@ -113,11 +113,24 @@
           {#each $attendees as person}
             <tr class="border-b last:border-none bg-gray-50 hover:bg-orange-100 transition">
               <td class="p-2">{person.name}</td>
-              <td class="p-2">{person.gender}</td>
-              <td class="p-2">{person.datetime}</td>
-              <td class="p-2 text-center">{person.quiz1}</td>
-              <td class="p-2 text-center">{person.quiz2}</td>
-              <td class="p-2 text-center">{person.quiz3}</td>
+              <!-- <td class="p-2">{person.gender}</td> -->
+              <td class="p-2 flex items-center justify-center space-x-2">
+                {#if person.gender === 'Male'}
+                  <svg class="w-5 h-5 text-blue-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M14 2h8v8h-2V5.414l-4.293 4.293a7 7 0 1 1-1.414-1.414L18.586 4H14V2ZM5 11a5 5 0 1 0 10 0 5 5 0 0 0-10 0Z"/>
+                  </svg>
+                {/if}
+                {#if person.gender === 'Female'}
+                  <svg class="w-5 h-5 text-pink-500" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                    <path d="M12 2a7 7 0 1 1-1 13.93V18h2v-2.07A7 7 0 0 1 12 2Zm0 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm-1 6v-2h2v2h3v2H8v-2h3Z"/>
+                  </svg>
+                {/if}
+              </td>
+                          
+              <td class="p-2 text-center justify-center">{person.datetime}</td>
+              <td class="p-2 text-center justify-center">{person.quiz1}</td>
+              <td class="p-2 text-center justify-center">{person.quiz2}</td>
+              <td class="p-2 text-center justify-center">{person.quiz3}</td>
               <td class="p-2">
                 <div class="w-full bg-gray-300 rounded-xl h-4 relative flex items-center text-xs text-gray-700 z-0">
                   <span class="absolute w-full text-center">

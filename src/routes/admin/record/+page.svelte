@@ -19,7 +19,7 @@
     <div class="flex space-x-2 border-b-2 pb-2 justify-evenly">
         {#each ["attendance", "quiz1", "quiz2", "quiz3"] as tab}
             <button 
-                class="group px-4 py-2 w-full max-w-[150px] font-semibold rounded-lg transition-all duration-300 ease-out transform
+                class="group px-4 py-2 w-full font-semibold rounded-lg transition-all duration-300 ease-out transform
                 {tab === $activeTab ? 'bg-orange-500 text-white' : 'text-gray-600 hover:bg-gray-200'}
                 hover:-translate-y"
                 on:click={() => activeTab.set(tab)}>

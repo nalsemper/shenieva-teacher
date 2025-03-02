@@ -2,7 +2,7 @@
     import { onMount } from "svelte";
     import { writable, get } from "svelte/store";
     // import { writable } from "svelte/store";
-    import Modal from "../modals/quiz1.svelte";
+    import Modal from "../modals/quiz2.svelte";
   
     let selectedGender = "All";
     let date = new Date().toISOString().split("T")[0]; // Default to today's date

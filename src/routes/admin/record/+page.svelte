@@ -6,7 +6,8 @@
   import { flip } from 'svelte/animate';
   import Attendance from './attendance.svelte';
   import Quiz1 from './quiz1.svelte';
-
+  import Quiz2 from './quiz2.svelte';
+  import Quiz3 from './quiz3.svelte';
     let activeTab = writable("attendance");
 </script>
 
@@ -48,14 +49,12 @@
         {/if}
         {#if $activeTab === "quiz2"}
             <div in:fly={{ y: -50, opacity: 0 }} out:fly={{ y: -50, opacity: 0 }}>
-                <h2 class="text-xl font-bold text-gray-700">Quiz 2 Checking</h2>
-                <p class="text-gray-500">Quiz 2 results and checking UI.</p>
+                <Quiz2/>
             </div>
         {/if}
         {#if $activeTab === "quiz3"}
             <div in:fly={{ y: -50, opacity: 0 }} out:fly={{ y: -50, opacity: 0 }}>
-                <h2 class="text-xl font-bold text-gray-700">Quiz 3 Checking</h2>
-                <p class="text-gray-500">Quiz 3 results and checking UI.</p>
+                <Quiz3/>
             </div>
         {/if}
     </div>

@@ -1,0 +1,114 @@
+CREATE DATABASE shenieva_DB;
+USE shenieva_DB;
+
+CREATE TABLE teacher_table (
+    pk_teacherID INT AUTO_INCREMENT PRIMARY KEY,
+    teacherName VARCHAR(255) NOT NULL,
+    teacherEmail VARCHAR(255) UNIQUE NOT NULL,
+    teacherPass VARCHAR(255) NOT NULL,
+    teacherGender ENUM('Male', 'Female', 'Other') NOT NULL
+);
+
+CREATE TABLE students_table (
+    pk_studentID INT AUTO_INCREMENT PRIMARY KEY,
+    studentName VARCHAR(255) NOT NULL,
+    studentPass VARCHAR(255) NOT NULL,
+    studentGender ENUM('Male', 'Female', 'Other') NOT NULL,
+    studentLevel INT NOT NULL,
+    studentRibbon VARCHAR(255),
+    studentColtrash VARCHAR(255),
+    studentProgress VARCHAR(255)
+);
+
+CREATE TABLE story1_table (
+    pk_storyQuiz1ID INT AUTO_INCREMENT PRIMARY KEY,
+    storyQuiz1 TEXT NOT NULL,
+    answer BOOLEAN NOT NULL,
+    choices TEXT NOT NULL,
+    points INT NOT NULL
+);
+
+CREATE TABLE story2_table (
+    pk_storyQuiz1ID INT AUTO_INCREMENT PRIMARY KEY,
+    storyQuiz1 TEXT NOT NULL,
+    answer VARCHAR(255) NOT NULL,
+    points INT NOT NULL
+);
+
+CREATE TABLE story3_table (
+    pk_storyQuiz1ID INT AUTO_INCREMENT PRIMARY KEY,
+    storyQuiz1 TEXT NOT NULL,
+    answer VARCHAR(255) NOT NULL,
+    points INT NOT NULL
+);
+
+CREATE TABLE attendance_table (
+    pk_attendanceID INT AUTO_INCREMENT PRIMARY KEY,
+    fk_studentID INT NOT NULL,
+    attendanceDateTime DATETIME NOT NULL,
+    FOREIGN KEY (fk_studentID) REFERENCES students_table(pk_studentID) ON DELETE CASCADE
+);
+
+CREATE TABLE quiz1_table (
+    pk_quiz1ID INT AUTO_INCREMENT PRIMARY KEY,
+    fk_studentID INT NOT NULL,
+    fk_storyQuiz1ID INT NOT NULL,
+    studentAnswer TEXT NOT NULL,
+    studentAttempts INT NOT NULL,
+    studentPoints INT NOT NULL,
+    FOREIGN KEY (fk_studentID) REFERENCES students_table(pk_studentID) ON DELETE CASCADE,
+    FOREIGN KEY (fk_storyQuiz1ID) REFERENCES story1_table(pk_storyQuiz1ID) ON DELETE CASCADE
+);
+
+CREATE TABLE quiz2_table (
+    pk_quiz2ID INT AUTO_INCREMENT PRIMARY KEY,
+    fk_studentID INT NOT NULL,
+    fk_storyQuiz1ID INT NOT NULL,
+    studentAnswer TEXT NOT NULL,
+    studentAttempts INT NOT NULL,
+    studentPoints INT NOT NULL,
+    FOREIGN KEY (fk_studentID) REFERENCES students_table(pk_studentID) ON DELETE CASCADE,
+    FOREIGN KEY (fk_storyQuiz1ID) REFERENCES story2_table(pk_storyQuiz1ID) ON DELETE CASCADE
+);
+
+CREATE TABLE quiz3_table (
+    pk_quiz3ID INT AUTO_INCREMENT PRIMARY KEY,
+    fk_studentID INT NOT NULL,
+    fk_storyQuiz1ID INT NOT NULL,
+    studentAnswer TEXT NOT NULL,
+    studentAttempts INT NOT NULL,
+    studentPoints INT NOT NULL,
+    FOREIGN KEY (fk_studentID) REFERENCES students_table(pk_studentID) ON DELETE CASCADE,
+    FOREIGN KEY (fk_storyQuiz1ID) REFERENCES story3_table(pk_storyQuiz1ID) ON DELETE CASCADE
+);
+
+-- Insert sample data
+INSERT INTO teacher_table (teacherName, teacherEmail, teacherPass, teacherGender) VALUES
+('John Doe', 'johndoe@example.com', 'password123', 'Male'),
+('Jane Smith', 'janesmith@example.com', 'securepass', 'Female');
+
+INSERT INTO students_table (studentName, studentPass, studentGender, studentLevel, studentRibbon, studentColtrash, studentProgress) VALUES
+('Alice Johnson', 'passAlice', 'Female', 3, 'Gold', 'None', '80%'),
+('Bob Williams', 'passBob', 'Male', 2, 'Silver', 'Plastic', '60%');
+
+INSERT INTO story1_table (storyQuiz1, answer, choices, points) VALUES
+('What is 2+2?', true, '4,3,5', 10);
+
+INSERT INTO story2_table (storyQuiz1, answer, points) VALUES
+('Who discovered gravity?', 'Newton', 15);
+
+INSERT INTO story3_table (storyQuiz1, answer, points) VALUES
+('What is the capital of France?', 'Paris', 10);
+
+INSERT INTO attendance_table (fk_studentID, attendanceDateTime) VALUES
+(1, '2025-03-03 08:00:00'),
+(2, '2025-03-03 08:15:00');
+
+INSERT INTO quiz1_table (fk_studentID, fk_storyQuiz1ID, studentAnswer, studentAttempts, studentPoints) VALUES
+(1, 1, '4', 1, 10);
+
+INSERT INTO quiz2_table (fk_studentID, fk_storyQuiz1ID, studentAnswer, studentAttempts, studentPoints) VALUES
+(2, 1, 'Newton', 1, 15);
+
+INSERT INTO quiz3_table (fk_studentID, fk_storyQuiz1ID, studentAnswer, studentAttempts, studentPoints) VALUES
+(1, 1, 'Paris', 1, 10);

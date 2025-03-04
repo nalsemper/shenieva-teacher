@@ -1,81 +1,165 @@
-<script>
+<script lang="ts">
   import { onMount } from "svelte";
-  import { studentData, studentNames } from '$lib/store/store_students';
-  import { Table, TableBody, TableBodyCell, TableBodyRow, TableHead, TableHeadCell, TableSearch, Button, ButtonGroup } from 'flowbite-svelte';
-  import { Section } from 'flowbite-svelte-blocks';
-  import { ChevronRightOutline, ChevronLeftOutline } from 'flowbite-svelte-icons';
-  
-  let searchTerm = '';
-  let currentPosition = 0;
-  const itemsPerPage = 10;
+  import { writable, get } from "svelte/store";
+  import { studentData } from '$lib/store/store_students';
+  import Modal from "../modals/quiz2.svelte";
+  import AddModal from "../modals/add_student.svelte";
+
+  let selectedGender = writable("All");
+  let searchQuery = writable("");
+  let attendees = writable([]);
+  let sortKey = writable("studentName");
+  let sortOrder = writable("asc");
+  let showModal = writable(false);
+  let selectedPerson = writable(null);
+  let showAddModal = writable(false);
+
+  const genders = ["All", "Male", "Female"];
+
+  const tableHeaders = [
+    { key: "studentName", label: "Name" },
+    { key: "studentGender", label: "Gender" },
+    { key: "studentLevel", label: "Level" },
+    { key: "studentRibbon", label: "Ribbon" },
+    { key: "studentColtrash", label: "Collected Trash" }
+  ];
 
   onMount(async () => {
-    fetch("http://localhost/shenieva-teacher/src/lib/api/fetch_students.php")
-      .then(response => response.json())
-      .then(data => {
-        studentData.set(data);
-      })
-      .catch(error => {
-        console.error("Error fetching student data:", error);
-        studentData.set([]);
-      });
+    try {
+      const response = await fetch("http://localhost/shenieva-teacher/src/lib/api/fetch_students.php");
+      const data = await response.json();
+      studentData.set(data);
+      attendees.set(data);
+    } catch (error) {
+      console.error("Error fetching student data:", error);
+      studentData.set([]);
+      attendees.set([]);
+    }
   });
 
-  $: filteredItems = $studentData.filter((item) => item.studentName.toLowerCase().includes(searchTerm.toLowerCase()));
-  $: totalItems = filteredItems.length;
-  $: currentPageItems = filteredItems.slice(currentPosition, currentPosition + itemsPerPage);
-  
-  const loadNextPage = () => {
-    if (currentPosition + itemsPerPage < totalItems) {
-      currentPosition += itemsPerPage;
-    }
-  };
+  function filterData() {
+    const query = get(searchQuery).toLowerCase();
+    const gender = get(selectedGender);
 
-  const loadPreviousPage = () => {
-    if (currentPosition - itemsPerPage >= 0) {
-      currentPosition -= itemsPerPage;
+    attendees.set(
+      get(studentData).filter(student => {
+        return (
+          (gender === "All" || student.studentGender === gender) &&
+          student.studentName.toLowerCase().includes(query)
+        );
+      })
+    );
+  }
+
+  function sortBy(key) {
+    if (get(sortKey) === key) {
+      sortOrder.update(order => (order === "asc" ? "desc" : "asc"));
+    } else {
+      sortKey.set(key);
+      sortOrder.set("asc");
     }
-  };
+
+    attendees.update(items => {
+      return [...items].sort((a, b) => {
+        let valA = a[key];
+        let valB = b[key];
+
+        if (typeof valA === "string") {
+          return valA.localeCompare(valB) * (get(sortOrder) === "asc" ? 1 : -1);
+        } else {
+          return (valA - valB) * (get(sortOrder) === "asc" ? 1 : -1);
+        }
+      });
+    });
+  }
+
+  function openModal(person) {
+    selectedPerson.set(person);
+    showModal.set(true);
+  }
+
+  function closeModal() {
+    showModal.set(false);
+  }
+
+  function openAddModal() {
+    showAddModal.set(true);
+  }
+
+  function closeAddModal() {
+    showAddModal.set(false);
+  }
 </script>
 
-<div class="h-screen flex flex-col">
-  <div class="text-gray-500 font-bold text-2xl pl-10 pb-2">
-    <h1>Students Management</h1>
+<div class="text-gray-500 font-bold text-2xl pl-10">
+  <h1>Students Management</h1>
+</div>
+
+<div class="p-6 max-w-6xl mx-auto bg-white rounded-xl shadow-lg">
+  <div class="flex items-center gap-4 mb-6">
+    <input 
+      type="text" 
+      bind:value={$searchQuery} 
+      on:input={filterData} 
+      placeholder="Search by name..." 
+      class="w-80 p-2 border border-gray-300 rounded-md text-gray-700 shadow-sm focus:ring-2 focus:ring-lime-500" 
+    />
+    
+    <select bind:value={$selectedGender} on:change={filterData}
+      class="p-2 w-22 border border-gray-300 rounded-md text-gray-700 shadow-sm focus:ring-2 focus:ring-lime-500">
+      {#each genders as gender}
+        <option value={gender}>{gender}</option>
+      {/each}
+    </select>
+    
+    <button on:click={openAddModal} class="ml-auto bg-orange-500 text-white px-5 py-2 rounded-lg hover:bg-orange-400 shadow">
+      + Add Student
+    </button>
   </div>
 
-  <Section name="advancedTable" classSection='bg-gray-50 dark:bg-gray-900 p-3 sm:p-5'>
-    <TableSearch placeholder="Search" hoverable={true} bind:inputValue={searchTerm}>
-      <TableHead class="bg-orange-500 text-white">
-        <TableHeadCell scope="col">Name</TableHeadCell>
-        <TableHeadCell scope="col">Level</TableHeadCell>
-        <TableHeadCell scope="col">Ribbon</TableHeadCell>
-        <TableHeadCell scope="col">Collected Trash</TableHeadCell>
-      </TableHead>
-
-      <TableBody class="divide-y flex-1 overflow-auto">
-        {#each currentPageItems as item (item.idNo)}
-          <TableBodyRow class="hover:bg-orange-100">
-            <TableBodyCell>{item.studentName}</TableBodyCell>
-            <TableBodyCell>{item.studentLevel}</TableBodyCell>
-            <TableBodyCell>{item.studentRibbon}</TableBodyCell>
-            <TableBodyCell>{item.studentColtrash}</TableBodyCell>
-          </TableBodyRow>
+  <div class="max-h-[75vh] overflow-y-auto w-full">
+    <table class="w-full border-collapse bg-white rounded-lg text-sm">
+      <thead class="sticky top-0 z-10 bg-lime-500 text-white">
+        <tr>
+          {#each tableHeaders as header}
+            <th class="p-2 cursor-pointer hover:bg-lime-400 transition" on:click={() => sortBy(header.key)}>
+              {header.label}
+              <span class="ml-1 text-xs">{($sortKey === header.key && $sortOrder === "asc") ? "▲" : "▼"}</span>
+            </th>
+          {/each}
+        </tr>
+      </thead>
+      <tbody class="divide-y">
+        {#each $attendees as student}
+          <tr class="border border-black/10 border-x-0 bg-gray-50 hover:bg-orange-200 transition" on:click={() => openModal(student)}>
+            <td class="p-2 ">{student.studentName}</td>
+            <td class="p-2 flex justify-center items-center">
+              {#if student.studentGender === 'Male'}
+                <svg class="w-5 h-5 text-blue-500" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M14 2h8v8h-2V5.414l-4.293 4.293a7 7 0 1 1-1.414-1.414L18.586 4H14V2ZM5 11a5 5 0 1 0 10 0 5 5 0 0 0-10 0Z"/>
+                </svg>
+              {/if}
+              {#if student.studentGender === 'Female'}
+                <svg class="w-5 h-5 text-pink-500" viewBox="0 0 24 24" fill="currentColor">
+                  <path d="M12 2a7 7 0 1 1-1 13.93V18h2v-2.07A7 7 0 0 1 12 2Zm0 12a5 5 0 1 0-5-5 5 5 0 0 0 5 5Zm-1 6v-2h2v2h3v2H8v-2h3Z"/>
+                </svg>
+              {/if}
+            </td>
+            
+            <td class="p-2 text-center justify-center">{student.studentLevel}</td>
+            <td class="p-2 text-center justify-center">{student.studentRibbon}</td>
+            <td class="p-2 text-center justify-center">{student.studentColtrash}</td>
+          </tr>
         {/each}
-      </TableBody>
-
-      <div slot="footer" class="flex justify-between p-4" aria-label="Table navigation">
-        <span class="text-sm font-normal text-gray-500 dark:text-gray-400">
-          Showing {currentPosition + 1}-{Math.min(currentPosition + itemsPerPage, totalItems)} of {totalItems}
-        </span>
-        <ButtonGroup>
-          <Button on:click={loadPreviousPage} disabled={currentPosition === 0}>
-            <ChevronLeftOutline size='xs' class='m-1.5'/>
-          </Button>
-          <Button on:click={loadNextPage} disabled={currentPosition + itemsPerPage >= totalItems}>
-            <ChevronRightOutline size='xs' class='m-1.5'/>
-          </Button>
-        </ButtonGroup>
-      </div>
-    </TableSearch>
-  </Section>
+      </tbody>
+    </table>
+  </div>
 </div>
+
+{#if $showModal}
+  <Modal selectedPerson={$selectedPerson} on:close={closeModal} />
+{/if}
+
+{#if $showAddModal}
+  <AddModal selectedPerson={$selectedPerson} on:close={closeAddModal} />
+{/if}

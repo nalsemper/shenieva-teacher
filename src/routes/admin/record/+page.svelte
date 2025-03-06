@@ -13,7 +13,7 @@
 
 
 <div class=" text-gray-500 font-bold text-2xl pl-10">
-    <h1>Record Management</h1>
+    <h1>Report Management</h1>
 </div>
 
 <div class="p-6 pb-0 max-w-6xl mx-auto">
@@ -25,8 +25,8 @@
                 {tab === $activeTab ? 'bg-orange-500 text-white' : 'text-gray-600 hover:bg-gray-200'}
                 hover:-translate-y"
                 on:click={() => activeTab.set(tab)}>
-                {#if tab === "attendance"} Attendance
-                {:else} {tab.replace("quiz", "Quiz ")}
+                {#if tab === "attendance"} Revenue Report
+                {:else} {tab.replace("quiz", "Services ")}
                 {/if}
             </button>
         {/each}

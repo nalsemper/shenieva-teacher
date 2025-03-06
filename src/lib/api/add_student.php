@@ -1,34 +1,41 @@
 <?php
+include 'conn.php';
 
-// Allow requests from any origin (for development purposes).
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
 header("Access-Control-Allow-Headers: Content-Type");
 header("Content-Type: application/json");
 
-include 'conn.php';
-
 // Get the JSON input from the request
 $data = json_decode(file_get_contents("php://input"), true);
 
-if (!empty($data["studentName"]) && !empty($data["studentGender"]) && !empty($data["studentLevel"]) && !empty($data["studentRibbon"]) && isset($data["studentColtrash"])) {
+if (!empty($data["idNo"]) && !empty($data["studentName"]) && !empty($data["studentPass"])) {
+    
+    $idNo = $conn->real_escape_string($data["idNo"]);  // Ensure idNo is provided
     $studentName = $conn->real_escape_string($data["studentName"]);
-    $studentGender = $conn->real_escape_string($data["studentGender"]);
-    $studentLevel = $conn->real_escape_string($data["studentLevel"]);
-    $studentRibbon = $conn->real_escape_string($data["studentRibbon"]);
-    $studentColtrash = intval($data["studentColtrash"]);
+    $studentPass = $conn->real_escape_string($data["studentPass"]);
 
-    $sql = "INSERT INTO students_table (studentName, studentGender, studentLevel, studentRibbon, studentColtrash) 
-            VALUES ('$studentName', '$studentGender', '$studentLevel', '$studentRibbon', '$studentColtrash')";
+    // 🔍 **Step 1: Check if idNo already exists**
+    $checkQuery = "SELECT idNo FROM students_table WHERE idNo = '$idNo'";
+    $result = $conn->query($checkQuery);
 
-    if ($conn->query($sql) === TRUE) {
-        echo json_encode(["success" => true, "message" => "Student added successfully"]);
+    if ($result->num_rows > 0) {
+        echo json_encode(["success" => false, "message" => "Student ID already exists!"]);
     } else {
-        echo json_encode(["success" => false, "message" => "Error adding student: " . $conn->error]);
+        // 📝 **Step 2: Insert only if idNo is unique**
+        $sql = "INSERT INTO students_table (idNo, studentName, studentPass) 
+                VALUES ('$idNo', '$studentName', '$studentPass')";
+
+        if ($conn->query($sql) === TRUE) {
+            echo json_encode(["success" => true, "message" => "Student added successfully!"]);
+        } else {
+            echo json_encode(["success" => false, "message" => "Error: " . $conn->error]);
+        }
     }
 } else {
-    echo json_encode(["success" => false, "message" => "Missing required fields"]);
+    echo json_encode(["success" => false, "message" => "All fields are required!"]);
 }
+
 
 $conn->close();
 ?>

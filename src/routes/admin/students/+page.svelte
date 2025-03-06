@@ -24,18 +24,35 @@
     { key: "studentColtrash", label: "Collected Trash" }
   ];
 
+  // onMount(async () => {
+  //   try {
+  //     const response = await fetch("http://localhost/shenieva-teacher/src/lib/api/fetch_students.php");
+  //     const data = await response.json();
+  //     studentData.set(data);
+  //     attendees.set(data);
+  //   } catch (error) {
+  //     console.error("Error fetching student data:", error);
+  //     studentData.set([]);
+  //     attendees.set([]);
+  //   }
+  // });
+  
   onMount(async () => {
-    try {
-      const response = await fetch("http://localhost/shenieva-teacher/src/lib/api/fetch_students.php");
-      const data = await response.json();
-      studentData.set(data);
-      attendees.set(data);
-    } catch (error) {
-      console.error("Error fetching student data:", error);
-      studentData.set([]);
-      attendees.set([]);
-    }
-  });
+  try {
+    const response = await fetch("http://localhost/shenieva-teacher/src/lib/api/fetch_students.php");
+    let data = await response.json();
+
+    // ✅ Sort alphabetically by studentName (A → Z)
+    data.sort((a, b) => a.studentName.localeCompare(b.studentName));
+
+    studentData.set(data);
+    attendees.set(data);
+  } catch (error) {
+    console.error("Error fetching student data:", error);
+    studentData.set([]);
+    attendees.set([]);
+  }
+});
 
   function filterData() {
     const query = get(searchQuery).toLowerCase();
@@ -86,13 +103,41 @@
     showAddModal.set(true);
   }
 
-  function closeAddModal() {
-    showAddModal.set(false);
+  // function closeAddModal() {
+  //   showAddModal.set(false);
+  // }
+
+  async function closeAddModal() {
+  showAddModal.set(false);
+  await refreshStudentData(); // Refresh data when modal closes
+}
+
+async function refreshStudentData() {
+  try {
+    const response = await fetch("http://localhost/shenieva-teacher/src/lib/api/fetch_students.php");
+    
+    if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+
+    let data = await response.json();
+    
+    // ✅ Sort alphabetically by studentName (A → Z)
+    data.sort((a, b) => a.studentName.localeCompare(b.studentName));
+
+    studentData.set(data);
+    attendees.set(data);
+  } catch (error) {
+    console.error("❌ Error fetching student data:", error);
+    studentData.set([]);
+    attendees.set([]);
   }
+}
+
+
+
 </script>
 
 <div class="text-gray-500 font-bold text-2xl pl-10">
-  <h1>Students Management</h1>
+  <h1>Providers Management</h1>
 </div>
 
 <div class="p-6 max-w-6xl mx-auto bg-white rounded-xl shadow-lg">
@@ -113,7 +158,7 @@
     </select>
     
     <button on:click={openAddModal} class="ml-auto bg-orange-500 text-white px-5 py-2 rounded-lg hover:bg-orange-400 shadow">
-      + Add Student
+      + Add Provider
     </button>
   </div>
 

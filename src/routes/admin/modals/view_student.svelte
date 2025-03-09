@@ -157,7 +157,7 @@
                 <div class="bg-lime-500 text-white w-8 h-8 flex items-center justify-center rounded-full font-semibold">
                   {selectedPerson.studentColtrash}
                 </div>
-                <span class="text-gray-900">Items Collected</span>
+                <span class="text-gray-900">Trash Collected</span>
               </div>
             </div>
           </div>

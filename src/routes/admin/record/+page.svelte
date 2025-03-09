@@ -8,6 +8,8 @@
   import Quiz1 from './quiz1.svelte';
   import Quiz2 from './quiz2.svelte';
   import Quiz3 from './quiz3.svelte';
+
+
     let activeTab = writable("attendance");
 </script>
 

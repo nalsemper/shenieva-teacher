@@ -30,6 +30,7 @@
   // Fetch student data on component mount
   onMount(async () => {
     await refreshStudentData();
+    await refreshEditStudentData();
   });
 
   // Function to fetch and refresh student data
@@ -41,6 +42,21 @@
       let data = await response.json();
       // Sort alphabetically by studentName (A → Z)
       data.sort((a, b) => a.studentName.localeCompare(b.studentName));
+      
+      studentData.set(data);
+      attendees.set(data);
+    } catch (error) {
+      console.error("❌ Error fetching student data:", error);
+      studentData.set([]);
+      attendees.set([]);
+    }
+  }
+  async function refreshEditStudentData() {
+    try {
+      const response = await fetch("http://localhost/shenieva-teacher/src/lib/api/fetch_students.php");
+      if (!response.ok) throw new Error(`HTTP error! Status: ${response.status}`);
+      
+      let data = await response.json();
       
       studentData.set(data);
       attendees.set(data);
@@ -95,9 +111,10 @@
   }
 
   // Close modal
-  function closeModal() {
+  async function closeModal() {
     showModal.set(false);
     selectedPerson.set(null); // Reset selected person
+    await refreshEditStudentData();
   }
 
   // Open add student modal

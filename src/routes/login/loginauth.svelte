@@ -1,0 +1,114 @@
+<!-- src/lib/loginauth.svelte -->
+<script lang="ts">
+    import { goto } from '$app/navigation';
+  
+    export let idNo: string;
+    export let password: string;
+  
+    let modalState: 'idle' | 'loading' | 'success' | 'error' = 'idle';
+    let modalMessage = '';
+  
+    async function authenticateStudent() {
+      // Show loading modal
+      modalState = 'loading';
+      modalMessage = 'Getting ready...';
+  
+      const credentials = {
+        idNo,
+        studentPass: password,
+      };
+  
+      try {
+        const response = await fetch('http://localhost/shenieva-teacher/src/lib/api/login_student.php', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(credentials),
+        });
+  
+        if (!response.ok) {
+          throw new Error(`HTTP error! Status: ${response.status}`);
+        }
+  
+        const result = await response.json();
+  
+        if (result.success) {
+          // Show success modal
+          modalState = 'success';
+          modalMessage = 'Yay, you’re in!';
+          // Wait 1.5 seconds before redirecting
+          setTimeout(() => {
+            goto('/student');
+          }, 1500);
+        } else {
+          // Show error modal
+          modalState = 'error';
+          modalMessage = `Oops! ${result.message || 'Wrong ID or password!'}`;
+          // Hide modal after 2.5 seconds
+          setTimeout(() => {
+            modalState = 'idle';
+          }, 2500);
+        }
+      } catch (error) {
+        // Show error modal for network/server issues
+        modalState = 'error';
+        modalMessage = 'Oh no! Can’t connect right now!';
+        console.error('Login error:', error);
+        // Hide modal after 2.5 seconds
+        setTimeout(() => {
+          modalState = 'idle';
+        }, 2500);
+      }
+    }
+  
+    // Expose the authenticate function
+    export { authenticateStudent as authenticate };
+  </script>
+  
+  <!-- Modal -->
+  {#if modalState !== 'idle'}
+    <div 
+      class="fixed inset-0 bg-white/30 flex items-center justify-center z-50"
+      role="dialog"
+      aria-labelledby="modal-title"
+      aria-modal="true"
+    >
+      <div class="bg-yellow-100 p-6 rounded-3xl shadow-xl w-96 text-center border-4 border-orange-400">
+        <h3 
+          id="modal-title" 
+          class="text-2xl font-bold text-orange-600 mb-4"
+          style="font-family: 'Comic Sans MS', 'Chalkboard', cursive;"
+        >
+          {modalMessage}
+        </h3>
+        {#if modalState === 'loading'}
+          <div class="mt-4 flex justify-center">
+            <span class="text-4xl animate-bounce">🌟</span>
+          </div>
+        {/if}
+        {#if modalState === 'success'}
+          <div class="mt-4">
+            <span class="text-5xl animate-pulse">😊👍</span>
+          </div>
+        {/if}
+        {#if modalState === 'error'}
+          <div class="mt-4">
+            <span class="text-5xl animate-wiggle">😢👎</span>
+          </div>
+        {/if}
+      </div>
+    </div>
+  {/if}
+  
+  <style>
+    /* Custom animations for child-friendly feel */
+    @keyframes wiggle {
+      0% { transform: rotate(0deg); }
+      25% { transform: rotate(-10deg); }
+      75% { transform: rotate(10deg); }
+      100% { transform: rotate(0deg); }
+    }
+  
+    .animate-wiggle {
+      animation: wiggle 0.5s infinite;
+    }
+  </style>

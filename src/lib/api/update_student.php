@@ -1,10 +1,10 @@
 <?php
-// update_student.php
+// src/lib/api/update_student.php
 
 // Allow requests from any origin (for development). Restrict in production.
 header("Access-Control-Allow-Origin: *");
 
-// Allow only the POST method (since the modal uses POST for updates).
+// Allow only the POST method.
 header("Access-Control-Allow-Methods: POST");
 
 // Allow specific headers.
@@ -19,24 +19,22 @@ include 'conn.php';
 $data = json_decode(file_get_contents("php://input"), true);
 
 // Check if required fields are provided.
-if (!isset($data['studentId']) || !isset($data['studentName']) || !isset($data['studentGender'])) {
-    echo json_encode(["success" => false, "message" => "Missing required fields (studentId, studentName, or studentGender)"]);
+if (!isset($data['pk_studentID']) || !isset($data['idNo']) || !isset($data['studentName']) || !isset($data['studentGender'])) {
+    echo json_encode(["success" => false, "message" => "Missing required fields (pk_studentID, idNo, studentName, or studentGender)"]);
     exit;
 }
 
-$studentId = $data['studentId'];
-$studentName = $data['studentName'];
-$studentGender = $data['studentGender'];
-
-// Store the original studentId to identify the row (in case studentId changes).
-$originalStudentId = $data['studentId']; // Assuming the modal sends the original ID as well.
+$pk_studentID = $data['pk_studentID']; // Primary key to identify the record
+$idNo = $data['idNo']; // Updated field
+$studentName = $data['studentName']; // Updated field
+$studentGender = $data['studentGender']; // Updated field
 
 // Prepare the update statement.
-$sql = "UPDATE students_table SET noId = ?, studentName = ?, studentGender = ? WHERE noId = ?";
+$sql = "UPDATE students_table SET idNo = ?, studentName = ?, studentGender = ? WHERE pk_studentID = ?";
 $stmt = $conn->prepare($sql);
 
-// Bind parameters: "ssss" assumes all are strings. Adjust if studentId is an integer ("isss").
-$stmt->bind_param("ssss", $studentId, $studentName, $studentGender, $originalStudentId);
+// Bind parameters: "sssi" (string, string, string, integer) assumes pk_studentID is an integer.
+$stmt->bind_param("sssi", $idNo, $studentName, $studentGender, $pk_studentID);
 
 if ($stmt->execute()) {
     echo json_encode(["success" => true, "message" => "Student updated successfully"]);

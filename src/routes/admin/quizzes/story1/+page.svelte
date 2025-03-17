@@ -1,9 +1,42 @@
 <script lang="ts">
   import { CaretDownSolid, TrashBinSolid, EditSolid } from 'flowbite-svelte-icons';
   
-  let quizzes = [
-    { id: 1, question: "What is 2 + 2?", choices: ["3", "4", "5"], answer: "4", points: 5, expanded: false },
-  ];
+  interface Quiz {
+    id: number;
+    question: string;
+    choices: string[];
+    answer: string;
+    points: number;
+    expanded: boolean;
+  }
+
+  let story = "story1";
+  let quizzes: Quiz[] = [];
+
+
+  async function fetchQuizzes() {
+  try {
+    const response = await fetch('http://localhost/shenieva-teacher/src/lib/api/fetch_quizzes.php?story=story1');
+    const data = await response.json();
+    console.log(data); 
+
+    if (Array.isArray(data)) {
+      quizzes = data.map(quiz => ({
+  ...quiz,
+  choices: Array.isArray(quiz.choices) ? quiz.choices : quiz.choices.split(','),
+  expanded: false
+}));
+
+    } else {
+      console.error('Invalid data format:', data);
+    }
+  } catch (error) {
+    console.error("Failed to fetch quizzes:", error);
+  }
+}
+
+
+  fetchQuizzes();  // Fetch quizzes on component mount
 
   let newQuestion = "";
   let newChoices: string[] = [];
@@ -25,16 +58,57 @@
     newChoices = newChoices.filter((_, i) => i !== index);
   }
 
-  function addQuiz() {
-    if (newQuestion.trim() && newAnswer.trim() && newChoices.length > 0 && newPoints !== null) {
-      quizzes = [...quizzes, { id: Date.now(), question: newQuestion, choices: newChoices, answer: newAnswer, points: newPoints, expanded: false }];
-      closeModal();
+  async function addQuiz() {
+  if (newQuestion.trim() && newAnswer.trim() && newChoices.length > 0 && newPoints !== null) {
+    try {
+      const response = await fetch('http://localhost/shenieva-teacher/src/lib/api/add_quiz1.php?story=story1', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          question: newQuestion,
+          choices: newChoices,
+          answer: newAnswer,
+          points: newPoints
+        })
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        fetchQuizzes(); // Refresh quiz list
+        closeModal();
+      } else {
+        console.error('Failed to add quiz:', result.error);
+      }
+    } catch (error) {
+      console.error('Error adding quiz:', error);
     }
   }
+}
 
-  function deleteQuiz(id: number) {
-    quizzes = quizzes.filter(quiz => quiz.id !== id);
-  }
+
+async function deleteQuiz(id: number) {
+    if (confirm("Are you sure you want to delete this quiz?")) {
+        try {
+            const response = await fetch(`http://localhost/shenieva-teacher/src/lib/api/delete_quiz.php?story=story1`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id }) // Send ID in the request body
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                quizzes = quizzes.filter(quiz => quiz.id !== id); // Remove from UI only if successful
+            } else {
+                console.error('Failed to delete quiz:', result.error);
+            }
+        } catch (error) {
+            console.error('Error deleting quiz:', error);
+        }
+    }
+}
+
+
 
   function toggleExpand(id: number) {
     quizzes = quizzes.map(quiz => quiz.id === id ? { ...quiz, expanded: !quiz.expanded } : quiz);
@@ -43,24 +117,46 @@
   function editQuiz(quizId: number) {
     const quiz = quizzes.find(q => q.id === quizId);
     if (quiz) {
-      isEditing = true;
-      editingQuizId = quizId;
-      newQuestion = quiz.question;
-      newChoices = [...quiz.choices];
-      newAnswer = quiz.answer;
-      newPoints = quiz.points;
-      showModal = true;
+        isEditing = true;
+        editingQuizId = quizId;
+        newQuestion = quiz.question;
+        newChoices = quiz.choices;
+        newAnswer = quiz.answer;
+        newPoints = quiz.points;
+        showModal = true;
     }
-  }
+}
 
-  function updateQuiz() {
+async function updateQuiz() {
     if (editingQuizId !== null && newPoints !== null) {
-      quizzes = quizzes.map(quiz => 
-        quiz.id === editingQuizId ? { ...quiz, question: newQuestion, choices: newChoices, answer: newAnswer, points: newPoints } : quiz
-      );
-      closeModal();
+        try {
+            const formattedChoices = Array.isArray(newChoices) ? newChoices : newChoices.split(',');
+
+            const response = await fetch('http://localhost/shenieva-teacher/src/lib/api/edit_quiz.php?story=story1', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    id: editingQuizId,
+                    question: newQuestion,
+                    choices: formattedChoices,  // Save as JSON string
+                    answer: newAnswer,
+                    points: newPoints
+                })
+            });
+            
+            const result = await response.json();
+            if (result.success) {
+                fetchQuizzes();  
+                closeModal();
+            } else {
+                console.error('Failed to update quiz:', result.error);
+            }
+        } catch (error) {
+            console.error('Error updating quiz:', error);
+        }
     }
-  }
+}
+
 
   function closeModal() {
     showModal = false;
@@ -77,7 +173,7 @@
 </script>
 
 <div class="text-gray-500 font-bold text-2xl pl-10">
-  <h1>Quiz Management/Story 1</h1>
+  <h1>Quiz Management/{story}</h1>
 </div>
 <div class="p-6 max-w-6xl mx-auto bg-white dark:bg-gray-900 shadow-lg rounded-lg">
   <div class="flex justify-between items-center mb-6">
@@ -113,10 +209,10 @@
             <tr class="bg-lime-50">
               <td colspan="3" class="p-4 rounded-lg">
                 <p class="text-gray-700"><strong>Choices:</strong>
-                  {#each quiz.choices as choice}
-                  <br>&nbsp;&nbsp;&nbsp;‣ {choice}
+                  {#each (quiz.choices) as choice}
+                    <br>&nbsp;&nbsp;&nbsp;‣ {choice}
                   {/each}
-                </p>
+                </p>                
                 <p class="text-green-600 font-semibold mt-2"><strong>Answer: </strong> {quiz.answer}</p>
                 <p class="text-blue-600 font-semibold mt-2"><strong>Points: </strong> {quiz.points}</p>
               </td>

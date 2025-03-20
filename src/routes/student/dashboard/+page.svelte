@@ -16,11 +16,12 @@
 
     <!-- Tabs Section -->
     <Tabs
-      class="rounded-2xl bg-gray-50 border-2 border-lime-300 shadow-md overflow-hidden"
+      class="rounded-2xl bg-gray-50 border-2 border-lime-300 shadow-md overflow-hidden font"
       contentClass="p-6"
     >
       <!-- Play Tab -->
-      <TabItem open title="🎮 Play">
+      <TabItem open title="🎮 Play"> 
+
         <!-- Greeting Header -->
     <h1
     class="text-5xl font-extrabold text-orange-500 text-center mb-6 animate-bounce-slow"

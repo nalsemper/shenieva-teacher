@@ -192,3 +192,35 @@ INSERT INTO quiz3_table (fk_studentID, fk_storyQuiz3ID, studentAnswer, studentAt
 (4, 4, 'Answer4', 2, 20),
 (5, 5, 'Answer5', 1, 10);
 
+-- Create table for story 1 quizzes
+CREATE TABLE quizzes_story1 (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question VARCHAR(255) NOT NULL,
+    answer VARCHAR(255) NOT NULL,
+    points INT NOT NULL
+);
+
+CREATE TABLE choices_story1 (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    quiz_id INT NOT NULL,
+    choice_text VARCHAR(255) NOT NULL,
+    is_correct BOOLEAN NOT NULL DEFAULT FALSE,
+    FOREIGN KEY (quiz_id) REFERENCES quizzes_story1(id) ON DELETE CASCADE
+);
+
+-- Create table for story 2 quizzes
+CREATE TABLE quizzes_story2 (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question VARCHAR(255) NOT NULL,
+    answer VARCHAR(255) NOT NULL,
+    points INT NOT NULL
+);
+
+-- Create table for story 3 quizzes
+CREATE TABLE quizzes_story3 (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    question VARCHAR(255) NOT NULL
+);
+
+
+

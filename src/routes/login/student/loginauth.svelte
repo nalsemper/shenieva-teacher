@@ -1,6 +1,7 @@
 <!-- src/lib/loginauth.svelte -->
 <script lang="ts">
   import { goto } from '$app/navigation';
+  import { studentData } from '$lib/store/student_data'; // Import the store
 
   export let idNo: string;
   export let password: string;
@@ -9,7 +10,6 @@
   let modalMessage = '';
 
   async function authenticateStudent() {
-    // Show loading modal
     modalState = 'loading';
     modalMessage = 'Getting ready...';
 
@@ -32,39 +32,35 @@
       const result = await response.json();
 
       if (result.success) {
-        // Show success modal
+        // Save student data to the store
+        studentData.set(result.data);
+
         modalState = 'success';
         modalMessage = 'Yay, you’re in!';
-        // Wait 5 seconds before redirecting
         setTimeout(() => {
           goto('/student');
         }, 5000);
       } else {
-        // Show error modal
         modalState = 'error';
         modalMessage = `Oops! ${result.message || 'Wrong ID or password!'}`;
-        // Hide modal after 5 seconds
         setTimeout(() => {
           modalState = 'idle';
         }, 5000);
       }
     } catch (error) {
-      // Show error modal for network/server issues
       modalState = 'error';
       modalMessage = 'Oh no! Can’t connect right now!';
       console.error('Login error:', error);
-      // Hide modal after 5 seconds
       setTimeout(() => {
         modalState = 'idle';
       }, 5000);
     }
   }
 
-  // Expose the authenticate function
   export { authenticateStudent as authenticate };
 </script>
 
-<!-- Modal -->
+<!-- Modal (unchanged) -->
 {#if modalState !== 'idle'}
   <div 
     class="fixed inset-0 bg-yellow-100/70 flex items-center justify-center z-50"
@@ -100,7 +96,6 @@
 {/if}
 
 <style>
-  /* Custom animations for child-friendly feel */
   @keyframes wiggle {
     0% { transform: rotate(0deg); }
     25% { transform: rotate(-10deg); }

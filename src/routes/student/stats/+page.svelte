@@ -1,209 +1,151 @@
-<script>
-  import { slide, scale } from "svelte/transition"; // Svelte transitions
+<!-- src/routes/student/stats/+page.svelte -->
+<script lang="ts">
+  import { slide, scale } from 'svelte/transition'; // Svelte transitions
+  import { studentData } from '$lib/store/student_data'; // Import studentData store
 
-  let clickedCard = null; // Track which card is clicked
+  // Placeholder quiz scores (replace with actual data if available)
+  const quizScores = {
+    1: $studentData?.studentLevel >= 1 ? '8/10' : 'Not Taken',
+    2: $studentData?.studentLevel >= 2 ? 'Not Taken' : 'Not Taken',
+    3: $studentData?.studentLevel >= 3 ? 'Not Taken' : 'Not Taken',
+  };
 
-  function handleCardClick(card) {
-    clickedCard = clickedCard === card ? null : card; // Toggle clicked state
+  // Placeholder items (based on studentRibbon, adjust as needed)
+  const items = $studentData?.studentRibbon
+    ? ['Map', 'Compass', 'Key'].slice(0, $studentData.studentRibbon)
+    : [];
+
+  // Get level display text
+  function getLevelText(): string {
+    if (!$studentData || $studentData.studentLevel === 0) return 'Level 0 - Not Started';
+    return `Level ${$studentData.studentLevel} - ${$studentData.studentProgress}% Done!`;
   }
 </script>
 
 <div
   in:slide={{ duration: 400, y: 20 }}
-  class="w-auto h-full text-center bg-gradient-to-br from-pink-200 via-yellow-200 to-blue-200 rounded-[2vw] shadow-2xl flex flex-col items-center overflow-hidden"
+  class="w-full max-w-4xl mx-auto p-6 text-center bg-gradient-to-br from-blue-50 via-pink-50 to-yellow-50 rounded-3xl shadow-lg flex flex-col items-center"
 >
   <!-- Header -->
   <h1
-    class="text-[4vw] md:text-[2rem] font-extrabold text-purple-600 mb-[2vh] animate-pulse drop-shadow-[0_0.25vw_0.5vw_rgba(0,0,0,0.3)]"
-    in:scale={{ duration: 600, start: 0.8 }}
+    class="text-4xl md:text-5xl font-extrabold text-purple-600 mb-8 animate-bounce-slow"
+    in:scale={{ duration: 600, start: 0.9 }}
+    style="font-family: 'Comic Sans MS', 'Chalkboard', cursive;"
   >
-    Super Stats Adventure! 🌟✨
+    Your Super Stats! 🌟
   </h1>
 
   <!-- Stats Grid -->
-  <div class="w-auto grid grid-cols-4 gap-[2vw] px-[2vw] pb-[2vw]">
-    <!-- Level 1 with Progress Bar -->
+  <div class="grid grid-cols-2 md:grid-cols-3 gap-6 w-full">
+    <!-- Level Card -->
     <div
-      class="bg-white p-[2vw] rounded-[2vw] shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer relative overflow-hidden"
-      class:scale-110={clickedCard === "level1"}
+      class="bg-white p-4 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer active:border-2 active:border-pink-500 active:bg-pink-50"
       in:scale={{ duration: 400, delay: 100 }}
-      on:click={() => handleCardClick("level1")}
     >
-      <div
-        class="absolute inset-0 bg-pink-300 transform -translate-x-full transition-transform duration-500 ease-in-out"
-        class:translate-x-0={clickedCard === "level1"}
-      ></div>
-      <div class="relative z-10">
-        <h2 class="text-[2vw] md:text-[1rem] font-bold text-pink-500 flex items-center justify-center">
-          Level 1 <span class="ml-[0.5vw]">🎉</span>
-        </h2>
-        <div class="w-full bg-gray-200 rounded-full h-[1vh] mt-[1vh] overflow-hidden">
+      <h2 class="text-xl font-bold text-pink-600 mb-2 flex items-center justify-center">
+        <span class="mr-2">🏆</span> Level
+      </h2>
+      {#if $studentData && $studentData.studentLevel > 0}
+        <div class="w-full bg-gray-100 rounded-full h-3 mb-2 overflow-hidden">
           <div
-            class="bg-gradient-to-r from-pink-400 to-yellow-400 h-full rounded-full animate-pulse"
-            style="width: 60%;"
+            class="bg-pink-400 h-full rounded-full transition-all duration-500"
+            style="width: {$studentData.studentProgress}%;"
           ></div>
         </div>
-        <p class="text-[1.5vw] md:text-[0.75rem] font-semibold text-gray-600 mt-[0.5vh]">
-          60% Done!
-        </p>
-      </div>
+      {/if}
+      <p class="text-sm font-semibold text-gray-700">{getLevelText()}</p>
     </div>
 
-    <!-- Quiz 1 -->
+    <!-- Quiz 1 Card -->
     <div
-      class="bg-white p-[2vw] rounded-[2vw] shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer relative overflow-hidden"
-      class:scale-110={clickedCard === "quiz1"}
+      class="bg-white p-4 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer active:border-2 active:border-blue-500 active:bg-blue-50"
       in:scale={{ duration: 400, delay: 200 }}
-      on:click={() => handleCardClick("quiz1")}
     >
-      <div
-        class="absolute inset-0 bg-blue-300 transform -translate-x-full transition-transform duration-500 ease-in-out"
-        class:translate-x-0={clickedCard === "quiz1"}
-      ></div>
-      <div class="relative z-10">
-        <h2 class="text-[2vw] md:text-[1rem] font-bold text-blue-500 flex items-center justify-center">
-          Quiz 1 <span class="ml-[0.5vw]">🧠</span>
-        </h2>
-        <p class="text-[1.5vw] md:text-[0.75rem] font-semibold text-gray-600 mt-[0.5vh]">
-          Score: 8/10
-        </p>
-      </div>
+      <h2 class="text-xl font-bold text-blue-600 mb-2 flex items-center justify-center">
+        <span class="mr-2">🧠</span> Quiz 1
+      </h2>
+      <p class="text-sm font-semibold text-gray-700">Score: {quizScores[1]}</p>
     </div>
 
-    <!-- Level 2 -->
+    <!-- Quiz 2 Card -->
     <div
-      class="bg-white p-[2vw] rounded-[2vw] shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer relative overflow-hidden"
-      class:scale-110={clickedCard === "level2"}
+      class="bg-white p-4 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer active:border-2 active:border-yellow-500 active:bg-yellow-50"
       in:scale={{ duration: 400, delay: 300 }}
-      on:click={() => handleCardClick("level2")}
     >
-      <div
-        class="absolute inset-0 bg-green-300 transform -translate-x-full transition-transform duration-500 ease-in-out"
-        class:translate-x-0={clickedCard === "level2"}
-      ></div>
-      <div class="relative z-10">
-        <h2 class="text-[2vw] md:text-[1rem] font-bold text-green-500 flex items-center justify-center">
-          Level 2 <span class="ml-[0.5vw]">🚀</span>
-        </h2>
-        <p class="text-[1.5vw] md:text-[0.75rem] font-semibold text-gray-600 mt-[0.5vh]">
-          Not Started
-        </p>
-      </div>
+      <h2 class="text-xl font-bold text-yellow-600 mb-2 flex items-center justify-center">
+        <span class="mr-2">📝</span> Quiz 2
+      </h2>
+      <p class="text-sm font-semibold text-gray-700">Score: {quizScores[2]}</p>
     </div>
 
-    <!-- Quiz 2 -->
+    <!-- Quiz 3 Card -->
     <div
-      class="bg-white p-[2vw] rounded-[2vw] shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer relative overflow-hidden"
-      class:scale-110={clickedCard === "quiz2"}
+      class="bg-white p-4 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer active:border-2 active:border-purple-500 active:bg-purple-50"
       in:scale={{ duration: 400, delay: 400 }}
-      on:click={() => handleCardClick("quiz2")}
     >
-      <div
-        class="absolute inset-0 bg-yellow-300 transform -translate-x-full transition-transform duration-500 ease-in-out"
-        class:translate-x-0={clickedCard === "quiz2"}
-      ></div>
-      <div class="relative z-10">
-        <h2 class="text-[2vw] md:text-[1rem] font-bold text-yellow-500 flex items-center justify-center">
-          Quiz 2 <span class="ml-[0.5vw]">📝</span>
-        </h2>
-        <p class="text-[1.5vw] md:text-[0.75rem] font-semibold text-gray-600 mt-[0.5vh]">
-          Not Taken
-        </p>
-      </div>
+      <h2 class="text-xl font-bold text-purple-600 mb-2 flex items-center justify-center">
+        <span class="mr-2">🔍</span> Quiz 3
+      </h2>
+      <p class="text-sm font-semibold text-gray-700">Score: {quizScores[3]}</p>
     </div>
 
-    <!-- Level 3 -->
+    <!-- Trash Card -->
     <div
-      class="bg-white p-[2vw] rounded-[2vw] shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer relative overflow-hidden"
-      class:scale-110={clickedCard === "level3"}
+      class="bg-white p-4 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer active:border-2 active:border-teal-500 active:bg-teal-50"
       in:scale={{ duration: 400, delay: 500 }}
-      on:click={() => handleCardClick("level3")}
     >
-      <div
-        class="absolute inset-0 bg-red-300 transform -translate-x-full transition-transform duration-500 ease-in-out"
-        class:translate-x-0={clickedCard === "level3"}
-      ></div>
-      <div class="relative z-10">
-        <h2 class="text-[2vw] md:text-[1rem] font-bold text-red-500 flex items-center justify-center">
-          Level 3 <span class="ml-[0.5vw]">🔒</span>
-        </h2>
-        <p class="text-[1.5vw] md:text-[0.75rem] font-semibold text-gray-600 mt-[0.5vh]">
-          Locked
-        </p>
-      </div>
+      <h2 class="text-xl font-bold text-teal-600 mb-2 flex items-center justify-center">
+        <span class="mr-2">🗑️</span> Trash
+      </h2>
+      <p class="text-sm font-semibold text-gray-700">
+        {$studentData?.studentColtrash || 0} Pieces
+      </p>
     </div>
 
-    <!-- Quiz 3 -->
+    <!-- Items Card -->
     <div
-      class="bg-white p-[2vw] rounded-[2vw] shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer relative overflow-hidden"
-      class:scale-110={clickedCard === "quiz3"}
+      class="bg-white p-4 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer active:border-2 active:border-orange-500 active:bg-orange-50"
       in:scale={{ duration: 400, delay: 600 }}
-      on:click={() => handleCardClick("quiz3")}
     >
-      <div
-        class="absolute inset-0 bg-purple-300 transform -translate-x-full transition-transform duration-500 ease-in-out"
-        class:translate-x-0={clickedCard === "quiz3"}
-      ></div>
-      <div class="relative z-10">
-        <h2 class="text-[2vw] md:text-[1rem] font-bold text-purple-500 flex items-center justify-center">
-          Quiz 3 <span class="ml-[0.5vw]">🔒</span>
-        </h2>
-        <p class="text-[1.5vw] md:text-[0.75rem] font-semibold text-gray-600 mt-[0.5vh]">
-          Locked
-        </p>
-      </div>
-    </div>
-
-    <!-- Collected Trash -->
-    <div
-      class="bg-white p-[2vw] rounded-[2vw] shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer relative overflow-hidden"
-      class:scale-110={clickedCard === "trash"}
-      in:scale={{ duration: 400, delay: 700 }}
-      on:click={() => handleCardClick("trash")}
-    >
-      <div
-        class="absolute inset-0 bg-teal-300 transform -translate-x-full transition-transform duration-500 ease-in-out"
-        class:translate-x-0={clickedCard === "trash"}
-      ></div>
-      <div class="relative z-10">
-        <h2 class="text-[2vw] md:text-[1rem] font-bold text-teal-500 flex items-center justify-center">
-          Trash <span class="ml-[0.5vw]">🗑️</span>
-        </h2>
-        <p class="text-[1.5vw] md:text-[0.75rem] font-semibold text-gray-600 mt-[0.5vh]">
-          12 Pieces
-        </p>
-      </div>
-    </div>
-
-    <!-- Items -->
-    <div
-      class="bg-white p-[2vw] rounded-[2vw] shadow-lg transition-all duration-300 hover:shadow-2xl hover:scale-105 cursor-pointer relative overflow-hidden"
-      class:scale-110={clickedCard === "items"}
-      in:scale={{ duration: 400, delay: 800 }}
-      on:click={() => handleCardClick("items")}
-    >
-      <div
-        class="absolute inset-0 bg-orange-300 transform -translate-x-full transition-transform duration-500 ease-in-out"
-        class:translate-x-0={clickedCard === "items"}
-      ></div>
-      <div class="relative z-10">
-        <h2 class="text-[2vw] md:text-[1rem] font-bold text-orange-500 flex items-center justify-center">
-          Items <span class="ml-[0.5vw]">🎁</span>
-        </h2>
-        <p class="text-[1.5vw] md:text-[0.75rem] font-semibold text-gray-600 mt-[0.5vh]">
-          3 Found
-        </p>
-        <p class="text-[1.2vw] md:text-[0.65rem] text-gray-500">
-          Map, Compass, Key
-        </p>
-      </div>
+      <h2 class="text-xl font-bold text-orange-600 mb-2 flex items-center justify-center">
+        <span class="mr-2">🎁</span> Items
+      </h2>
+      <p class="text-sm font-semibold text-gray-700">
+        {$studentData?.studentRibbon || 0} Found
+      </p>
+      {#if items.length > 0}
+        <p class="text-xs text-gray-600 mt-1">{items.join(', ')}</p>
+      {/if}
     </div>
   </div>
 </div>
 
 <style>
-  /* Ensure hover scale works smoothly */
+  /* Smooth hover scale */
   .hover\:scale-105:hover {
     transform: scale(1.05);
+  }
+
+  /* Smooth transitions */
+  .transition-all {
+    transition: all 0.3s ease;
+  }
+
+  /* Active state for click */
+  .active\:border-2:active {
+    border-width: 2px;
+  }
+
+  /* Custom bounce animation for header */
+  @keyframes bounce-slow {
+    0%, 100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+  .animate-bounce-slow {
+    animation: bounce-slow 2s infinite;
   }
 </style>

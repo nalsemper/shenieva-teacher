@@ -1,5 +1,5 @@
 <?php
-// src/lib/api/student_login.php
+// src/lib/api/login_student.php
 
 header("Access-Control-Allow-Origin: *");
 header("Access-Control-Allow-Methods: POST");
@@ -19,13 +19,19 @@ if (!isset($data['idNo']) || !isset($data['studentPass'])) {
 $idNo = $conn->real_escape_string($data['idNo']);
 $studentPass = $conn->real_escape_string($data['studentPass']);
 
-// Query to check student credentials
+// Query to check student credentials and retrieve data
 $sql = "SELECT * FROM students_table WHERE idNo = '$idNo' AND studentPass = '$studentPass'";
 $result = $conn->query($sql);
 
 if ($result->num_rows > 0) {
-    // Student found, login successful
-    echo json_encode(["success" => true, "message" => "Login successful"]);
+    // Fetch the student data
+    $student = $result->fetch_assoc();
+    // Return success with student data
+    echo json_encode([
+        "success" => true, 
+        "message" => "Login successful",
+        "data" => $student
+    ]);
 } else {
     echo json_encode(["success" => false, "message" => "Invalid ID or password"]);
 }

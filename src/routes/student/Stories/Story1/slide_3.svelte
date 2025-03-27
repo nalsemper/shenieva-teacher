@@ -1,11 +1,13 @@
 <script>
+    import { goto } from '$app/navigation'; // Import goto for SvelteKit navigation
+
     const slide = {
         text: "Congratulations! You've finished Part 1 of Shenievia Reads' journey through Readville Village! 🎉",
         image: "/src/assets/school-bg.gif" // Placeholder; replace with your celebratory GIF
     };
 
     function continueToQuiz() {
-        alert("Onward to Quiz Time! (Add your quiz logic here)"); // Replace with actual quiz logic
+        goto('/student/quizzes/quiz1'); // Navigate to the quiz page
     }
 </script>
 

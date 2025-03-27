@@ -17,6 +17,9 @@ importers:
       chart.js:
         specifier: ^4.4.8
         version: 4.4.8
+      lucide-svelte:
+        specifier: ^0.483.0
+        version: 0.483.0(svelte@5.20.4)
       svelte-chartjs:
         specifier: ^3.1.5
         version: 3.1.5(chart.js@4.4.8)(svelte@5.20.4)
@@ -869,6 +872,11 @@ packages:
 
   lower-case@2.0.2:
     resolution: {integrity: sha512-7fm3l3NAF9WfN6W3JOmf5drwpVqX78JtoGJ3A6W0a6ZnldM41w2fV5D490psKFTpMds8TJse/eHLFFsNHHjHgg==}
+
+  lucide-svelte@0.483.0:
+    resolution: {integrity: sha512-MyMgEVLlFfPbyodGpkB+KCpyPkpjI7EKiFw1crA92B1ZXRK5hq5vTsGWAm9Nt3GAKHunoNc5MVsq3EOCz0DZSQ==}
+    peerDependencies:
+      svelte: ^3 || ^4 || ^5.0.0-next.42
 
   magic-string@0.30.17:
     resolution: {integrity: sha512-sNPKHvyjVf7gyjwS4xGTaW/mCnF8wnjtifKBEhxfZ7E/S8tQ0rssrwGNn6q8JH/ohItJfSQp9mBtQYuTlH5QnA==}
@@ -1768,6 +1776,10 @@ snapshots:
   lower-case@2.0.2:
     dependencies:
       tslib: 2.8.1
+
+  lucide-svelte@0.483.0(svelte@5.20.4):
+    dependencies:
+      svelte: 5.20.4
 
   magic-string@0.30.17:
     dependencies:

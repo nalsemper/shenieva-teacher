@@ -52,6 +52,7 @@
 		"@tailwindcss/cli": "^4.0.8",
 		"canvas-confetti": "^1.9.3",
 		"chart.js": "^4.4.8",
+		"lucide-svelte": "^0.483.0",
 		"svelte-chartjs": "^3.1.5"
 	}
 }

@@ -162,6 +162,32 @@
       </div>
     </div>
 
+       <!-- Ribbons Card -->
+       <div
+       class="bg-white p-4 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer active:border-2 active:border-orange-500 active:bg-orange-50"
+       in:scale={{ duration: 400, delay: 500 }}
+       on:click={() => openModal('ribbons')}
+     >
+       <h2 class="text-xl font-bold text-orange-600 mb-2 flex items-center justify-center">
+         <span class="mr-2">🎖️</span> Ribbons
+       </h2>
+       <p class="text-sm font-semibold text-gray-700">
+         {$studentData?.studentRibbon || 0} Earned
+       </p>
+       {#if ribbons.length > 0}
+         <div class="mt-2 flex flex-wrap justify-center gap-2">
+           {#each ribbons as ribbon}
+             <div class="flex flex-col items-center">
+               <img src={ribbon.ribbonLocation} alt={ribbon.ribbonName} class="w-12 h-12 object-contain" />
+               <span class="text-xs text-gray-600 mt-1">{ribbon.ribbonName}</span>
+             </div>
+           {/each}
+         </div>
+       {:else}
+         <p class="text-xs text-gray-600 mt-1">No ribbons yet!</p>
+       {/if}
+     </div>
+ 
     <!-- Trash Card -->
     <div
       class="bg-white p-4 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer active:border-2 active:border-teal-500 active:bg-teal-50"
@@ -176,32 +202,7 @@
       </p>
     </div>
 
-    <!-- Ribbons Card -->
-    <div
-      class="bg-white p-4 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer active:border-2 active:border-orange-500 active:bg-orange-50"
-      in:scale={{ duration: 400, delay: 500 }}
-      on:click={() => openModal('ribbons')}
-    >
-      <h2 class="text-xl font-bold text-orange-600 mb-2 flex items-center justify-center">
-        <span class="mr-2">🎖️</span> Ribbons
-      </h2>
-      <p class="text-sm font-semibold text-gray-700">
-        {$studentData?.studentRibbon || 0} Earned
-      </p>
-      {#if ribbons.length > 0}
-        <div class="mt-2 flex flex-wrap justify-center gap-2">
-          {#each ribbons as ribbon}
-            <div class="flex flex-col items-center">
-              <img src={ribbon.ribbonLocation} alt={ribbon.ribbonName} class="w-12 h-12 object-contain" />
-              <span class="text-xs text-gray-600 mt-1">{ribbon.ribbonName}</span>
-            </div>
-          {/each}
-        </div>
-      {:else}
-        <p class="text-xs text-gray-600 mt-1">No ribbons yet!</p>
-      {/if}
-    </div>
-
+ 
     <!-- Items Card -->
     <div
       class="bg-white p-4 rounded-2xl shadow-md hover:shadow-lg hover:scale-105 transition-all duration-300 cursor-pointer active:border-2 active:border-cyan-500 active:bg-cyan-50"

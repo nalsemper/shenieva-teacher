@@ -1,13 +1,11 @@
 <!-- src/routes/student/components/WelcomeMessage.svelte -->
 <script lang="ts">
-  import { name } from '$lib/store/nameStore'; // Import the global name store (assuming .ts now)
-  import { studentData } from '$lib/store/student_data'; // Import studentData for pk_studentID
+  import { name } from '$lib/store/nameStore';
+  import { studentData } from '$lib/store/student_data';
   import { goto } from '$app/navigation';
   import { onMount } from 'svelte';
 
-  export let gender: 'boy' | 'girl'; // Input prop remains boy/girl
-
-  // Convert boy/girl to Male/Female for database (not displayed)
+  export let gender: 'boy' | 'girl';
   const dbGender: 'Male' | 'Female' = gender === 'boy' ? 'Male' : 'Female';
 
   async function updateStudentGender() {
@@ -30,12 +28,10 @@
 
       const result = await response.json();
       if (result.success) {
-        // Update the store with the new gender (for consistency)
         studentData.update((data) => ({
           ...data!,
           studentGender: dbGender,
         }));
-        // Record attendance after successful gender update
         await recordAttendance();
       } else {
         console.error('Gender update failed:', result.message);
@@ -54,6 +50,7 @@
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           fk_studentID: $studentData.pk_studentID,
+          studentName: $name, // Add the student's name from the store
           attendanceDateTime: new Date().toISOString(),
         }),
       });
@@ -70,9 +67,9 @@
   }
 
   onMount(() => {
-    updateStudentGender(); // Run background updates on mount
+    updateStudentGender();
     setTimeout(() => {
-      goto('/student/dashboard'); // Redirect after 10 seconds
+      goto('/student/dashboard');
     }, 10000);
   });
 </script>
@@ -92,7 +89,6 @@
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
   }
-
   .animate-bounce {
     animation: bounce 1s infinite;
   }

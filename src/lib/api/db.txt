@@ -24,6 +24,24 @@ CREATE TABLE students_table (
     studentProgress INT
 );
 
+-- Table: Items
+CREATE TABLE items_table (
+    itemID INT AUTO_INCREMENT PRIMARY KEY,
+    itemName VARCHAR(50) NOT NULL,
+    itemDescription TEXT,
+    itemLocation VARCHAR(255) -- Path or URL to the item image
+);
+
+-- Table: Student Items
+CREATE TABLE student_items (
+    studentItemID INT AUTO_INCREMENT PRIMARY KEY,
+    studentID INT NOT NULL,
+    itemID INT NOT NULL,
+    FOREIGN KEY (studentID) REFERENCES students_table(pk_studentID) ON DELETE CASCADE,
+    FOREIGN KEY (itemID) REFERENCES items_table(itemID) ON DELETE CASCADE,
+    UNIQUE (studentID, itemID) -- Prevents duplicate item assignments
+);
+
 -- Table: Story 1
 CREATE TABLE story1_table (
     pk_storyQuiz1ID INT AUTO_INCREMENT PRIMARY KEY,

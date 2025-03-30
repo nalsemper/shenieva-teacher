@@ -34,12 +34,10 @@
 
       const result = await response.json();
       if (result.success) {
-        // Update the store with the new gender (for consistency)
         studentData.update((data) => ({
           ...data!,
           studentGender: dbGender,
         }));
-        // Record attendance after successful gender update
         await recordAttendance();
       } else {
         console.error("Gender update failed:", result.message);
@@ -93,7 +91,7 @@
   }
 
   onMount(() => {
-    updateStudentGender(); // Run background updates on mount
+    updateStudentGender();
     setTimeout(() => {
       goto("/student/dashboard"); // Redirect after 10 seconds
     }, 10000);
@@ -128,7 +126,6 @@
       transform: translateY(-10px);
     }
   }
-
   .animate-bounce {
     animation: bounce 1s infinite;
   }

@@ -1,13 +1,18 @@
 <script lang="ts">
-  import { TrashBinSolid, EditSolid } from "flowbite-svelte-icons";
-
-  interface Quiz {
-    id: number;
-    question: string;
-    expanded: boolean;
-  }
+  import {
+    CaretDownSolid,
+    TrashBinSolid,
+    EditSolid,
+  } from "flowbite-svelte-icons";
 
   let story = "story3";
+  type Quiz = {
+    id: number;
+    question: string;
+    points: number;
+    expanded: boolean;
+  };
+
   let quizzes: Quiz[] = [];
 
   async function fetchQuizzes() {
@@ -16,13 +21,9 @@
         "http://localhost/shenieva-teacher/src/lib/api/fetch_quizzes.php?story=story3",
       );
       const data = await response.json();
-      console.log(data);
 
       if (Array.isArray(data)) {
-        quizzes = data.map((quiz) => ({
-          ...quiz,
-          expanded: false,
-        }));
+        quizzes = data.map((quiz) => ({ ...quiz, expanded: false }));
       } else {
         console.error("Invalid data format:", data);
       }
@@ -31,28 +32,32 @@
     }
   }
 
-  fetchQuizzes(); // Fetch quizzes on component mount
+  fetchQuizzes();
 
   let newQuestion = "";
+  let newPoints: number | null = null;
   let showModal = false;
   let isEditing = false;
   let editingQuizId: number | null = null;
 
   async function addQuiz() {
-    if (newQuestion.trim()) {
+    if (newQuestion.trim() && newPoints !== null) {
       try {
         const response = await fetch(
           "http://localhost/shenieva-teacher/src/lib/api/add_quiz1.php?story=story3",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ question: newQuestion }),
+            body: JSON.stringify({
+              question: newQuestion,
+              points: newPoints,
+            }),
           },
         );
 
         const result = await response.json();
         if (result.success) {
-          fetchQuizzes(); // Refresh quiz list
+          fetchQuizzes();
           closeModal();
         } else {
           console.error("Failed to add quiz:", result.error);
@@ -87,25 +92,36 @@
     }
   }
 
+  function toggleExpand(id: number) {
+    quizzes = quizzes.map((quiz) =>
+      quiz.id === id ? { ...quiz, expanded: !quiz.expanded } : quiz,
+    );
+  }
+
   function editQuiz(quizId: number) {
     const quiz = quizzes.find((q) => q.id === quizId);
     if (quiz) {
       isEditing = true;
       editingQuizId = quizId;
       newQuestion = quiz.question;
+      newPoints = quiz.points;
       showModal = true;
     }
   }
 
   async function updateQuiz() {
-    if (editingQuizId !== null) {
+    if (editingQuizId !== null && newPoints !== null) {
       try {
         const response = await fetch(
           "http://localhost/shenieva-teacher/src/lib/api/edit_quiz.php?story=story3",
           {
             method: "POST",
             headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({ id: editingQuizId, question: newQuestion }),
+            body: JSON.stringify({
+              id: editingQuizId,
+              question: newQuestion,
+              points: newPoints,
+            }),
           },
         );
 
@@ -127,6 +143,11 @@
     isEditing = false;
     editingQuizId = null;
     newQuestion = "";
+    newPoints = null;
+  }
+
+  function totalPoints() {
+    return quizzes.reduce((sum, quiz) => sum + quiz.points, 0);
   }
 </script>
 
@@ -151,6 +172,7 @@
       <thead class="bg-orange-500 text-white rounded-t-lg">
         <tr>
           <th class="p-4 text-left">Question</th>
+          <th class="p-4 text-center">Points</th>
           <th class="p-4 text-center">Actions</th>
         </tr>
       </thead>
@@ -158,8 +180,12 @@
         {#each quizzes as quiz (quiz.id)}
           <tr
             class="border-b border-gray-300 hover:bg-lime-100 transition cursor-pointer"
+            on:click={() => toggleExpand(quiz.id)}
           >
-            <td class="p-4 text-gray-800">{quiz.question}</td>
+            <td class="p-4 text-gray-800">
+              {quiz.question}
+            </td>
+            <td class="p-4 text-center text-gray-800">{quiz.points}</td>
             <td class="p-4 text-center text-gray-700">
               <button
                 on:click={(e) => {
@@ -184,6 +210,10 @@
     </table>
   </div>
 
+  <div class="mt-4 text-right text-lg font-semibold text-gray-700">
+    Total Points: {totalPoints()}
+  </div>
+
   {#if showModal}
     <div class="fixed inset-0 flex items-center justify-center bg-black/50">
       <div
@@ -200,6 +230,7 @@
           {isEditing ? "Edit Quiz" : "Add New Quiz"}
         </h2>
 
+        <!-- Question Input -->
         <div class="relative w-full mb-4">
           <input
             bind:value={newQuestion}
@@ -216,6 +247,30 @@
                  peer-focus:top-[-10px] peer-focus:text-orange-600 peer-focus:text-sm peer-focus:px-2"
           >
             Enter Question
+          </label>
+        </div>
+
+        <!-- Points Input -->
+        <div class="relative w-full mb-4">
+          <input
+            type="number"
+            bind:value={newPoints}
+            id="points"
+            min="5"
+            max="100"
+            step="5"
+            placeholder=" "
+            class="peer w-full p-3 border border-orange-300 rounded-lg focus:ring-2 focus:ring-orange-400 focus:outline-none"
+          />
+          <label
+            for="points"
+            class="absolute left-3 bg-white px-2 text-sm text-orange-600 transition-all
+                 {newPoints
+              ? 'top-[-10px] px-2'
+              : 'top-3 text-gray-400 text-lg peer-placeholder-shown:top-3 peer-placeholder-shown:text-lg'}
+                 peer-focus:top-[-10px] peer-focus:text-orange-600 peer-focus:text-sm peer-focus:px-2"
+          >
+            Enter Points
           </label>
         </div>
 

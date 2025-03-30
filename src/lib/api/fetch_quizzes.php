@@ -35,7 +35,7 @@ $tableName = "quizzes_{$story}";
 // Logic for each story
 if ($story === 'story3') {
     // ✅ Story 3: Only fetch questions
-    $sql = "SELECT id, question FROM $tableName";
+    $sql = "SELECT id, points, question FROM $tableName";
 } elseif ($story === 'story2') {
     // ✅ Story 2: Fetch without choices
     $sql = "SELECT id, question, answer, points FROM $tableName";

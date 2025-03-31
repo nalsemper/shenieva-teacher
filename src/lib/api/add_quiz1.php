@@ -36,8 +36,8 @@ if ($data) {
 
     if ($story === 'story3') {
         // Logic for story3: Store only the question
-        $stmt = $conn->prepare("INSERT INTO $tableName (question) VALUES (?)");
-        $stmt->bind_param("s", $question);
+        $stmt = $conn->prepare("INSERT INTO $tableName (question, points) VALUES (?, ?)");
+        $stmt->bind_param("si", $question, $points);
 
         if ($stmt->execute()) {
             echo json_encode(["success" => true]);
@@ -87,4 +87,3 @@ if ($data) {
 } else {
     echo json_encode(["success" => false, "error" => "Invalid data"]);
 }
-?>

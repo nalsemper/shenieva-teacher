@@ -41,8 +41,8 @@ if ($data) {
 
     if ($story === 'story3') {
         // Update logic for story3 - only edit the question
-        $stmt = $conn->prepare("UPDATE $tableName SET question = ? WHERE id = ?");
-        $stmt->bind_param("si", $question, $id);
+        $stmt = $conn->prepare("UPDATE $tableName SET question = ?, points = ? WHERE id = ?");
+        $stmt->bind_param("sii", $question, $points, $id);
     } elseif ($story === 'story2') {
         // Update logic for story2 (no choices)
         $stmt = $conn->prepare("UPDATE $tableName SET question = ?, answer = ?, points = ? WHERE id = ?");
@@ -80,4 +80,5 @@ if ($data) {
 } else {
     echo json_encode(["success" => false, "error" => "Invalid data"]);
 }
+
 ?>

@@ -1,17 +1,19 @@
 <!-- src/routes/student/components/modals/choose_story.svelte -->
 <script lang="ts">
-  import { slide, scale } from "svelte/transition"; // Svelte transitions
-  import { studentData } from '$lib/store/student_data'; // Import studentData store
+  import { slide, scale } from "svelte/transition";
+  import { studentData } from '$lib/store/student_data';
 
-  export let showModal = false; // Prop to control visibility
-  export let onSelectStory = (story: string) => {}; // Prop for story selection callback
-  export let onClose = () => {}; // Prop for closing the modal
+  export let showModal = false;
+  export let onSelectStory = (story: string) => {};
+  export let onClose = () => {};
 
-  // Check story availability based on student level
-  $: level = $studentData?.studentLevel ?? 0; // Default to 0 if studentData is null
-  $: canPlayStory1 = level >= 0; // Always true (Level 0+)
-  $: canPlayStory2 = level >= 2; // Level 2+
-  $: canPlayStory3 = level >= 3; // Level 3+
+  // Get student level from store, default to 0 if null
+  $: level = $studentData?.studentLevel ?? 0;
+  
+  // Story availability logic
+  $: canPlayStory1 = level >= 0;  // Level 0+
+  $: canPlayStory2 = level >= 1;  // Level 1+
+  $: canPlayStory3 = level >= 2;  // Level 2+
 
   function handleStorySelect(story: string) {
     if (
@@ -19,14 +21,13 @@
       (story === "Story 2" && canPlayStory2) ||
       (story === "Story 3" && canPlayStory3)
     ) {
-      onSelectStory(story); // Call the parent’s callback with the selected story
-      // Removed showModal = false; parent handles this
+      onSelectStory(story);
     }
   }
 
   function closeModal() {
-    onClose(); // Call the parent’s close callback
-    showModal = false; // Close the modal
+    onClose();
+    showModal = false;
   }
 </script>
 
@@ -52,7 +53,7 @@
           on:click={() => handleStorySelect("Story 1")}
           disabled={!canPlayStory1}
         >
-          Story 1 🌈 {canPlayStory1 ? '' : '(Level 0)'}
+          Story 1 🌈
         </button>
         <!-- Story 2 Button -->
         <button
@@ -60,7 +61,7 @@
           on:click={() => handleStorySelect("Story 2")}
           disabled={!canPlayStory2}
         >
-          Story 2 🚀 {canPlayStory2 ? '' : ''}
+          Story 2 🚀
         </button>
         <!-- Story 3 Button -->
         <button
@@ -68,7 +69,7 @@
           on:click={() => handleStorySelect("Story 3")}
           disabled={!canPlayStory3}
         >
-          Story 3 🏰 {canPlayStory3 ? '' : ''}
+          Story 3 🏰
         </button>
       </div>
       <button
@@ -82,7 +83,6 @@
 {/if}
 
 <style>
-  /* Ensure hover scale works only when not disabled */
   button:not(:disabled):hover {
     transform: scale(1.1);
   }

@@ -2,6 +2,8 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
+    import QuizResultModal from '../../components/modals/quiz1/QuizResultModal.svelte';
+    import { quiz1Taking, resetQuiz1, submitQuiz1, closeModal1 } from '$lib/store/quiz1_taking';
 
     interface Choice {
         id: number;
@@ -26,12 +28,12 @@
     let quizData: Quiz[] = [];
     let randomizedQuizData: Quiz[] = [];
     let selectedChoices: (Choice | null)[] = [];
-    let score: number = 0;
-    let quizCompleted: boolean = false;
     let loading: boolean = true;
     let error: string | null = null;
 
+    // Subscribe to the store for reactive updates
     $: allQuestionsAnswered = selectedChoices.length > 0 && selectedChoices.every(choice => choice !== null);
+    $: isPerfectScore = $quiz1Taking.score === $quiz1Taking.totalPoints;
 
     function shuffleArray<T>(array: T[]): T[] {
         const shuffled = [...array];
@@ -49,11 +51,16 @@
             const result: ApiResponse = await response.json();
             if (result.success) {
                 quizData = result.data;
-                randomizedQuizData = shuffleArray(quizData.map(q => ({
+                randomizedQuizData = quizData.map(q => ({
                     ...q,
                     choices: shuffleArray([...q.choices])
-                })));
+                }));
                 selectedChoices = new Array(randomizedQuizData.length).fill(null);
+                // Update totalPoints in the store when quiz data loads
+                quiz1Taking.update(state => ({
+                    ...state,
+                    totalPoints: randomizedQuizData.reduce((sum, q) => sum + q.points, 0)
+                }));
             } else {
                 error = result.error || 'Unknown error from API';
             }
@@ -76,23 +83,23 @@
 
     function submitAnswers(): void {
         if (!allQuestionsAnswered) return;
-        score = 0;
+        let newScore = 0;
         randomizedQuizData.forEach((quiz, index) => {
             if (selectedChoices[index]?.is_correct) {
-                score += quiz.points;
+                newScore += quiz.points;
             }
         });
-        quizCompleted = true;
+        submitQuiz1(newScore, $quiz1Taking.totalPoints); // Use store function
     }
 
     function resetQuiz(): void {
-        score = 0;
-        selectedChoices = new Array(randomizedQuizData.length).fill(null);
-        quizCompleted = false;
-        randomizedQuizData = shuffleArray(quizData.map(q => ({
+        if ($quiz1Taking.quizTake >= $quiz1Taking.maxTakes) return;
+        resetQuiz1(); // Use store function
+        randomizedQuizData = quizData.map(q => ({
             ...q,
             choices: shuffleArray([...q.choices])
-        })));
+        }));
+        selectedChoices = new Array(randomizedQuizData.length).fill(null);
     }
 </script>
 
@@ -106,7 +113,9 @@
     <div class="relative z-10 w-full max-w-4xl mx-auto p-6 h-screen flex flex-col">
         <div class="mb-8 text-center">
             <h1 class="text-5xl text-purple-600 font-extrabold tracking-wider drop-shadow-lg animate-bounce-slow">🎉 Quiz Adventure! 🎉</h1>
-            <p class="text-xl text-gray-700 mt-2 font-semibold">Ready for some fun, little explorer?</p>
+            <p class="text-xl text-gray-700 mt-2 font-semibold">
+                Ready for some fun, little explorer? (Take {$quiz1Taking.quizTake} of {$quiz1Taking.maxTakes})
+            </p>
         </div>
 
         {#if loading}
@@ -118,12 +127,12 @@
             <p class="text-xl text-red-400 text-center font-semibold animate-pulse">Oops! {error}</p>
         {:else if randomizedQuizData.length === 0}
             <p class="text-xl text-gray-600 text-center font-semibold">No quiz adventures yet! 🌟</p>
-        {:else if !quizCompleted}
+        {:else if !$quiz1Taking.quizCompleted}
             <div class="flex-1 overflow-y-auto space-y-6 pb-6">
                 {#each randomizedQuizData as quiz, questionIndex}
                     <div class="bg-white p-6 rounded-2xl shadow-md border-4 border-purple-200 transition-all duration-500">
                         <h2 class="text-2xl text-blue-600 font-bold mb-4 flex items-center gap-3 flex-wrap">
-                            <span class="w-10 h-10 flex items-center justify-center bg-yellow-400 text-white rounded-full text-xl font-extrabold">{questionIndex + 1}</span>
+                            <span class="w-10 h-10 flex items-center justify-center MongoDB-yellow-400 text-white rounded-full text-xl font-extrabold">{questionIndex + 1}</span>
                             {quiz.question}
                             <span class="ml-auto text-lg text-green-600 font-semibold">{quiz.points} point{quiz.points !== 1 ? 's' : ''}</span>
                         </h2>
@@ -171,14 +180,18 @@
                 <h2 class="text-4xl text-purple-600 font-extrabold mb-6 flex justify-center items-center gap-4">
                     <span class="text-5xl animate-bounce">🏆</span> You’re a Quiz Star! <span class="text-5xl animate-bounce">🏆</span>
                 </h2>
-                <p class="text-2xl text-gray-700 mb-6">Your Score: <span class="text-green-500 font-extrabold text-3xl">{score}</span> / {randomizedQuizData.reduce((sum, q) => sum + q.points, 0)}</p>
+                <p class="text-2xl text-gray-700 mb-6">
+                    Your Score: <span class="text-green-500 font-extrabold text-3xl">{$quiz1Taking.score}</span> / {$quiz1Taking.totalPoints}
+                </p>
                 <div class="flex justify-center gap-6">
-                    <button
-                        on:click={resetQuiz}
-                        class="py-3 px-8 bg-purple-500 text-white text-xl font-bold rounded-full hover:bg-purple-600 transition-all duration-300 shadow-lg hover:scale-110"
-                    >
-                        Try Again! 🌟
-                    </button>
+                    {#if $quiz1Taking.quizTake < $quiz1Taking.maxTakes && !isPerfectScore}
+                        <button
+                            on:click={resetQuiz}
+                            class="py-3 px-8 bg-purple-500 text-white text-xl font-bold rounded-full hover:bg-purple-600 transition-all duration-300 shadow-lg hover:scale-110"
+                        >
+                            Try Again! 🌟
+                        </button>
+                    {/if}
                     <button
                         on:click={navigateToGame}
                         class="py-3 px-8 bg-blue-500 text-white text-xl font-bold rounded-full hover:bg-blue-600 transition-all duration-300 shadow-lg hover:scale-110"
@@ -188,6 +201,19 @@
                 </div>
             </div>
         {/if}
+
+        <!-- Quiz Result Modal -->
+        <QuizResultModal
+            showModal={$quiz1Taking.showModal}
+            score={$quiz1Taking.score}
+            totalPoints={$quiz1Taking.totalPoints}
+            quizTake={$quiz1Taking.quizTake}
+            maxTakes={$quiz1Taking.maxTakes}
+            {randomizedQuizData}
+            {selectedChoices}
+            onClose={closeModal1}
+            onRetake={resetQuiz}
+        />
     </div>
 </div>
 

@@ -1,5 +1,6 @@
 <script>
     import { goto } from '$app/navigation'; // Import goto for SvelteKit navigation
+    import { studentData } from '$lib/store/student_data'; // Import studentData store
 
     const slide = {
         text: "Congratulations! You've finished Part 1 of Shenievia Reads' journey through Readville Village! 🎉",
@@ -7,7 +8,12 @@
     };
 
     function continueToQuiz() {
-        goto('/student/quizzes/quiz1'); // Navigate to the quiz page
+        // Check studentLevel from the studentData store
+        if ($studentData && $studentData.studentLevel >= 1) {
+            goto('/student/game/trash_1'); // Navigate to game if level is 1 or higher
+        } else {
+            goto('/student/quizzes/quiz1'); // Navigate to quiz if level is below 1 or no data
+        }
     }
 </script>
 

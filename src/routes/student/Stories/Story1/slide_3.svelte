@@ -1,18 +1,21 @@
-<script>
-    import { goto } from '$app/navigation'; // Import goto for SvelteKit navigation
-    import { studentData } from '$lib/store/student_data'; // Import studentData store
+<script lang="ts">
+    import { createEventDispatcher } from 'svelte';
+    const dispatch = createEventDispatcher();
 
     const slide = {
-        text: "Congratulations! You've finished Part 1 of Shenievia Reads' journey through Readville Village! 🎉",
-        image: "/src/assets/school-bg.gif" // Placeholder; replace with your celebratory GIF
+        text: "Choose vendor. 🌟",
     };
 
-    function continueToQuiz() {
-        // Check studentLevel from the studentData store
-        if ($studentData && $studentData.studentLevel >= 1) {
-            goto('/student/game/trash_1'); // Navigate to game if level is 1 or higher
-        } else {
-            goto('/student/quizzes/quiz1'); // Navigate to quiz if level is below 1 or no data
+    const vendors = [
+        { id: 1, image: "/src/assets/story1/vendor1.png", nextPath: "/src/routes/student/Stories/Story1/store1/slide_1.svelte" },
+        { id: 2, image: "/src/assets/story1/vendor2.png", nextPath: "/src/routes/student/Stories/Story1/store2/slide_1.svelte" },
+        { id: 3, image: "/src/assets/story1/vendor3.png", nextPath: "/src/routes/student/Stories/Story1/store3/slide_1.svelte" }
+    ];
+
+    function handleVendorSelect(vendorId: number): void {
+        const selectedVendor = vendors.find(v => v.id === vendorId);
+        if (selectedVendor) {
+            dispatch('vendorSelected', { vendorId, nextPath: selectedVendor.nextPath });
         }
     }
 </script>
@@ -22,22 +25,32 @@
         <div class="image-container">
             <img
                 src={slide.image}
-                alt="Congrats Scene"
+                alt="Story Scene"
                 class="block mx-auto rounded-[2vw] shadow-lg"
             />
         </div>
     {/if}
+    
     <p class="text-[4vw] md:text-2xl text-gray-800 font-semibold text-fade">
         {slide.text}
     </p>
-    <button
-        class="mt-[2vh] bg-teal-300 text-gray-900 px-[6vw] py-[2vh] rounded-[3vw] text-[5vw] md:text-3xl font-bold shadow-md hover:bg-teal-400 hover:scale-105 transition-all duration-300 flex items-center justify-center kid-button"
-        on:click={continueToQuiz}
-    >
-        Continue 🌟
-    </button>
-</div>
 
+    <div class="vendor-container">
+        {#each vendors as vendor}
+            <button 
+                class="vendor-button"
+                on:click={() => handleVendorSelect(vendor.id)}
+            >
+                <img
+                    src={vendor.image}
+                    alt={`Vendor ${vendor.id}`}
+                    class="vendor-image"
+                />
+                <span class="vendor-label">Vendor {vendor.id}</span>
+            </button>
+        {/each}
+    </div>
+</div>
 <style>
     .slide {
         animation: fadeIn 1000ms ease-in forwards;
@@ -72,37 +85,56 @@
         transform: translateZ(0);
     }
 
-    .kid-button {
-        background: linear-gradient(135deg, #5eead4, #2dd4bf); /* Soft teal gradient */
-        border: 3px solid #14b8a6; /* Darker teal border */
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Softer shadow */
+    .vendor-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 2rem;
+        margin-top: 2rem;
+        width: 80%;
+        max-width: 800px;
     }
 
-    .kid-button:hover {
-        background: linear-gradient(135deg, #5eead4, #2dd4bf); /* Maintain gradient on hover */
-        box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15); /* Slightly larger shadow */
+    .vendor-button {
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        border-radius: 1rem;
+        padding: 1rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        width: 200px;
     }
 
-    .kid-button:active {
-        transform: scale(1.1); /* Bounce on click */
+    .vendor-button:hover {
+        transform: scale(1.05);
+        border-color: #4299e1;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+
+    .vendor-image {
+        width: 150px;
+        height: 150px;
+        object-fit: contain;
+        margin-bottom: 0.5rem;
+    }
+
+    .vendor-label {
+        color: #2d3748;
+        font-size: 1.1rem;
+        font-weight: 500;
     }
 
     @keyframes fadeIn {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 
     @keyframes textFadeIn {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
 
     :global(.slide) {
@@ -110,11 +142,7 @@
     }
 
     @keyframes fadeOut {
-        from {
-            opacity: 1;
-        }
-        to {
-            opacity: 0;
-        }
+        from { opacity: 1; }
+        to { opacity: 0; }
     }
 </style>

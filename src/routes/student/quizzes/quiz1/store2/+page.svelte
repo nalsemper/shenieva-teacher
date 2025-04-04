@@ -1,8 +1,8 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
-    import QuizResultModal from '../../components/modals/quiz1/QuizResultModal.svelte';
-    import { quiz1Taking, resetQuiz1, submitQuiz1, closeModal1 } from '$lib/store/quiz1_taking';
+    import QuizResultModal from '../../../components/modals/quiz1/QuizResultModal2.svelte';
+    import { quiz1Taking, resetQuiz1, submitQuiz1, closeModal1 } from '$lib/store/quiz1_taking2';
 
     interface Choice {
         id: number;
@@ -44,7 +44,7 @@
 
     onMount(async () => {
         try {
-            const response = await fetch('http://localhost/shenieva-teacher/src/lib/api/get_story1_quizzes.php');
+            const response = await fetch('http://localhost/shenieva-teacher/src/lib/api/get_story1_quizzes2.php');
             if (!response.ok) throw new Error('Network response was not ok');
             const result: ApiResponse = await response.json();
             if (result.success) {
@@ -111,7 +111,7 @@
         <!-- Header -->
         <header class="mb-8 text-center">
             <h1 class="text-5xl text-purple-600 font-extrabold tracking-wider drop-shadow-lg animate-bounce-slow">
-                🎉 Quiz Adventure! 🎉
+                🎉 Quiz Adventure! Store 2🎉
             </h1>
             <p class="text-xl text-gray-700 mt-2 font-semibold">
                 Attempt {$quiz1Taking.quizTake} of {$quiz1Taking.maxTakes}

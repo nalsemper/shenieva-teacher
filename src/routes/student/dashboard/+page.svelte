@@ -1,15 +1,17 @@
 <script>
-  import { name } from "$lib/store/nameStore.js"; // Global store for name
-  import { fade, slide, scale } from "svelte/transition"; // Svelte transitions
-  import { goto } from '$app/navigation'; // SvelteKit navigation utility
-  import Play from '../play/+page.svelte'; // Import Play component
-  import Stats from '../stats/+page.svelte'; // Import Stats component
-  import Profile from '../profile/+page.svelte'; // Import Profile component
-  import Settings from '../settings/+page.svelte'; // Import Settings component
+  import { name, resetName } from "$lib/store/nameStore.js"; // Import resetName
+  import { quiz1Taking, clearQuiz1State } from "$lib/store/quiz1_taking.js"; // Import clearQuiz1State
+  import { studentData, resetStudentData } from "$lib/store/student_data.js"; // Import resetStudentData
+  import { fade, slide, scale } from "svelte/transition";
+  import { goto } from '$app/navigation';
+  import Play from '../play/+page.svelte';
+  import Stats from '../stats/+page.svelte';
+  import Profile from '../profile/+page.svelte';
+  import Settings from '../settings/+page.svelte';
 
-  let activeTab = "play"; // Track the active tab
-  let showLogoutModal = false; // Control the visibility of the logout modal
-  let hoveredTab = null; // Track the hovered tab
+  let activeTab = "play";
+  let showLogoutModal = false;
+  let hoveredTab = null;
 
   function wiggleButton(tab) {
     activeTab = tab;
@@ -28,6 +30,11 @@
   }
 
   function confirmLogout() {
+    // Reset all stores and clear localStorage
+    resetName();
+    clearQuiz1State();
+    resetStudentData();
+
     showLogoutModal = false;
     goto('../'); // Redirect to parent directory
   }

@@ -1,7 +1,7 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
-    import QuizResultModal from '../../components/modals/quiz1/QuizResultModal.svelte';
+    import QuizResultModal from '../../../components/modals/quiz1/QuizResultModal.svelte';
     import { quiz1Taking, resetQuiz1, submitQuiz1, closeModal1 } from '$lib/store/quiz1_taking';
 
     interface Choice {
@@ -111,7 +111,7 @@
         <!-- Header -->
         <header class="mb-8 text-center">
             <h1 class="text-5xl text-purple-600 font-extrabold tracking-wider drop-shadow-lg animate-bounce-slow">
-                🎉 Quiz Adventure! 🎉
+                🎉 Quiz Adventure! Store 3🎉
             </h1>
             <p class="text-xl text-gray-700 mt-2 font-semibold">
                 Attempt {$quiz1Taking.quizTake} of {$quiz1Taking.maxTakes}

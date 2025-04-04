@@ -111,7 +111,7 @@
         <!-- Header -->
         <header class="mb-8 text-center">
             <h1 class="text-5xl text-purple-600 font-extrabold tracking-wider drop-shadow-lg animate-bounce-slow">
-                🎉 Quiz Adventure! Store 3🎉
+                🎉Quiz Adventure! Store 3🎉
             </h1>
             <p class="text-xl text-gray-700 mt-2 font-semibold">
                 Attempt {$quiz1Taking.quizTake} of {$quiz1Taking.maxTakes}

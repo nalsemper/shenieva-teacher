@@ -1,8 +1,9 @@
 <script lang="ts">
     import { goto } from '$app/navigation';
     import { onMount } from 'svelte';
-    import QuizResultModal from '../../../components/modals/quiz1/QuizResultModal.svelte';
+    import QuizResultModal from '../../../components/modals/quiz1/QuizResultModal3.svelte';
     import { quiz1Taking, resetQuiz1, submitQuiz1, closeModal1 } from '$lib/store/quiz1_taking';
+    import { studentData } from '$lib/store/student_data';
 
     interface Choice {
         id: number;
@@ -29,9 +30,12 @@
     let selectedChoices: (Choice | null)[] = [];
     let loading: boolean = true;
     let error: string | null = null;
+    let studentId: number | null = null;
+    let updatingRibbons: boolean = false; // New loading state for ribbon update
 
     $: allQuestionsAnswered = selectedChoices.length === randomizedQuizData.length && selectedChoices.every(choice => choice !== null);
     $: isPerfectScore = $quiz1Taking.score === $quiz1Taking.totalPoints;
+    $: ribbonsEarned = $quiz1Taking.score; // Each point = 1 ribbon
 
     function shuffleArray<T>(array: T[]): T[] {
         const shuffled = [...array];
@@ -44,7 +48,7 @@
 
     onMount(async () => {
         try {
-            const response = await fetch('http://localhost/shenieva-teacher/src/lib/api/get_story1_quizzes.php');
+            const response = await fetch('http://localhost/shenieva-teacher/src/lib/api/get_story1_quizzes3.php');
             if (!response.ok) throw new Error('Network response was not ok');
             const result: ApiResponse = await response.json();
             if (result.success) {
@@ -66,19 +70,51 @@
         } finally {
             loading = false;
         }
+
+        studentData.subscribe(data => {
+            studentId = data?.pk_studentID || null;
+        });
     });
 
-    function navigateToGame(): void {
-        goto('../game/trash_1');
+    async function updateStudentRibbons(): Promise<void> {
+        if (!studentId || ribbonsEarned <= 0) return;
+
+        updatingRibbons = true;
+        try {
+            const response = await fetch('http://localhost/shenieva-teacher/src/lib/api/update_student_ribbons.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    student_id: studentId,
+                    ribbons: ribbonsEarned
+                })
+            });
+
+            const result = await response.json();
+            if (!result.success) {
+                console.error('Failed to update ribbons:', result.error);
+            }
+        } catch (err) {
+            console.error('Error updating ribbons:', err);
+        }
+    }
+
+    async function navigateToGame(): Promise<void> {
+        await updateStudentRibbons(); // Update ribbons before navigating
+        goto('../../game/trash_1'); // Navigate after update, loading persists until page changes
     }
 
     function selectChoice(choice: Choice, questionIndex: number): void {
         selectedChoices[questionIndex] = choice;
-        selectedChoices = [...selectedChoices]; // Trigger reactivity
+        selectedChoices = [...selectedChoices];
     }
 
     function submitAnswers(): void {
-        if (!allQuestionsAnswered) return;
+        if (!allQuestionsAnswered || !studentId) {
+            alert('Please answer all questions and ensure you are logged in.');
+            return;
+        }
+
         let score = 0;
         randomizedQuizData.forEach((quiz, index) => {
             if (selectedChoices[index]?.is_correct) {
@@ -100,7 +136,6 @@
 </script>
 
 <div class="fixed inset-0 bg-gradient-to-br from-yellow-100 via-pink-100 to-blue-100 overflow-hidden">
-    <!-- Background decorations -->
     <div class="absolute inset-0 pointer-events-none">
         <div class="w-32 h-32 bg-yellow-300 rounded-full opacity-20 absolute -top-16 -left-16 animate-float"></div>
         <div class="w-24 h-24 bg-pink-300 rounded-full opacity-20 absolute top-20 right-10 animate-float delay-1000"></div>
@@ -108,17 +143,15 @@
     </div>
 
     <div class="relative z-10 w-full max-w-4xl mx-auto p-6 h-screen flex flex-col">
-        <!-- Header -->
         <header class="mb-8 text-center">
             <h1 class="text-5xl text-purple-600 font-extrabold tracking-wider drop-shadow-lg animate-bounce-slow">
-                🎉Quiz Adventure! Store 3🎉
+                🎉 Store 3 ni - Quiz Adventure! 🎉
             </h1>
             <p class="text-xl text-gray-700 mt-2 font-semibold">
                 Attempt {$quiz1Taking.quizTake} of {$quiz1Taking.maxTakes}
             </p>
         </header>
 
-        <!-- Main Content -->
         <main class="flex-1 overflow-y-auto space-y-6 pb-6">
             {#if loading}
                 <div class="text-center">
@@ -180,27 +213,44 @@
                     </div>
                 {/if}
             {:else}
-                <section class="bg-white p-8 rounded-2xl shadow-md border-4 border-purple-200 text-center">
+                <section class="bg-white p-8 rounded-2xl shadow-md border-4 border-purple-200 text-center relative">
+                    {#if updatingRibbons}
+                        <div class="absolute inset-0 bg-gray-200/50 flex items-center justify-center z-10">
+                            <div class="text-center">
+                                <p class="text-2xl text-purple-500 animate-pulse">Saving Ribbons... 🎀</p>
+                                <div class="w-16 h-16 mx-auto mt-4 border-4 border-t-purple-500 border-gray-200 rounded-full animate-spin"></div>
+                            </div>
+                        </div>
+                    {/if}
                     <h2 class="text-4xl text-purple-600 font-extrabold mb-6 flex justify-center items-center gap-4">
                         <span class="text-5xl animate-bounce">🏆</span>
                         Quiz Completed!
                         <span class="text-5xl animate-bounce">🏆</span>
                     </h2>
-                    <p class="text-2xl text-gray-700 mb-6">
+                    <p class="text-2xl text-gray-700 mb-4">
                         Score: <span class="text-green-500 font-extrabold text-3xl">{$quiz1Taking.score}</span> / {$quiz1Taking.totalPoints}
                     </p>
-                    <div class="flex justify-center gap-6">
-                        {#if $quiz1Taking.quizTake < $quiz1Taking.maxTakes && !isPerfectScore}
-                            <button
-                                on:click={resetQuiz}
-                                class="py-3 px-8 bg-purple-500 text-white text-xl font-bold rounded-full hover:bg-purple-600 transition-all duration-300 shadow-lg hover:scale-105"
-                            >
-                                Try Again 🌟
-                            </button>
-                        {/if}
+                    <div class="mb-6">
+                        <p class="text-2xl text-gray-700">
+                            You earned 
+                            <span class="text-4xl text-pink-500 font-extrabold animate-ribbon-bounce">
+                                {ribbonsEarned} Ribbon{ribbonsEarned !== 1 ? 's' : ''}!
+                            </span>
+                        </p>
+                        <div class="flex justify-center gap-4 mt-4 flex-wrap">
+                            {#each Array(ribbonsEarned) as _, i}
+                                <span 
+                                    class="text-5xl ribbon-animation" 
+                                    style="animation-delay: {i * 0.3}s;"
+                                >🎀</span>
+                            {/each}
+                        </div>
+                    </div>
+                    <div class="flex justify-center">
                         <button
                             on:click={navigateToGame}
                             class="py-3 px-8 bg-blue-500 text-white text-xl font-bold rounded-full hover:bg-blue-600 transition-all duration-300 shadow-lg hover:scale-105"
+                            disabled={updatingRibbons}
                         >
                             Next Adventure 🎮
                         </button>
@@ -209,7 +259,6 @@
             {/if}
         </main>
 
-        <!-- Quiz Result Modal -->
         <QuizResultModal
             showModal={$quiz1Taking.showModal}
             score={$quiz1Taking.score}
@@ -218,6 +267,7 @@
             maxTakes={$quiz1Taking.maxTakes}
             {randomizedQuizData}
             {selectedChoices}
+            studentId={studentId}
             onClose={closeModal1}
             onRetake={resetQuiz}
         />
@@ -233,12 +283,61 @@
         0%, 100% { transform: translateY(0); }
         50% { transform: translateY(-10px); }
     }
+    @keyframes ribbon-bounce {
+        0%, 100% { transform: translateY(0); }
+        50% { transform: translateY(-15px); }
+    }
+    @keyframes ribbon-graffiti {
+        0% {
+            transform: scale(0) rotate(0deg);
+            text-shadow: none;
+            opacity: 0;
+        }
+        50% {
+            transform: scale(1.3) rotate(15deg);
+            text-shadow: 
+                2px 2px 0px #ff00ff,
+                -2px -2px 0px #00ffff,
+                4px 4px 5px rgba(0, 0, 0, 0.5);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(1) rotate(0deg);
+            text-shadow: 
+                2px 2px 0px #ff00ff,
+                -2px -2px 0px #00ffff,
+                4px 4px 5px rgba(0, 0, 0, 0.5);
+            opacity: 1;
+        }
+    }
+    @keyframes ribbon-chill-beat {
+        0%, 100% {
+            transform: scale(1);
+            text-shadow: 
+                2px 2px 0px #ff00ff,
+                -2px -2px 0px #00ffff,
+                4px 4px 5px rgba(0, 0, 0, 0.5);
+        }
+        50% {
+            transform: scale(1.1);
+            text-shadow: 
+                3px 3px 0px #ff00ff,
+                -3px -3px 0px #00ffff,
+                5px 5px 6px rgba(0, 0, 0, 0.6);
+        }
+    }
 
     .animate-float {
         animation: float 6s ease-in-out infinite;
     }
     .animate-bounce-slow {
         animation: bounce-slow 3s ease-in-out infinite;
+    }
+    .animate-ribbon-bounce {
+        animation: ribbon-bounce 2s ease-in-out infinite;
+    }
+    .ribbon-animation {
+        animation: ribbon-graffiti 0.8s ease-out forwards, ribbon-chill-beat 1.5s ease-in-out infinite;
     }
 
     .overflow-y-auto::-webkit-scrollbar {

@@ -1,6 +1,6 @@
-<!-- src/routes/student/components/modals/quiz1/QuizResultModal.svelte -->
 <script lang="ts">
-    // Define interfaces locally since we're not importing from $lib/types yet
+    import { quiz1Taking } from '$lib/store/quiz1_taking';
+
     interface Choice {
         id: number;
         text: string;
@@ -22,10 +22,59 @@
     export let maxTakes: number;
     export let randomizedQuizData: Quiz[];
     export let selectedChoices: (Choice | null)[];
+    export let studentId: number | null;
     export let onClose: () => void;
     export let onRetake: () => void;
 
     $: canRetake = quizTake < maxTakes;
+
+    async function saveQuiz(isFinal: boolean): Promise<void> {
+        if (!studentId) {
+            console.error('No student ID available');
+            return;
+        }
+
+        const answers = randomizedQuizData.map((quiz, index) => ({
+            item_number: index + 1,
+            question: quiz.question,
+            choices: quiz.choices,
+            is_correct: selectedChoices[index]?.is_correct || false,
+            points: quiz.points
+        }));
+
+        try {
+            const response = await fetch('http://localhost/shenieva-teacher/src/lib/api/store1/save_story1_quiz.php', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    student_id: studentId,
+                    store: 1,
+                    attempt: quizTake,
+                    answers: answers,
+                    is_final: isFinal
+                })
+            });
+
+            const result = await response.json();
+            if (!result.success) {
+                console.error('Failed to save quiz:', result.error);
+            } else {
+                console.log('Quiz saved successfully with is_final:', isFinal);
+            }
+        } catch (err) {
+            console.error('Error saving quiz:', err);
+        }
+    }
+
+    function handleProceed(): void {
+        saveQuiz(true); // Final attempt
+        onClose();
+    }
+
+    function handleRetake(): void {
+        saveQuiz(false); // Not final
+        onRetake();
+    }
 </script>
 
 {#if showModal}
@@ -52,13 +101,13 @@
                 <p class="text-lg text-gray-700 mb-4">Want to try again? You have {maxTakes - quizTake} attempt(s) left!</p>
                 <div class="flex justify-end gap-4">
                     <button
-                        on:click={onClose}
+                        on:click={handleProceed}
                         class="py-2 px-6 bg-gray-500 text-white text-lg font-bold rounded-full hover:bg-gray-600 transition-all duration-300"
                     >
                         No, Thanks
                     </button>
                     <button
-                        on:click={onRetake}
+                        on:click={handleRetake}
                         class="py-2 px-6 bg-purple-500 text-white text-lg font-bold rounded-full hover:bg-purple-600 transition-all duration-300"
                     >
                         Retake Quiz
@@ -68,7 +117,7 @@
                 <p class="text-lg text-red-500 mb-4">No more attempts left!</p>
                 <div class="flex justify-end">
                     <button
-                        on:click={onClose}
+                        on:click={handleProceed}
                         class="py-2 px-6 bg-gray-500 text-white text-lg font-bold rounded-full hover:bg-gray-600 transition-all duration-300"
                     >
                         Close

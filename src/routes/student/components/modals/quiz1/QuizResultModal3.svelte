@@ -43,7 +43,7 @@
         }));
 
         try {
-            const response = await fetch('http://localhost/shenieva-teacher/src/lib/api/store2/save_story1_quiz.php', {
+            const response = await fetch('http://localhost/shenieva-teacher/src/lib/api/store3/save_story1_quiz.php', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({

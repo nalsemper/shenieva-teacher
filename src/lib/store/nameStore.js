@@ -1,10 +1,3 @@
-// import { writable } from "svelte/store";
-
-// export const name = writable(""); // Global name store
-// src/lib/store/nameStore.js
-
-// src/lib/store/nameStore.js
-
 // src/lib/store/nameStore.js
 import { writable } from "svelte/store";
 import { browser } from '$app/environment';
@@ -19,4 +12,12 @@ if (browser) {
   name.subscribe(value => {
     localStorage.setItem('name', value);
   });
+}
+
+// Function to reset the name store
+export function resetName() {
+  name.set(""); // Reset to initial value
+  if (browser) {
+    localStorage.removeItem('name'); // Clear from localStorage
+  }
 }

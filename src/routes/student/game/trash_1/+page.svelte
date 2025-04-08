@@ -73,7 +73,7 @@
     let bgMusic: HTMLAudioElement;
     let hasInteracted = false;
 
-    interface BoyAssets {
+    interface CharacterAssets {
         walking_right: HTMLImageElement[];
         walking_left: HTMLImageElement[];
         walking_front: HTMLImageElement[];
@@ -81,7 +81,7 @@
     }
 
     interface Assets {
-        boy: BoyAssets;
+        character: CharacterAssets; // Updated to use a generic character property
         ground: { soil: HTMLImageElement; grass: HTMLImageElement };
         house: HTMLImageElement[];
         trees: HTMLImageElement[];
@@ -100,12 +100,22 @@
     }
 
     async function loadAssets(): Promise<Assets> {
-        const boy = {
+        const currentStudent = $studentData as StudentData | null;
+        const gender = currentStudent?.studentGender ?? 'Male'; // Default to 'Male' if no gender data
+
+        // Load character sprites based on gender
+        const character = gender === 'Female' ? {
+            walking_right: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/assets/trash_collect_game/girl/walking_sprite/walking_right/${i+1}.png`))),
+            walking_left: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/assets/trash_collect_game/girl/walking_sprite/walking_left/${i+1}.png`))),
+            walking_front: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/assets/trash_collect_game/girl/walking_sprite/walking_front/${i+1}.png`))),
+            walking_back: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/assets/trash_collect_game/girl/walking_sprite/walking_back/${i+1}.png`)))
+        } : {
             walking_right: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/assets/trash_collect_game/boy/walking_sprite/walking_right/${i+1}.png`))),
             walking_left: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/assets/trash_collect_game/boy/walking_sprite/walking_left/${i+1}.png`))),
             walking_front: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/assets/trash_collect_game/boy/walking_sprite/walking_front/${i+1}.png`))),
             walking_back: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/assets/trash_collect_game/boy/walking_sprite/walking_back/${i+1}.png`)))
         };
+
         const ground = {
             soil: await loadImage('/assets/trash_collect_game/ground/soil.png'),
             grass: await loadImage('/assets/trash_collect_game/ground/grass.png')
@@ -113,7 +123,7 @@
         const house = await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/assets/trash_collect_game/house/${i+1}.png`)));
         const trees = await Promise.all(Array(5).fill(null).map((_, i) => loadImage(`/assets/trash_collect_game/trees/${i+1}.png`)));
         const trash = await Promise.all(Array(25).fill(null).map((_, i) => loadImage(`/assets/trash_collect_game/trash/${String(i+1).padStart(2, '0')}-${getTrashName(i+1)}.png`)));
-        return { boy, ground, house, trees, trash };
+        return { character, ground, house, trees, trash };
     }
 
     function getTrashName(i: number): string {
@@ -405,7 +415,8 @@
             ctx.restore();
         });
 
-        const playerImg = assets.boy[`walking_${player.direction}`][Math.floor(player.frame)];
+        // Use character instead of boy
+        const playerImg = assets.character[`walking_${player.direction}`][Math.floor(player.frame)];
         ctx.save();
         ctx.translate(player.x, player.y);
         const originalWidth = 30;
@@ -582,7 +593,7 @@
     async function fetchInitialTrashCount(studentID: number) {
         try {
             const response = await fetchWithTimeout(
-                'http://localhost/shenieva-teacher/src/lib/api/trash.php', // Consistent endpoint
+                'http://localhost/shenieva-teacher/src/lib/api/trash.php',
                 {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -706,6 +717,11 @@
         window.addEventListener('resize', resizeCanvas);
         setInterval(() => { handleMovement(); update(); }, 1000 / 60);
     });
+
+    // Reactive statement to determine win message based on student level
+    $: winMessage = (($studentData as StudentData)?.studentLevel ?? 0) < 1 
+        ? "Congratulations! You have leveled up!\nGet ready for your next exciting adventure! 🏆✨" 
+        : "Congratulations!\nGet ready for your next exciting adventure! 🏆✨";
 </script>
 
 <main>
@@ -740,9 +756,8 @@
             </div>
             {#if gameEnded}
                 <div class="win-message text-center" in:fade={{ duration: 500 }}>
-                    🎉 Awesome Job! 🎉<br>
-                    You’ve leveled up!<br>
-                    Get ready for your next exciting adventure! 🏆✨<br>
+                    🎉 {winMessage.split('\n')[0]} 🎉<br>
+                    {winMessage.split('\n')[1]}<br>
                     {#if isLoading}
                         <span class="loading">Loading...</span>
                     {:else}
@@ -753,7 +768,6 @@
         </div>
     </div>
 </main>
-
 
 <style>
     .game-wrapper {

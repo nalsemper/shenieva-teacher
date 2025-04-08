@@ -151,7 +151,7 @@
         class:scale-150={activeTab === "settings" || hoveredTab === "settings"}
         class:animate-wiggle={activeTab === "settings"}
       >
-        Fix
+        Settings
       </span>
       {#if activeTab === "settings"}
         <div class="w-[4vw] h-[0.125vh] bg-gray-400 mt-[0.25vh] rounded transition-all duration-300" in:slide={{ duration: 200 }}></div>

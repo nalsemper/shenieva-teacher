@@ -1,5 +1,5 @@
 // src/routes/login/+page.server.ts
-import { fail, type RequestEvent } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 import mysql from 'mysql2/promise';
 
 const dbConfig = {
@@ -15,82 +15,76 @@ interface Teacher extends mysql.RowDataPacket {
   teacherName: string;
   teacherEmail: string;
   teacherPass: string;
-  teacherGender: 'Male' | 'Female' | 'Other';
+  teacherGender: 'Male' | 'Female';
 }
 
 export const actions = {
-  default: async ({ request, cookies }: RequestEvent) => {
-    let formDataEntries;
+  default: async ({ request, cookies }) => {
+    let connection;
     try {
-      console.log('Processing login request...');
       const formData = await request.formData();
-      formDataEntries = Object.fromEntries(formData);
       const userType = formData.get('userType')?.toString();
       const idNo = formData.get('idNo')?.toString();
       const password = formData.get('password')?.toString();
 
-      console.log('Form data received:', { userType, idNo, password });
+      console.log('Received:', { userType, idNo, password });
 
       if (!userType || !idNo || !password) {
+        console.log('Missing fields detected');
         return fail(400, { error: 'Missing required fields' });
       }
 
       if (userType === 'teacher') {
-        let connection;
-        try {
-          console.log('Attempting database connection...');
-          connection = await mysql.createConnection(dbConfig);
-          await connection.connect();
-          console.log('Database connected successfully');
+        connection = await mysql.createConnection(dbConfig);
+        await connection.connect();
+        console.log('Database connected');
 
-          const [rows] = await connection.execute<Teacher[]>(
-            'SELECT * FROM teacher_table WHERE idNo = ?',
-            [idNo]
-          );
-          console.log('Query executed, rows:', rows);
+        const [rows] = await connection.execute<Teacher[]>(
+          'SELECT * FROM teacher_table WHERE idNo = ?',
+          [idNo]
+        );
+        console.log('Query result:', rows);
 
-          if (!Array.isArray(rows) || rows.length === 0) {
-            return fail(401, { error: 'Invalid teacher ID or password' });
-          }
-
-          const teacher = rows[0];
-          console.log('Teacher found:', {
-            idNo: teacher.idNo,
-            pass: teacher.teacherPass
-          });
-
-          if (password !== teacher.teacherPass) {
-            return fail(401, { error: 'Invalid teacher ID or password' });
-          }
-
-          cookies.set('teacherId', teacher.pk_teacherID.toString(), {
-            path: '/',
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            maxAge: 60 * 60 * 24 // 1 day
-          });
-
-          return {
-            success: true,
-            userType: 'teacher',
-            teacherId: teacher.pk_teacherID,
-            teacherName: teacher.teacherName
-          };
-        } catch (dbError) {
-          console.error('Database error:', dbError);
-          throw dbError;
-        } finally {
-          if (connection) {
-            await connection.end().catch(err => console.error('Error closing connection:', err));
-          }
+        if (!Array.isArray(rows) || rows.length === 0) {
+          console.log('No teacher found for idNo:', idNo);
+          return fail(401, { error: 'Invalid teacher ID or password' });
         }
+
+        const teacher = rows[0];
+        console.log('Teacher data:', { idNo: teacher.idNo, teacherPass: teacher.teacherPass });
+
+        if (password !== teacher.teacherPass) {
+          console.log('Password mismatch. Expected:', teacher.teacherPass, 'Received:', password);
+          return fail(401, { error: 'Invalid teacher ID or password' });
+        }
+
+        console.log('Authentication successful for', teacher.idNo);
+        cookies.set('teacherId', teacher.pk_teacherID.toString(), {
+          path: '/',
+          httpOnly: true,
+          secure: process.env.NODE_ENV === 'production',
+          maxAge: 60 * 60 * 24
+        });
+
+        const response = {
+          success: true,
+          userType: 'teacher',
+          teacherId: teacher.pk_teacherID,
+          teacherName: teacher.teacherName
+        };
+        console.log('Returning:', JSON.stringify(response, null, 2));
+        return response;
       }
 
-      return fail(400, { error: 'Invalid user type' });
-    } catch (err: unknown) {
-      const errorMessage = err instanceof Error ? err.message : 'Unknown error occurred';
-      console.error('Detailed login error:', { message: errorMessage, formData: formDataEntries });
-      return fail(500, { error: 'Internal server error', details: errorMessage });
+      console.log('Unhandled userType:', userType);
+      return fail(400, { error: 'Student login not handled on server' });
+    } catch (err) {
+      console.error('Server error:', err);
+      return fail(500, { error: 'Internal server error', details: err.message });
+    } finally {
+      if (connection) {
+        await connection.end().catch(err => console.error('Error closing connection:', err));
+      }
     }
   }
 };

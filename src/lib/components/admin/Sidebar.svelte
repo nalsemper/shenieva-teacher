@@ -34,7 +34,7 @@
 <Sidebar>
   <SidebarWrapper class="h-screen bg-lime-100 flex flex-col rounded-none">
     <SidebarGroup>
-      <h1 class="text-xl font-bold text-orange-500 p-6">SHENIEVIA READS</h1>
+      <h1 class="text-xl font-bold text-orange-500 p-5">SHENIEVIA READS</h1>
     </SidebarGroup>
 
     <div class="flex-1 overflow-y-auto">

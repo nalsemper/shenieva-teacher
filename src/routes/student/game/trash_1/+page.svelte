@@ -16,12 +16,12 @@
         studentProgress: number | null;
     }
 
-    const GRID_WIDTH = 80;
+    const GRID_WIDTH = 160;
     const GRID_HEIGHT = 20;
     const TILE_SIZE = 32;
     const PLAYER_SIZE = 32;
     const PLAYER_SPEED = 2;
-    const HOUSE_SIZE = 150;
+    const HOUSE_SIZE = 200;
     const TREE_SIZE = 180;
     const TRASH_SIZE = 50;
 
@@ -51,8 +51,8 @@
     }
 
     let player: Player = { x: 0, y: GRID_HEIGHT * TILE_SIZE / 2, direction: 'right', frame: 0, isMoving: false };
-    let trashCollectedSession = 0; // Session-specific count
-    let trashCollectedTotal = 0;   // Initial DB value
+    let trashCollectedSession = 0;
+    let trashCollectedTotal = 0;
     
     let gameCanvas: HTMLCanvasElement;
     let ctx: CanvasRenderingContext2D;
@@ -81,7 +81,7 @@
     }
 
     interface Assets {
-        character: CharacterAssets; // Updated to use a generic character property
+        character: CharacterAssets;
         ground: { soil: HTMLImageElement; grass: HTMLImageElement };
         house: HTMLImageElement[];
         trees: HTMLImageElement[];
@@ -101,9 +101,8 @@
 
     async function loadAssets(): Promise<Assets> {
         const currentStudent = $studentData as StudentData | null;
-        const gender = currentStudent?.studentGender ?? 'Male'; // Default to 'Male' if no gender data
+        const gender = currentStudent?.studentGender ?? 'Male';
 
-        // Load character sprites based on gender
         const character = gender === 'Female' ? {
             walking_right: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/assets/trash_collect_game/girl/walking_sprite/walking_right/${i+1}.png`))),
             walking_left: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/assets/trash_collect_game/girl/walking_sprite/walking_left/${i+1}.png`))),
@@ -157,7 +156,7 @@
         const placedObjects: { x: number; y: number; type: number }[] = [];
         const START_AREA_WIDTH = 5;
 
-        for (let i = 0; i < 15; i++) {
+        for (let i = 0; i < 30; i++) {
             let x: number, y: number;
             let isValidPosition = false;
             const isHouse = Math.random() < 0.5;
@@ -202,7 +201,7 @@
         }
 
         trashes = [];
-        for (let i = 0; i < 50; i++) {
+        for (let i = 0; i < 100; i++) {
             let x: number, y: number;
             let isValidPosition = false;
 
@@ -332,7 +331,7 @@
             const dx = player.x - t.x;
             const dy = player.y - t.y;
             if (Math.sqrt(dx*dx + dy*dy) < (PLAYER_SIZE + TRASH_SIZE) / 2 && t.fade === 1) {
-                trashCollectedSession++; // Increment session count
+                trashCollectedSession++;
                 t.fade = 0.95;
                 trashPopups.push({
                     x: t.x,
@@ -415,7 +414,6 @@
             ctx.restore();
         });
 
-        // Use character instead of boy
         const playerImg = assets.character[`walking_${player.direction}`][Math.floor(player.frame)];
         ctx.save();
         ctx.translate(player.x, player.y);
@@ -644,7 +642,7 @@
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
                         pk_studentID: currentStudent.pk_studentID,
-                        trashCollected: trashCollectedSession // Send session count
+                        trashCollected: trashCollectedSession
                     })
                 }
             );
@@ -670,7 +668,7 @@
                     }
                     return current;
                 });
-                trashCollectedTotal = data.studentColtrash; // Update total
+                trashCollectedTotal = data.studentColtrash;
             }
         } catch (error) {
             console.error('Error in handleOk:', error);
@@ -694,10 +692,8 @@
         bgMusic.volume = 0.5;
         collectSound.volume = 0.7;
 
-        // Reset session count
         trashCollectedSession = 0;
 
-        // Fetch initial trash count
         const currentStudent = $studentData as StudentData | null;
         if (currentStudent?.pk_studentID) {
             trashCollectedTotal = await fetchInitialTrashCount(currentStudent.pk_studentID);
@@ -718,10 +714,12 @@
         setInterval(() => { handleMovement(); update(); }, 1000 / 60);
     });
 
-    // Reactive statement to determine win message based on student level
     $: winMessage = (($studentData as StudentData)?.studentLevel ?? 0) < 1 
         ? "Congratulations! You have leveled up!\nGet ready for your next exciting adventure! 🏆✨" 
         : "Congratulations!\nGet ready for your next exciting adventure! 🏆✨";
+
+    // Calculate player position percentage for the indicator
+    $: playerPositionPercent = (player.x / (GRID_WIDTH * TILE_SIZE)) * 100;
 </script>
 
 <main>
@@ -765,6 +763,14 @@
                     {/if}
                 </div>
             {/if}
+        </div>
+        <!-- Position Indicator -->
+        <div class="position-indicator">
+            <div class="track">
+                <div class="start-zone"></div>
+                <div class="end-zone"></div>
+                <div class="player-marker" style="left: {playerPositionPercent}%"></div>
+            </div>
         </div>
     </div>
 </main>
@@ -853,7 +859,7 @@
         border: 5px solid #6b9e6b;
         border-radius: 10px;
         padding: 10px;
-        height: calc(90vh - 106px);
+        height: calc(90vh - 146px); /* Adjusted to account for position indicator */
         width: auto;
         max-width: 100%;
         overflow-x: auto;
@@ -960,6 +966,49 @@
         font-size: 18px;
         color: #fff;
         animation: pulse 1s infinite;
+    }
+
+    /* Position Indicator Styles */
+    .position-indicator {
+        width: 100%;
+        max-width: calc(100% - 40px); /* Match game-container width minus padding */
+        height: 20px;
+        margin-top: 10px;
+    }
+
+    .track {
+        position: relative;
+        width: 100%;
+        height: 100%;
+        background: #ccc;
+        border-radius: 5px;
+        overflow: hidden;
+    }
+
+    .start-zone {
+        position: absolute;
+        left: 0;
+        width: 5%; /* Matches START_AREA_WIDTH / GRID_WIDTH */
+        height: 100%;
+        background: rgba(0, 255, 0, 0.5);
+    }
+
+    .end-zone {
+        position: absolute;
+        right: 0;
+        width: 5%;
+        height: 100%;
+        background: rgba(255, 0, 0, 0.5);
+    }
+
+    .player-marker {
+        position: absolute;
+        width: 10px;
+        height: 100%;
+        background: #ff6f61;
+        border-radius: 2px;
+        transform: translateX(-50%);
+        transition: left 0.1s ease-out;
     }
 
     @keyframes pop {

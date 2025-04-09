@@ -1,5 +1,6 @@
 <script lang="ts">
-    import { quiz1Taking } from '$lib/store/quiz1_taking';
+    import { quiz1Taking, resetQuiz1 } from '$lib/store/quiz1_taking';
+    import { goto } from '$app/navigation';
 
     interface Choice {
         id: number;
@@ -68,12 +69,16 @@
 
     function handleProceed(): void {
         saveQuiz(true); // Final attempt
-        onClose();
+        onClose(); // Close modal, return to "Quiz Completed" screen
     }
 
     function handleRetake(): void {
-        saveQuiz(false); // Not final
-        onRetake();
+        if (canRetake) {
+            saveQuiz(false); // Not final
+            resetQuiz1(); // Reset the quiz state
+            onClose(); // Close the modal
+            goto('/student/dashboard'); // Navigate to dashboard
+        }
     }
 </script>
 
@@ -98,19 +103,19 @@
                 </div>
             {/each}
             {#if canRetake}
-                <p class="text-lg text-gray-700 mb-4">Want to try again? You have {maxTakes - quizTake} attempt(s) left!</p>
+                <p class="text-lg text-gray-700 mb-4">Want to try the level again? You have {maxTakes - quizTake} attempt(s) left!</p>
                 <div class="flex justify-end gap-4">
                     <button
                         on:click={handleProceed}
                         class="py-2 px-6 bg-gray-500 text-white text-lg font-bold rounded-full hover:bg-gray-600 transition-all duration-300"
                     >
-                        No, Thanks
+                        Proceed to Next Level
                     </button>
                     <button
                         on:click={handleRetake}
                         class="py-2 px-6 bg-purple-500 text-white text-lg font-bold rounded-full hover:bg-purple-600 transition-all duration-300"
                     >
-                        Retake Quiz
+                        Retake Level
                     </button>
                 </div>
             {:else}
@@ -120,7 +125,7 @@
                         on:click={handleProceed}
                         class="py-2 px-6 bg-gray-500 text-white text-lg font-bold rounded-full hover:bg-gray-600 transition-all duration-300"
                     >
-                        Close
+                        Proceed to Next Level
                     </button>
                 </div>
             {/if}

@@ -31,11 +31,16 @@
     let loading: boolean = true;
     let error: string | null = null;
     let studentId: number | null = null;
-    let updatingRibbons: boolean = false; // New loading state for ribbon update
+    let updatingRibbons: boolean = false;
 
     $: allQuestionsAnswered = selectedChoices.length === randomizedQuizData.length && selectedChoices.every(choice => choice !== null);
     $: isPerfectScore = $quiz1Taking.score === $quiz1Taking.totalPoints;
-    $: ribbonsEarned = $quiz1Taking.score; // Each point = 1 ribbon
+    $: ribbonsEarned = $quiz1Taking.score;
+    // Calculate number of correct items
+    $: correctItems = selectedChoices.reduce((count, choice, index) => {
+        return count + (choice?.is_correct && randomizedQuizData[index]?.choices.some(c => c.id === choice.id && c.is_correct) ? 1 : 0);
+    }, 0);
+    $: totalItems = randomizedQuizData.length;
 
     function shuffleArray<T>(array: T[]): T[] {
         const shuffled = [...array];
@@ -96,12 +101,14 @@
             }
         } catch (err) {
             console.error('Error updating ribbons:', err);
+        } finally {
+            updatingRibbons = false;
         }
     }
 
     async function navigateToGame(): Promise<void> {
-        await updateStudentRibbons(); // Update ribbons before navigating
-        goto('../game/trash_1'); // Navigate after update, loading persists until page changes
+        await updateStudentRibbons();
+        goto('/student/game/trash_1');
     }
 
     function selectChoice(choice: Choice, questionIndex: number): void {
@@ -121,7 +128,7 @@
                 score += quiz.points;
             }
         });
-        submitQuiz1(score, $quiz1Taking.totalPoints);
+        submitQuiz1(score, $quiz1Taking.totalPoints); // Sets quizCompleted and showModal
     }
 
     function resetQuiz(): void {
@@ -212,7 +219,7 @@
                         </button>
                     </div>
                 {/if}
-            {:else}
+            {:else if !$quiz1Taking.showModal}
                 <section class="bg-white p-8 rounded-2xl shadow-md border-4 border-purple-200 text-center relative">
                     {#if updatingRibbons}
                         <div class="absolute inset-0 bg-gray-200/50 flex items-center justify-center z-10">
@@ -228,7 +235,10 @@
                         <span class="text-5xl animate-bounce">🏆</span>
                     </h2>
                     <p class="text-2xl text-gray-700 mb-4">
-                        Score: <span class="text-green-500 font-extrabold text-3xl">{$quiz1Taking.score}</span> / {$quiz1Taking.totalPoints}
+                        Score: <span class="text-green-500 font-extrabold text-3xl">{correctItems}</span> / {totalItems} items correct
+                    </p>
+                    <p class="text-2xl text-gray-700 mb-4">
+                        Points: <span class="text-green-500 font-extrabold text-3xl">{$quiz1Taking.score}</span> / {$quiz1Taking.totalPoints}
                     </p>
                     <div class="mb-6">
                         <p class="text-2xl text-gray-700">

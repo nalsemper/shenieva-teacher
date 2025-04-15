@@ -35,13 +35,26 @@
             return;
         }
 
-        const answers = randomizedQuizData.map((quiz, index) => ({
-            item_number: index + 1,
-            question: quiz.question,
-            choices: quiz.choices,
-            is_correct: selectedChoices[index]?.is_correct || false,
-            points: quiz.points
-        }));
+        const answers = randomizedQuizData.map((quiz, index) => {
+            // Map choices to include ABCD labels
+            const choicesWithLabels = quiz.choices.map((choice, choiceIndex) => ({
+                id: choice.id,
+                text: choice.text,
+                is_correct: choice.is_correct,
+                label: String.fromCharCode(65 + choiceIndex) // A, B, C, D...
+            }));
+
+            return {
+                item_number: index + 1,
+                question: quiz.question,
+                choices: choicesWithLabels,
+                is_correct: selectedChoices[index]?.is_correct || false,
+                points: quiz.points,
+                selected_choice_label: selectedChoices[index]
+                    ? String.fromCharCode(65 + quiz.choices.findIndex(c => c.id === selectedChoices[index]?.id))
+                    : null
+            };
+        });
 
         try {
             const response = await fetch('http://localhost/shenieva-teacher/src/lib/api/store1/save_story1_quiz.php', {

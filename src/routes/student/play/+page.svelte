@@ -4,11 +4,15 @@
   import { slide } from "svelte/transition"; // Svelte transition
   import ChooseStory from "../components/modals/choose_story.svelte"; // Import choose_story
   import Story1 from "../components/modals/story_1.svelte"; // Import story_1
+  import Story2 from "../components/modals/story_2.svelte"; // Import story_2
+  import Story3 from "../components/modals/story_3.svelte"; // Import story_3
 
   let isClicked = false; // Track if the Start button is clicked
   let isWiggling = true; // Track if the initial wiggle is active
   let showChooseStoryModal = false; // Control choose_story modal
   let showStory1Modal = false; // Control story_1 modal
+  let showStory2Modal = false; // Control story_2 modal
+  let showStory3Modal = false; // Control story_3 modal
 
   // Switch from wiggle to steady after the initial wiggle completes
   setTimeout(() => {
@@ -27,10 +31,10 @@
       showStory1Modal = true; // Open story_1 modal
       showChooseStoryModal = false; // Close choose_story modal
     } else if (story === "Story 2") {
-      console.log("Story 2 selected - implement Story 2 modal here");
+      showStory2Modal = true; // Open story_2 modal
       showChooseStoryModal = false;
     } else if (story === "Story 3") {
-      console.log("Story 3 selected - implement Story 3 modal here");
+      showStory3Modal = true; // Open story_3 modal
       showChooseStoryModal = false;
     }
   }
@@ -43,6 +47,12 @@
 
   function handleCloseStory1Modal() {
     showStory1Modal = false;
+  }
+  function handleCloseStory2Modal() {
+    showStory2Modal = false;
+  }
+  function handleCloseStory3Modal() {
+    showStory3Modal = false;
   }
 </script>
 
@@ -83,6 +93,10 @@
 
 <!-- Story 1 Modal -->
 <Story1 showModal={showStory1Modal} onClose={handleCloseStory1Modal} />
+<!-- Story 2 Modal -->
+<Story1 showModal={showStory2Modal} onClose={handleCloseStory1Modal} />
+<!-- Story 3 Modal -->
+<Story1 showModal={showStory3Modal} onClose={handleCloseStory1Modal} />
 
 <style>
   /* Initial Wiggle Animation */

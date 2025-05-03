@@ -1,12 +1,14 @@
-<!-- src/routes/admin/modals/quizModal.svelte -->
 <script>
   import { fade, scale } from "svelte/transition";
+  import { createEventDispatcher } from "svelte";
   import modalBg from "/src/assets/icons/modal-bg.jpg";
 
   export let person;
   export let showModal;
   export let closeModal;
   export let markAsReviewed;
+
+  const dispatch = createEventDispatcher();
 
   let showFireworks = false;
   let expandedQuestions = {};
@@ -30,41 +32,55 @@
     expandedQuestions = { ...expandedQuestions };
   }
 
-  // Mock prior attempts for drag-and-drop (Quiz 2)
-  function getPriorAttempt(question) {
-    const possibleAnswers = [
-      question.correctAnswer,
-      question.chosenAnswer === question.correctAnswer
-        ? "Incorrect Answer"
-        : question.chosenAnswer,
-    ];
-    return possibleAnswers[0] === question.chosenAnswer
-      ? possibleAnswers[1]
-      : possibleAnswers[0];
-  }
+  // Mark individual question as reviewed
+  async function markQuestionAsReviewed(index) {
+    person.questions[index].is_final = 1;
+    person.questions = [...person.questions]; // Trigger reactivity
+    console.log(`Question ${index + 1} marked as reviewed`);
 
-  // Check if all questions are scored (Quiz 3: points assigned, Quiz 1 & 2: true if no points field)
-  $: allScored = person?.questions?.every((q) =>
-    q.points !== undefined ? q.points !== null : q.scored !== false
-  ) || true;
+    // Dispatch event to notify parent
+    dispatch('questionReviewed', {
+      taken_quiz_id: person.questions[index].taken_quiz_id,
+      is_final: 1
+    });
 
-  // Update score for Quiz 3 (sum of points)
-  function updateScore() {
-    if (person.questions[0].points !== undefined) {
-      person.score = person.questions.reduce((sum, q) => sum + (q.points || 0), 0);
-    } else {
-      const correctCount = person.questions.reduce((count, q) => {
-        return count + (q.chosenAnswer === q.correctAnswer ? 1 : 0);
-      }, 0);
-      person.score = Math.round((correctCount / person.questions.length) * 100);
+    // Call API to update is_final in database
+    try {
+      const response = await fetch('http://localhost/shenieva-teacher/src/lib/api/records/mark_question_reviewed.php', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          taken_quiz_id: person.questions[index].taken_quiz_id,
+          is_final: 1
+        })
+      });
+      if (!response.ok) {
+        console.error('Failed to mark question as reviewed:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error marking question as reviewed:', error);
     }
   }
 
-  // Handle points input for Quiz 3
-  function setPoints(question, value) {
-    const points = Math.max(0, Math.min(10, parseInt(value) || 0)); // Clamp 0-10
-    question.points = points;
-    updateScore();
+  // Compute review status
+  $: reviewStatus = (() => {
+    const finalCount = person?.questions?.filter(q => q.is_final === 1).length;
+    const totalQuestions = person?.questions?.length || 0;
+    if (finalCount === totalQuestions && totalQuestions > 0) {
+      return "Quiz is completely reviewed";
+    } else if (finalCount > 0) {
+      return "Partially reviewed";
+    } else {
+      return "Not reviewed";
+    }
+  })();
+
+  // Update score for Quiz 1 (percentage of correct answers)
+  function updateScore() {
+    const correctCount = person.questions.reduce((count, q) => {
+      return count + (q.chosenAnswer === q.correctAnswer ? 1 : 0);
+    }, 0);
+    person.score = Math.round((correctCount / person.questions.length) * 100);
   }
 </script>
 
@@ -134,11 +150,7 @@
           <div class="bg-gray-200/80 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow duration-300">
             <p class="text-sm text-gray-600 font-medium">Score</p>
             <p class="font-semibold text-lg text-gray-800">
-              {person.score === null
-                ? "Unscored"
-                : person.questions[0].points !== undefined
-                  ? `${person.score}/30`
-                  : `${person.score} points`}
+              {person.score === null ? "Unscored" : `${person.score} points`}
             </p>
           </div>
           <div class="bg-gray-200/80 rounded-xl p-5 shadow-md hover:shadow-lg transition-shadow duration-300">
@@ -163,17 +175,13 @@
           <div
             class="text-4xl font-extrabold {person.score === null
               ? 'text-gray-700'
-              : person.score >= (person.questions[0].points !== undefined ? 24 : 80)
+              : person.score >= 80
                 ? 'text-green-700'
-                : person.score >= (person.questions[0].points !== undefined ? 18 : 60)
+                : person.score >= 60
                   ? 'text-orange-700'
                   : 'text-red-700'}"
           >
-            {person.score === null
-              ? "Unscored"
-              : person.questions[0].points !== undefined
-                ? `${person.score}/30`
-                : `${person.score} points`}
+            {person.score === null ? "Unscored" : `${person.score} points`}
           </div>
           {#if showFireworks}
             <div class="pyro">
@@ -217,23 +225,17 @@
                   in:fade={{ duration: 200 }}
                   out:fade={{ duration: 200 }}
                 >
-                  <!-- Essay Response (Quiz 3) or Latest Attempt (Quiz 1 & 2) -->
+                  <!-- Latest Attempt -->
                   <div>
-                    <p class="text-sm text-gray-600 font-medium">
-                      {question.studentResponse ? "Student Response" : "Attempt " + person.attempts + " (Latest)"}
-                    </p>
+                    <p class="text-sm text-gray-600 font-medium">Student's Answer (Attempt {person.attempts})</p>
                     <p
                       class="font-semibold text-gray-800 flex items-center gap-2
-                        {question.studentResponse
-                          ? 'text-gray-700'
-                          : question.scored === false
-                            ? 'text-gray-700'
-                            : question.chosenAnswer === question.correctAnswer
-                              ? 'text-green-700'
-                              : 'text-orange-700'}"
+                        {question.chosenAnswer === question.correctAnswer
+                          ? 'text-green-700'
+                          : 'text-orange-700'}"
                     >
-                      {question.studentResponse || question.chosenAnswer}
-                      {#if !question.studentResponse && question.scored !== false}
+                      {question.chosenAnswer || "No answer provided"}
+                      {#if question.chosenAnswer}
                         {#if question.chosenAnswer === question.correctAnswer}
                           <svg
                             class="w-5 h-5 text-green-500"
@@ -269,82 +271,56 @@
                     </p>
                   </div>
 
-                  <!-- Prior Attempt (Quiz 2 only) -->
-                  {#if person.attempts > 1 && !question.choices && !question.studentResponse}
-                    <div>
-                      <p class="text-sm text-gray-600 font-medium">Attempt {person.attempts - 1}:</p>
-                      <p class="font-semibold text-gray-700">{getPriorAttempt(question)}</p>
-                    </div>
-                  {/if}
-
-                  <!-- Scoring Input for Quiz 3 -->
-                  {#if question.studentResponse}
-                    <div class="flex items-center gap-2">
-                      <label for={`points-${index}`} class="text-sm text-gray-600 font-medium">
-                        Points (0-10):
-                      </label>
-                      <input
-                        id={`points-${index}`}
-                        type="number"
-                        min="0"
-                        max="10"
-                        value={question.points === null ? "" : question.points}
-                        on:input={(e) => setPoints(question, e.target.value)}
-                        class="w-16 p-2 border border-gray-300 rounded-lg text-gray-700 focus:ring-2 focus:ring-lime-500"
-                      />
-                      <span class="text-gray-600">/10</span>
-                    </div>
-                  <!-- Scoring Checkbox for Quiz 1 -->
-                  {:else if question.scored === false}
-                    <label class="flex items-center gap-2 text-gray-700">
-                      <input
-                        type="checkbox"
-                        on:change={() => {
-                          question.scored = true;
-                          updateScore();
-                        }}
-                        class="w-5 h-5 text-lime-500 border-gray-300 rounded focus:ring-lime-500 cursor-pointer"
-                      />
-                      Mark as Scored
-                    </label>
-                  {/if}
-                </div>
-              {/if}
-
-              <!-- Choices or Correct Answer -->
-              {#if question.choices}
-                <!-- MCQ Format (Quiz 1) -->
-                <ul class="mt-4 space-y-3">
-                  {#each Object.entries(question.choices) as [key, value]}
-                    <li
-                      class="p-3 rounded-lg flex items-center gap-3 transition-colors duration-200
-                        {key === question.chosenAnswer
-                          ? 'ring-2 ring-lime-500 bg-lime-50'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}
-                        {key === question.chosenAnswer && question.scored !== false && key === question.correctAnswer
-                          ? 'bg-green-100 text-green-800 border-l-4 border-green-500'
-                          : key === question.chosenAnswer && question.scored !== false
-                            ? 'bg-orange-100 text-orange-800 border-l-4 border-orange-500'
-                            : key === question.correctAnswer && question.scored !== false
-                              ? 'bg-green-100 text-green-800 border-l-4 border-green-500'
-                              : ''}"
+                  <!-- Review Button for is_final=0 -->
+                  {#if question.is_final === 0}
+                    <button
+                      on:click={() => markQuestionAsReviewed(index)}
+                      class="px-4 py-2 bg-lime-500 text-white rounded-full transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-md hover:shadow-lg cursor-pointer"
                     >
-                      <span class="w-8 h-8 flex items-center justify-center rounded-full bg-white/50 text-sm font-bold">
-                        {key.toUpperCase()}
-                      </span>
-                      <span>{value}</span>
-                    </li>
-                  {/each}
-                </ul>
-              {:else if question.correctAnswer}
-                <!-- Drag-and-Drop Format (Quiz 2) -->
-                <div class="mt-4">
-                  <p class="text-sm text-gray-600 font-medium">Correct Answer:</p>
-                  <p
-                    class="p-3 rounded-lg font-semibold text-gray-800 bg-green-100 text-green-800 border-l-4 border-green-500"
-                  >
-                    {question.correctAnswer}
-                  </p>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        class="w-5 h-5"
+                        fill="none"
+                        viewBox="0 0 24 24"
+                        stroke="currentColor"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
+                        />
+                      </svg>
+                      <span class="font-medium">Review</span>
+                    </button>
+                  {/if}
+
+                  <!-- Choices -->
+                  {#if question.choices}
+                    <div>
+                      <p class="text-sm text-gray-600 font-medium">Choices:</p>
+                      <ul class="mt-2 space-y-2">
+                        {#each Object.entries(question.choices) as [key, value]}
+                          <li
+                            class="p-3 rounded-lg flex items-center gap-3 transition-colors duration-200
+                              {value === question.chosenAnswer
+                                ? 'ring-2 ring-lime-500'
+                                : 'bg-gray-100 text-gray-700 hover:bg-gray-200'}
+                              {value === question.chosenAnswer && value === question.correctAnswer
+                                ? 'bg-green-100 text-green-800 border-l-4 border-green-500'
+                                : value === question.chosenAnswer
+                                  ? 'bg-orange-100 text-orange-800 border-l-4 border-orange-500'
+                                  : value === question.correctAnswer
+                                    ? 'bg-green-100 text-green-800 border-l-4 border-green-500'
+                                    : ''}"
+                          >
+                            <span class="font-medium">{key.toUpperCase()}.</span>
+                            <span>{value}</span>
+                          </li>
+                        {/each}
+                      </ul>
+                    </div>
+                  {/if}
                 </div>
               {/if}
             </div>
@@ -352,49 +328,30 @@
         </div>
 
         <div class="flex justify-center gap-4">
-          {#if person.status === "Reviewed"}
-            <div
-              class="px-6 py-3 bg-blue-100 text-blue-800 rounded-full flex items-center gap-2 shadow-md"
+          <div
+            class="px-6 py-3 rounded-full flex items-center gap-2 shadow-md
+              {reviewStatus === 'Quiz is completely reviewed'
+                ? 'bg-blue-100 text-blue-800'
+                : reviewStatus === 'Partially reviewed'
+                  ? 'bg-orange-100 text-orange-800'
+                  : 'bg-gray-100 text-gray-800'}"
+          >
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              class="w-5 h-5"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
             >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-5 h-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
-              <span class="font-medium">Quiz is already reviewed</span>
-            </div>
-          {:else}
-            <button
-              on:click={markAsReviewed}
-              disabled={!allScored}
-              class="px-6 py-3 bg-lime-500 text-white rounded-full transition-all duration-300 transform hover:scale-105 flex items-center gap-2 shadow-md hover:shadow-lg cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="w-5 h-5"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"
-                />
-              </svg>
-              <span class="font-medium">Review</span>
-            </button>
-          {/if}
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M5 13l4 4L19 7"
+              />
+            </svg>
+            <span class="font-medium">{reviewStatus}</span>
+          </div>
         </div>
       </div>
     </div>

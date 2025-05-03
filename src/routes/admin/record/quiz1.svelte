@@ -1,10 +1,9 @@
-<!-- src/routes/admin/quiz1.svelte -->
 <script>
   import { onMount } from "svelte";
   import { writable, get } from "svelte/store";
   import { fade } from "svelte/transition";
   import QuizModal from "../modals/quizModal.svelte";
-  import SuccessModal from "../modals/successModal.svelte"; // New import
+  import SuccessModal from "../modals/successModal.svelte";
 
   let selectedGender = "All";
   let date = new Date().toISOString().split("T")[0];
@@ -14,6 +13,7 @@
   let showModal = writable(false);
   let showSuccessModal = writable(false);
   let selectedPerson = writable(null);
+  let error = writable(null);
 
   const genders = ["All", "Male", "Female"];
 
@@ -26,100 +26,30 @@
     { key: "status", label: "Status" },
   ];
 
-  const data = [
-    {
-      name: "Alice Gou",
-      gender: "Female",
-      datetime: "2025-03-02 14:30",
-      score: 85,
-      attempts: 3,
-      status: "Reviewed",
-      questions: [
-        {
-          text: "What is 2 + 2?",
-          choices: { a: "3", b: "4", c: "5", d: "6" },
-          chosenAnswer: "b",
-          correctAnswer: "b",
-        },
-        {
-          text: "What color is the sky?",
-          choices: { a: "Red", b: "Blue", c: "Green", d: "Yellow" },
-          chosenAnswer: "b",
-          correctAnswer: "b",
-        },
-        {
-          text: "How many legs does a spider have?",
-          choices: { a: "6", b: "7", c: "8", d: "9" },
-          chosenAnswer: "c",
-          correctAnswer: "c",
-        },
-      ],
-    },
-    {
-      name: "Bob Ackerman",
-      gender: "Male",
-      datetime: "2025-03-02 15:00",
-      score: 78,
-      attempts: 2,
-      status: "Pending for Review",
-      questions: [
-        {
-          text: "What is 5 - 3?",
-          choices: { a: "2", b: "3", c: "4", d: "1" },
-          chosenAnswer: "a",
-          correctAnswer: "a",
-        },
-        {
-          text: "What is the capital of France?",
-          choices: { a: "Florida", b: "Paris", c: "London", d: "Texas" },
-          chosenAnswer: "b",
-          correctAnswer: "b",
-        },
-        {
-          text: "Which animal is a mammal?",
-          choices: { a: "Crocodile", b: "Snake", c: "Dolphin", d: "Lizard" },
-          chosenAnswer: "a",
-          correctAnswer: "c",
-        },
-      ],
-    },
-    {
-      name: "Charlie Johnson",
-      gender: "Male",
-      datetime: "2025-03-02 15:45",
-      score: 70,
-      attempts: 1,
-      status: "Reviewed",
-      questions: [
-        {
-          text: "What is 10 / 2?",
-          choices: { a: "5", b: "4", c: "2", d: "6" },
-          chosenAnswer: "a",
-          correctAnswer: "a",
-        },
-        {
-          text: "What gas do plants need?",
-          choices: { a: "Oxygen", b: "Nitrogen", c: "Carbon Dioxide", d: "Helium" },
-          chosenAnswer: "c",
-          correctAnswer: "c",
-        },
-        {
-          text: "How many days in a week?",
-          choices: { a: "5", b: "6", c: "7", d: "8" },
-          chosenAnswer: "d",
-          correctAnswer: "c",
-        },
-      ],
-    },
-  ];
+  async function fetchQuizResults() {
+    try {
+      const response = await fetch('http://localhost/shenieva-teacher/src/lib/api/records/get_quiz_results.php');
+      if (!response.ok) {
+        const text = await response.text();
+        throw new Error(`HTTP error! status: ${response.status}, response: ${text}`);
+      }
+      const data = await response.json();
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      attendees.set(data);
+    } catch (err) {
+      error.set(err.message);
+      console.error('Fetch error:', err);
+    }
+  }
 
   function filterData() {
-    attendees.set(
-      data.filter((person) => {
-        let personDate = person.datetime.split(" ")[0];
+    attendees.update((items) => {
+      return items.filter((person) => {
         return selectedGender === "All" || person.gender === selectedGender;
-      })
-    );
+      });
+    });
   }
 
   function sortBy(key) {
@@ -154,6 +84,7 @@
     console.log("Marking as reviewed:", $selectedPerson.name);
     $selectedPerson.status = "Reviewed";
     showSuccessModal.set(true);
+    // TODO: Update database via API to set is_final=1 for all questions
   }
 
   function closeSuccessModal() {
@@ -162,12 +93,41 @@
     closeModal();
   }
 
+  function handleQuestionReviewed(event) {
+    const { taken_quiz_id, is_final } = event.detail;
+    console.log(`Handling question reviewed: taken_quiz_id=${taken_quiz_id}, is_final=${is_final}`);
+    attendees.update((items) => {
+      return items.map((person) => {
+        // Update questions for the matching person
+        const updatedQuestions = person.questions.map((question) => {
+          if (question.taken_quiz_id === taken_quiz_id) {
+            return { ...question, is_final };
+          }
+          return question;
+        });
+        // Update status based on all questions
+        const allReviewed = updatedQuestions.every(q => q.is_final === 1);
+        return {
+          ...person,
+          questions: updatedQuestions,
+          status: allReviewed ? "Reviewed" : "Pending"
+        };
+      });
+    });
+  }
+
   onMount(() => {
-    filterData();
+    fetchQuizResults();
   });
 </script>
 
 <div class="p-10 mb-14 mt-5 max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
+  {#if $error}
+    <div class="p-4 mb-4 text-red-800 bg-red-100 rounded-lg">
+      Error: {$error}
+    </div>
+  {/if}
+
   <div class="flex items-center gap-4 mb-6 px-4">
     <select
       bind:value={selectedGender}
@@ -255,7 +215,7 @@
                   ? 'bg-blue-100 text-blue-800'
                   : 'bg-orange-100 text-orange-800'}"
               >
-                {person.status === "Reviewed" ? "Reviewed" : "Pending"}
+                {person.status}
               </span>
             </td>
           </tr>
@@ -271,6 +231,7 @@
   {showModal}
   {closeModal}
   {markAsReviewed}
+  on:questionReviewed={handleQuestionReviewed}
 />
 
 <!-- Success Modal Component -->

@@ -1,26 +1,75 @@
-<script lang="ts">
-    import { createEventDispatcher } from 'svelte';
-    const dispatch = createEventDispatcher();
+<script>
+    import { onMount, onDestroy } from 'svelte';
+    import { language, isFast } from '$lib/store/story_lang_audio';
 
     const slide = {
-        text: "Choose vendor. 🌟",
+        english: {
+            text: "Slide 3 ni - Shenievia Reads stands at the edge of Readville Village. 'Time to head home!' she says with a grin. 🌟",
+            audioFast: '/src/assets/audio/fast.mp3',
+            audioSlow: '/src/assets/audio/slow.mp3'
+        },
+        cebuano: {
+            text: "Slide 3 ni - Si Shenievia Reads nagbarug sa daplin sa Readville Village. 'Panahon na sa pagpauli!' ningisi sya 🌟",
+            audioFast: '/src/assets/audio/cebuano/fast.mp3',
+            audioSlow: '/src/assets/audio/cebuano/slow.mp3'
+        },
+        image: "/src/assets/readville.gif"
     };
 
-    const vendors = [
-        { id: 1, image: "/src/assets/story1/vendor1.png", nextPath: "/src/routes/student/Stories/Story1/store1/slide_1.svelte" },
-        { id: 2, image: "/src/assets/story1/vendor2.png", nextPath: "/src/routes/student/Stories/Story1/store2/slide_1.svelte" },
-        { id: 3, image: "/src/assets/story1/vendor3.png", nextPath: "/src/routes/student/Stories/Story1/store3/slide_1.svelte" }
-    ];
+    let currentLanguage;
+    let currentIsFast;
+    let audio;
+    let isPlaying = false;
 
-    function handleVendorSelect(vendorId: number): void {
-        const selectedVendor = vendors.find(v => v.id === vendorId);
-        if (selectedVendor) {
-            dispatch('vendorSelected', { vendorId, nextPath: selectedVendor.nextPath });
-        }
+    // Subscribe to store values
+    language.subscribe(value => {
+        currentLanguage = value;
+        updateAudio();
+    });
+    isFast.subscribe(value => {
+        currentIsFast = value;
+        updateAudio();
+    });
+
+    $: currentText = slide[currentLanguage].text;
+
+    function updateAudio() {
+        if (audio) audio.pause();
+        audio = new Audio(
+            currentIsFast 
+                ? slide[currentLanguage].audioFast 
+                : slide[currentLanguage].audioSlow
+        );
+        if (isPlaying) playAudio();
+    }
+
+    onMount(() => {
+        updateAudio();
+        playAudio();
+    });
+
+    onDestroy(() => {
+        stopAudio();
+    });
+
+    function playAudio() {
+        stopAudio();
+        audio.currentTime = 0;
+        audio.play();
+        isPlaying = true;
+    }
+
+    function stopAudio() {
+        if (audio) audio.pause();
+        isPlaying = false;
+    }
+
+    function repeatSlide() {
+        playAudio();
     }
 </script>
 
-<div class="flex flex-col justify-center items-center text-center slide">
+<div class="flex flex-col justify-center items-center text-center slide relative">
     {#if slide.image}
         <div class="image-container">
             <img
@@ -30,27 +79,30 @@
             />
         </div>
     {/if}
-    
     <p class="text-[4vw] md:text-2xl text-gray-800 font-semibold text-fade">
-        {slide.text}
+        {currentText}
     </p>
 
-    <div class="vendor-container">
-        {#each vendors as vendor}
-            <button 
-                class="vendor-button"
-                on:click={() => handleVendorSelect(vendor.id)}
-            >
-                <img
-                    src={vendor.image}
-                    alt={`Vendor ${vendor.id}`}
-                    class="vendor-image"
-                />
-                <span class="vendor-label">Vendor {vendor.id}</span>
-            </button>
-        {/each}
+    <!-- Kid-Friendly Controls -->
+    <div class="controls absolute top-0 right-4 flex flex-col gap-2">
+        <button 
+            on:click={repeatSlide}
+            class="kid-button bg-yellow-400 hover:bg-yellow-500 repeat-button"
+        >
+            <span class="icon">🔄</span>
+        </button>
+        
+        <button 
+            on:click={() => isFast.set(!$isFast)}
+            class="kid-button bg-purple-400 hover:bg-purple-500 speed-button"
+            class:fast={$isFast}
+            class:slow={!$isFast}
+        >
+            <span class="icon">{$isFast ? '🐇' : '🐢'}</span>
+        </button>
     </div>
 </div>
+
 <style>
     .slide {
         animation: fadeIn 1000ms ease-in forwards;
@@ -85,46 +137,58 @@
         transform: translateZ(0);
     }
 
-    .vendor-container {
+    .kid-button {
+        width: 3rem;
+        height: 3rem;
+        border-radius: 50%;
+        border: 2px solid #fff;
+        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
         display: flex;
-        flex-wrap: wrap;
         justify-content: center;
-        gap: 2rem;
-        margin-top: 2rem;
-        width: 80%;
-        max-width: 800px;
-    }
-
-    .vendor-button {
-        background: #ffffff;
-        border: 2px solid #e2e8f0;
-        border-radius: 1rem;
-        padding: 1rem;
-        cursor: pointer;
-        transition: all 0.3s ease;
-        display: flex;
-        flex-direction: column;
         align-items: center;
-        width: 200px;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
     }
 
-    .vendor-button:hover {
-        transform: scale(1.05);
-        border-color: #4299e1;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    .kid-button:hover {
+        transform: scale(1.1);
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
     }
 
-    .vendor-image {
-        width: 150px;
-        height: 150px;
-        object-fit: contain;
-        margin-bottom: 0.5rem;
+    .repeat-button:active {
+        animation: rotateRightToLeft 0.5s ease;
     }
 
-    .vendor-label {
-        color: #2d3748;
-        font-size: 1.1rem;
-        font-weight: 500;
+    .speed-button.fast:active {
+        animation: rotateLeftToRight 0.5s ease;
+    }
+
+    .speed-button.slow:active {
+        animation: rotateRightToLeft 0.5s ease;
+    }
+
+    .icon {
+        font-size: 1.5rem;
+        line-height: 1;
+    }
+
+    .repeat-button {
+        background: linear-gradient(135deg, #fbbf24, #f59e0b);
+    }
+
+    .speed-button {
+        background: linear-gradient(135deg, #c084fc, #9333ea);
+    }
+
+    @keyframes rotateRightToLeft {
+        0% { transform: rotate(0deg); }
+        50% { transform: rotate(-180deg); }
+        100% { transform: rotate(-360deg); }
+    }
+
+    @keyframes rotateLeftToRight {
+        0% { transform: rotate(0deg); }
+        50% { transform: rotate(180deg); }
+        100% { transform: rotate(360deg); }
     }
 
     @keyframes fadeIn {

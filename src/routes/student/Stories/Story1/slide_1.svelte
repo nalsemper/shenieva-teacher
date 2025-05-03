@@ -4,12 +4,12 @@
 
     const slide = {
         english: {
-            text: "Shenievia Reads stands at the edge of Readville Village. 'Time to head home!' she says with a grin. 🌟",
+            text: "Story 1- Page 1- Shenievia Reads stands at the edge of Readville Village. 'Time to head home!' she says with a grin. 🌟",
             audioFast: '/src/assets/audio/fast.mp3',
             audioSlow: '/src/assets/audio/slow.mp3'
         },
         cebuano: {
-            text: "Si Shenievia Reads nagbarug sa daplin sa Readville Village. 'Panahon na sa pagpauli!' ningisi sya 🌟",
+            text: "Story 1- Page 1- Si Shenievia Reads nagbarug sa daplin sa Readville Village. 'Panahon na sa pagpauli!' ningisi sya 🌟",
             audioFast: '/src/assets/audio/cebuano/fast.mp3',
             audioSlow: '/src/assets/audio/cebuano/slow.mp3'
         },

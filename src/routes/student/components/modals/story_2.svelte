@@ -3,35 +3,21 @@
     import Slide1 from "../../Stories/Story2/slide_1.svelte";
     import Slide2 from "../../Stories/Story2/slide_2.svelte";
     import Slide3 from "../../Stories/Story2/slide_3.svelte";
+    import Slide4 from "../../Stories/Story2/slide_4.svelte"; // Add more slides as needed
     import { language } from "$lib/store/story_lang_audio";
-
-    type SvelteComponent = any;
-
-    let VendorSlide: SvelteComponent | null = null;
-    async function loadVendorSlide(path: string): Promise<void> {
-        try {
-            const module = await import(/* @vite-ignore */ path);
-            VendorSlide = module.default;
-        } catch (error) {
-            console.error("Failed to load vendor slide:", error);
-            VendorSlide = null;
-        }
-    }
 
     export let showModal: boolean = false;
     export let onClose: () => void = () => {};
 
     let currentSlide: number = 0;
     let isLoading: boolean = true;
-    let selectedVendorPath: string | null = null;
-    let isVendorSelected: boolean = false;
-    let vendorSlideIndex: number = 0;
-    let totalVendorSlides: number = 2;
     let showLanguageModal: boolean = false;
 
-    const baseSlides: SvelteComponent[] = [Slide1, Slide2, Slide3];
-    let totalSlides: number = baseSlides.length - 1;
+    // Define all slides in an array
+    const slides = [Slide1, Slide2, Slide3, Slide4]; // Add more slides here (e.g., Slide5, Slide6, etc.)
+    const totalSlides: number = slides.length - 1;
 
+    // Handle loading state when modal opens
     $: if (showModal && isLoading) {
         setTimeout(() => {
             isLoading = false;
@@ -39,27 +25,13 @@
     }
 
     function nextSlide(): void {
-        if (isVendorSelected) {
-            if (vendorSlideIndex < totalVendorSlides) {
-                vendorSlideIndex += 1;
-            }
-        } else if (currentSlide < totalSlides) {
-            if (currentSlide !== 2) {
-                currentSlide += 1;
-            }
+        if (currentSlide < totalSlides) {
+            currentSlide += 1;
         }
     }
 
     function prevSlide(): void {
-        if (isVendorSelected) {
-            if (vendorSlideIndex > 0) {
-                vendorSlideIndex -= 1;
-            } else {
-                isVendorSelected = false;
-                VendorSlide = null;
-                currentSlide = 2;
-            }
-        } else if (currentSlide > 0) {
+        if (currentSlide > 0) {
             currentSlide -= 1;
         }
     }
@@ -69,11 +41,6 @@
         showModal = false;
         currentSlide = 0;
         isLoading = true;
-        VendorSlide = null;
-        selectedVendorPath = null;
-        isVendorSelected = false;
-        vendorSlideIndex = 0;
-        totalSlides = baseSlides.length - 1;
         showLanguageModal = false;
     }
 
@@ -84,31 +51,6 @@
     function setLanguage(lang: string): void {
         language.set(lang);
         showLanguageModal = false;
-    }
-
-    interface VendorSelectEvent extends CustomEvent {
-        detail: { vendorId: number; nextPath: string };
-    }
-
-    function handleVendorSelection(event: VendorSelectEvent): void {
-        const { nextPath } = event.detail;
-        selectedVendorPath = nextPath;
-        loadVendorSlide(nextPath).then(() => {
-            if (VendorSlide) {
-                isVendorSelected = true;
-                vendorSlideIndex = 0;
-                const basePath = nextPath.substring(0, nextPath.lastIndexOf('/'));
-                loadVendorSlide(`${basePath}/slide_${vendorSlideIndex + 1}.svelte`);
-            }
-        });
-    }
-
-    $: currentVendorSlidePath = isVendorSelected && selectedVendorPath
-        ? `${selectedVendorPath.substring(0, selectedVendorPath.lastIndexOf('/'))}/slide_${vendorSlideIndex + 1}.svelte`
-        : null;
-
-    $: if (currentVendorSlidePath && isVendorSelected) {
-        loadVendorSlide(currentVendorSlidePath);
     }
 </script>
 
@@ -137,18 +79,8 @@
                 transition:fade={{ duration: 500 }}
             >
                 <div class="w-[100%] h-[100%] flex flex-col items-center justify-center">
-                    {#key isVendorSelected ? `${currentSlide}-${vendorSlideIndex}` : currentSlide}
-                        {#if !isVendorSelected}
-                            {#if currentSlide === 0}
-                                <Slide1 />
-                            {:else if currentSlide === 1}
-                                <Slide2 />
-                            {:else if currentSlide === 2}
-                                <Slide3 on:vendorSelected={handleVendorSelection} />
-                            {/if}
-                        {:else if VendorSlide}
-                            <svelte:component this={VendorSlide} />
-                        {/if}
+                    {#key currentSlide}
+                        <svelte:component this={slides[currentSlide]} />
                     {/key}
                 </div>
 
@@ -185,15 +117,17 @@
                     </div>
                 {/if}
 
+                <!-- Next Button -->
                 <button
                     class="absolute right-[1vw] top-1/2 transform -translate-y-1/2 text-[8vw] md:text-6xl text-lime-500 hover:text-lime-600 transition-transform duration-200"
                     on:click={nextSlide}
-                    disabled={(!isVendorSelected && currentSlide === 2) || 
-                             (isVendorSelected && vendorSlideIndex >= totalVendorSlides)}
+                    disabled={currentSlide >= totalSlides}
                 >
                     ➡️
                 </button>
-                {#if currentSlide > 0 || (isVendorSelected && vendorSlideIndex > 0)}
+
+                <!-- Previous Button -->
+                {#if currentSlide > 0}
                     <button
                         class="absolute left-[1vw] top-1/2 transform -translate-y-1/2 text-[8vw] md:text-6xl text-lime-500 hover:text-lime-600 transition-transform duration-200"
                         on:click={prevSlide}
@@ -205,6 +139,7 @@
             </div>
         </div>
 
+        <!-- Exit Button -->
         <button
             class="fixed top-[2vh] right-[2vw] bg-red-500 text-white rounded-full w-[10vw] h-[10vw] max-w-[60px] max-h-[60px] flex items-center justify-center text-[5vw] md:text-2xl shadow-lg hover:bg-red-600 transition-all duration-200 z-50 exit-button"
             on:click={closeModal}

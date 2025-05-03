@@ -28,16 +28,16 @@
   // Handle story selection from choose_story
   function handleStorySelect(story: string) {
     if (story === "Story 1") {
-      showStory1Modal = true; // Open story_1 modal
-      showChooseStoryModal = false; // Close choose_story modal
+        showStory1Modal = true;
+        showChooseStoryModal = false;
     } else if (story === "Story 2") {
-      showStory2Modal = true; // Open story_2 modal
-      showChooseStoryModal = false;
+        showStory2Modal = true;
+        showChooseStoryModal = false;
     } else if (story === "Story 3") {
-      showStory3Modal = true; // Open story_3 modal
-      showChooseStoryModal = false;
+        showStory3Modal = true;
+        showChooseStoryModal = false;
     }
-  }
+}
 
   // Close modals
   function handleCloseChooseStoryModal() {
@@ -94,9 +94,9 @@
 <!-- Story 1 Modal -->
 <Story1 showModal={showStory1Modal} onClose={handleCloseStory1Modal} />
 <!-- Story 2 Modal -->
-<Story1 showModal={showStory2Modal} onClose={handleCloseStory1Modal} />
+<Story2 showModal={showStory2Modal} onClose={handleCloseStory2Modal} />
 <!-- Story 3 Modal -->
-<Story1 showModal={showStory3Modal} onClose={handleCloseStory1Modal} />
+<Story3 showModal={showStory3Modal} onClose={handleCloseStory3Modal} />
 
 <style>
   /* Initial Wiggle Animation */

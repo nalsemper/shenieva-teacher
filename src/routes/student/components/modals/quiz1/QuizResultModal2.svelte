@@ -1,149 +1,97 @@
-<script lang="ts">
-    import { quiz1Taking } from '$lib/store/quiz1_taking';
-
-    interface Choice {
-        id: number;
-        text: string;
-        is_correct: boolean;
+<script>
+    import { createEventDispatcher } from 'svelte';
+    import { quiz2Store } from '$lib/store/quiz2_taking';
+  
+    export let quizData;
+    const dispatch = createEventDispatcher();
+    $: isPerfect = $quiz2Store.score === quizData.length; // Perfect if all questions correct
+    $: maxAttempts = $quiz2Store.attempts >= $quiz2Store.maxAttempts;
+    $: maxScore = quizData.length; // Total number of questions
+    $: maxPoints = quizData.reduce((sum, q) => sum + (q.points || 1), 0); // Total possible points
+  
+    // Map answers to questions for display
+    $: results = quizData.map(question => {
+      const assignedAnswer = $quiz2Store.answers.find(answer => answer.assignedTo === question.id);
+      const isCorrect = assignedAnswer && assignedAnswer.text === question.answer;
+      return {
+        question: question.question,
+        answer: assignedAnswer ? assignedAnswer.text : 'No answer',
+        isCorrect,
+        points: question.points || 1
+      };
+    });
+  
+    function handleRetake() {
+      dispatch('action', { action: 'retake' });
     }
-
-    interface Quiz {
-        id: number;
-        question: string;
-        answer: string;
-        points: number;
-        choices: Choice[];
+  
+    function handleContinue() {
+      dispatch('action', { action: 'continue' });
     }
-
-    export let showModal: boolean;
-    export let score: number;
-    export let totalPoints: number;
-    export let quizTake: number;
-    export let maxTakes: number;
-    export let randomizedQuizData: Quiz[];
-    export let selectedChoices: (Choice | null)[];
-    export let studentId: number | null;
-    export let onClose: () => void;
-    export let onRetake: () => void;
-
-    $: canRetake = quizTake < maxTakes;
-
-    async function saveQuiz(isFinal: boolean): Promise<void> {
-        if (!studentId) {
-            console.error('No student ID available');
-            return;
-        }
-
-        const answers = randomizedQuizData.map((quiz, index) => ({
-            item_number: index + 1,
-            question: quiz.question,
-            choices: quiz.choices,
-            is_correct: selectedChoices[index]?.is_correct || false,
-            points: quiz.points
-        }));
-
-        try {
-            const response = await fetch('http://localhost/shenieva-teacher/src/lib/api/store2/save_story1_quiz.php', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    student_id: studentId,
-                    store: 1,
-                    attempt: quizTake,
-                    answers: answers,
-                    is_final: isFinal
-                })
-            });
-
-            const result = await response.json();
-            if (!result.success) {
-                console.error('Failed to save quiz:', result.error);
-            } else {
-                console.log('Quiz saved successfully with is_final:', isFinal);
-            }
-        } catch (err) {
-            console.error('Error saving quiz:', err);
-        }
-    }
-
-    function handleProceed(): void {
-        saveQuiz(true); // Final attempt
-        onClose();
-    }
-
-    function handleRetake(): void {
-        saveQuiz(false); // Not final
-        onRetake();
-    }
-</script>
-
-{#if showModal}
-    <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-20">
-        <div class="bg-white p-6 rounded-2xl shadow-lg border-4 border-purple-200 max-w-2xl w-full max-h-[80vh] overflow-y-auto">
-            <h2 class="text-3xl text-purple-600 font-extrabold mb-4">Your Answer Sheet</h2>
-            <p class="text-xl text-gray-700 mb-4">Score: <span class="text-green-500 font-bold">{score}</span> / {totalPoints}</p>
-            {#each randomizedQuizData as quiz, index}
-                <div class="mb-4">
-                    <p class="text-lg font-semibold text-blue-600">{index + 1}. {quiz.question}</p>
-                    <p class="text-md mt-1">
-                        Your Answer: <span class="font-semibold">{selectedChoices[index]?.text || 'None'}</span>
-                        <span class="ml-2">
-                            {#if selectedChoices[index]?.is_correct}
-                                <span class="text-green-500">✔️ Correct</span>
-                            {:else}
-                                <span class="text-red-500">❌ Wrong</span>
-                            {/if}
-                        </span>
-                    </p>
-                </div>
-            {/each}
-            {#if canRetake}
-                <p class="text-lg text-gray-700 mb-4">Want to try again? You have {maxTakes - quizTake} attempt(s) left!</p>
-                <div class="flex justify-end gap-4">
-                    <button
-                        on:click={handleProceed}
-                        class="py-2 px-6 bg-gray-500 text-white text-lg font-bold rounded-full hover:bg-gray-600 transition-all duration-300"
-                    >
-                        No, Thanks
-                    </button>
-                    <button
-                        on:click={handleRetake}
-                        class="py-2 px-6 bg-purple-500 text-white text-lg font-bold rounded-full hover:bg-purple-600 transition-all duration-300"
-                    >
-                        Retake Quiz
-                    </button>
-                </div>
-            {:else}
-                <p class="text-lg text-red-500 mb-4">No more attempts left!</p>
-                <div class="flex justify-end">
-                    <button
-                        on:click={handleProceed}
-                        class="py-2 px-6 bg-gray-500 text-white text-lg font-bold rounded-full hover:bg-gray-600 transition-all duration-300"
-                    >
-                        Close
-                    </button>
-                </div>
-            {/if}
-        </div>
+  </script>
+  
+  <div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+    <div class="bg-gradient-to-br from-white to-blue-50 rounded-2xl shadow-2xl p-8 w-full max-w-lg text-center transform scale-100 transition-transform">
+      <!-- Header -->
+      {#if isPerfect}
+        <h2 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-4">
+          Perfect Score! 🎉
+        </h2>
+        <p class="text-xl text-gray-800 mb-6">Wow, you got all {maxScore} questions correct for {maxPoints} points! You're a quiz superstar!</p>
+      {:else if maxAttempts}
+        <h2 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-4">
+          Quiz Results
+        </h2>
+        <p class="text-xl text-gray-800 mb-6">
+          Score: {$quiz2Store.score}/{maxScore} | Points: {$quiz2Store.totalPoints}/{maxPoints}. You've used all {$quiz2Store.maxAttempts} attempts. Check your answers below and continue!
+        </p>
+      {:else}
+        <h2 class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600 mb-4">
+          Quiz Results
+        </h2>
+        <p class="text-xl text-gray-800 mb-6">
+          Score: {$quiz2Store.score}/{maxScore} | Points: {$quiz2Store.totalPoints}/{maxPoints} (Attempt {$quiz2Store.attempts}/{$quiz2Store.maxAttempts}). Check your answers below.
+        </p>
+      {/if}
+  
+      <!-- Answer Sheet -->
+      <div class="mb-8 text-left">
+        <h3 class="text-2xl font-bold text-purple-700 mb-4">Your Answers</h3>
+        {#each results as result}
+          <div class="mb-4 p-4 bg-gray-100 rounded-lg">
+            <p class="text-lg font-semibold text-gray-800">{result.question}</p>
+            <p class="text-md text-gray-600">
+              Your Answer: <span class="font-medium">{result.answer}</span>
+              {#if result.isCorrect}
+                <span class="text-green-600 font-bold"> ✓ Correct (+{result.points} points)</span>
+              {:else}
+                <span class="text-red-600 font-bold"> ✗ Incorrect (0 points)</span>
+              {/if}
+            </p>
+          </div>
+        {/each}
+      </div>
+  
+      <!-- Buttons -->
+      <div class="flex justify-center gap-4">
+        {#if !isPerfect && !maxAttempts}
+          <button
+            on:click={handleRetake}
+            class="bg-gradient-to-r from-yellow-400 to-orange-400 text-purple-900 font-bold px-6 py-3 rounded-full hover:scale-105 transition-transform"
+          >
+            Retake Quiz
+          </button>
+        {/if}
+        <button
+          on:click={handleContinue}
+          class="bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold px-6 py-3 rounded-full hover:scale-105 transition-transform"
+        >
+          Continue
+        </button>
+      </div>
     </div>
-{/if}
-
-<style>
-    .overflow-y-auto::-webkit-scrollbar {
-        width: 8px;
-    }
-
-    .overflow-y-auto::-webkit-scrollbar-track {
-        background: #f1f1f1;
-        border-radius: 4px;
-    }
-
-    .overflow-y-auto::-webkit-scrollbar-thumb {
-        background: #888;
-        border-radius: 4px;
-    }
-
-    .overflow-y-auto::-webkit-scrollbar-thumb:hover {
-        background: #555;
-    }
-</style>
+  </div>
+  
+  <style>
+ 
+  </style>

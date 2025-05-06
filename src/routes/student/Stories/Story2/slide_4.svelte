@@ -9,10 +9,10 @@
 
     function continueToQuiz() {
         // Check studentLevel from the studentData store
-        if ($studentData && $studentData.studentLevel >= 1) {
-            goto('/student/game/trash_1'); // Navigate to game if level is 1 or higher
+        if ($studentData && $studentData.studentLevel >= 2) {
+            goto('/student/game/trash_2'); // Navigate to game if level is 1 or higher
         } else {
-            goto('/student/quizzes/quiz1'); // Navigate to quiz if level is below 1 or no data
+            goto('/student/quizzes/quiz2'); // Navigate to quiz if level is below 1 or no data
         }
     }
 </script>

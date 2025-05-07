@@ -13,20 +13,30 @@ header('Content-Type: application/json');
 $conn = new mysqli("localhost", "root", "", "shenieva_db");
 
 if ($conn->connect_error) {
+    http_response_code(500);
     echo json_encode(["error" => "Database connection failed: " . $conn->connect_error]);
     exit();
 }
 
-    try {
+try {
+    // Fetch quiz questions
+    $query = "SELECT `id`, `question`, `answer`, `points` FROM `quizzes_story2`";
+    $result = $conn->query($query);
 
-    
-        // Fetch quiz questions
-        $stmt = $pdo->query("SELECT `id`, `question`, `answer`, `points` FROM `quizzes_story2` WHERE 1");
-        $quizzes = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    
-        echo json_encode($quizzes);
-    } catch (PDOException $e) {
-        http_response_code(500);
-        echo json_encode(['error' => 'Database error: ' . $e->getMessage()]);
+    if ($result === false) {
+        throw new Exception("Query failed: " . $conn->error);
     }
-    ?>
+
+    $quizzes = [];
+    while ($row = $result->fetch_assoc()) {
+        $quizzes[] = $row;
+    }
+
+    echo json_encode($quizzes);
+} catch (Exception $e) {
+    http_response_code(500);
+    echo json_encode(['error' => 'Server error: ' . $e->getMessage()]);
+}
+
+$conn->close();
+?>

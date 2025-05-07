@@ -1,0 +1,1233 @@
+2025-05-07 09:17:36
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 18
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [CONTENT_TYPE] => application/json
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:5173
+    [HTTP_SEC_FETCH_SITE] => same-site
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:5173/
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REMOTE_PORT] => 61919
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REQUEST_TIME_FLOAT] => 1746602256.2611
+    [REQUEST_TIME] => 1746602256
+)
+
+{"student_id":"1"}
+2025-05-07 09:17:44
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 18
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [CONTENT_TYPE] => application/json
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:5173
+    [HTTP_SEC_FETCH_SITE] => same-site
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:5173/
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REMOTE_PORT] => 61932
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REQUEST_TIME_FLOAT] => 1746602264.0984
+    [REQUEST_TIME] => 1746602264
+)
+
+{"student_id":"1"}
+2025-05-07 09:17:55
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 335
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [CONTENT_TYPE] => application/json
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:5173
+    [HTTP_SEC_FETCH_SITE] => same-site
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:5173/
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/save_story2_quizzes.php
+    [REMOTE_PORT] => 61948
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/save_story2_quizzes.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/save_story2_quizzes.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/save_story2_quizzes.php
+    [REQUEST_TIME_FLOAT] => 1746602275.367
+    [REQUEST_TIME] => 1746602275
+)
+
+{"quizResults":[{"student_id":"1","attempt":1,"question":"Is this story 2","answer":"Yes","is_correct":true,"is_final":true},{"student_id":"1","attempt":1,"question":"Who am I?","answer":"Nal","is_correct":true,"is_final":true},{"student_id":"1","attempt":1,"question":"How old am I?","answer":"24","is_correct":true,"is_final":true}]}
+2025-05-07 09:17:55
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 30
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [CONTENT_TYPE] => application/json
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:5173
+    [HTTP_SEC_FETCH_SITE] => same-site
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:5173/
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/save_student_ribbons.php
+    [REMOTE_PORT] => 61948
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/save_student_ribbons.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/save_student_ribbons.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/save_student_ribbons.php
+    [REQUEST_TIME_FLOAT] => 1746602275.3795
+    [REQUEST_TIME] => 1746602275
+)
+
+{"student_id":"1","ribbons":4}
+2025-05-07 09:18:08
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 335
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [CONTENT_TYPE] => application/json
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:5173
+    [HTTP_SEC_FETCH_SITE] => same-site
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:5173/
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/save_story2_quizzes.php
+    [REMOTE_PORT] => 61965
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/save_story2_quizzes.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/save_story2_quizzes.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/save_story2_quizzes.php
+    [REQUEST_TIME_FLOAT] => 1746602288.0965
+    [REQUEST_TIME] => 1746602288
+)
+
+{"quizResults":[{"student_id":"1","attempt":1,"question":"Is this story 2","answer":"Yes","is_correct":true,"is_final":true},{"student_id":"1","attempt":1,"question":"Who am I?","answer":"Nal","is_correct":true,"is_final":true},{"student_id":"1","attempt":1,"question":"How old am I?","answer":"24","is_correct":true,"is_final":true}]}
+2025-05-07 09:18:08
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 30
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [CONTENT_TYPE] => application/json
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:5173
+    [HTTP_SEC_FETCH_SITE] => same-site
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:5173/
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/save_student_ribbons.php
+    [REMOTE_PORT] => 61965
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/save_student_ribbons.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/save_student_ribbons.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/save_student_ribbons.php
+    [REQUEST_TIME_FLOAT] => 1746602288.1188
+    [REQUEST_TIME] => 1746602288
+)
+
+{"student_id":"1","ribbons":4}
+2025-05-07 09:21:24
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 18
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [CONTENT_TYPE] => application/json
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:5173
+    [HTTP_SEC_FETCH_SITE] => same-site
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:5173/
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REMOTE_PORT] => 62128
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REQUEST_TIME_FLOAT] => 1746602484.7615
+    [REQUEST_TIME] => 1746602484
+)
+
+{"student_id":"1"}
+2025-05-07 09:21:49
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 18
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [CONTENT_TYPE] => application/json
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:5173
+    [HTTP_SEC_FETCH_SITE] => same-site
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:5173/
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REMOTE_PORT] => 62195
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REQUEST_TIME_FLOAT] => 1746602509.8507
+    [REQUEST_TIME] => 1746602509
+)
+
+{"student_id":"1"}
+2025-05-07 09:25:55
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 18
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [CONTENT_TYPE] => application/json
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:5173
+    [HTTP_SEC_FETCH_SITE] => same-site
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:5173/
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REMOTE_PORT] => 62386
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REQUEST_TIME_FLOAT] => 1746602755.6413
+    [REQUEST_TIME] => 1746602755
+)
+
+{"student_id":"1"}
+2025-05-07 09:26:03
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 18
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [CONTENT_TYPE] => application/json
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:5173
+    [HTTP_SEC_FETCH_SITE] => same-site
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:5173/
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REMOTE_PORT] => 62398
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REQUEST_TIME_FLOAT] => 1746602763.9367
+    [REQUEST_TIME] => 1746602763
+)
+
+{"student_id":"1"}
+2025-05-07 09:26:39
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 18
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [CONTENT_TYPE] => application/json
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:5173
+    [HTTP_SEC_FETCH_SITE] => same-site
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:5173/
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REMOTE_PORT] => 62441
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REQUEST_TIME_FLOAT] => 1746602799.2707
+    [REQUEST_TIME] => 1746602799
+)
+
+{"student_id":"1"}
+2025-05-07 09:28:11
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 18
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [CONTENT_TYPE] => application/json
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:5173
+    [HTTP_SEC_FETCH_SITE] => same-site
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:5173/
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REMOTE_PORT] => 62550
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REQUEST_TIME_FLOAT] => 1746602891.4905
+    [REQUEST_TIME] => 1746602891
+)
+
+{"student_id":"1"}
+2025-05-07 09:29:31
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 18
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [CONTENT_TYPE] => application/json
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:5173
+    [HTTP_SEC_FETCH_SITE] => same-site
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:5173/
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REMOTE_PORT] => 62599
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REQUEST_TIME_FLOAT] => 1746602971.1776
+    [REQUEST_TIME] => 1746602971
+)
+
+{"student_id":"1"}
+2025-05-07 09:36:15
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 18
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [CONTENT_TYPE] => application/json
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:5173
+    [HTTP_SEC_FETCH_SITE] => same-site
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:5173/
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REMOTE_PORT] => 62861
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REQUEST_TIME_FLOAT] => 1746603375.2021
+    [REQUEST_TIME] => 1746603375
+)
+
+{"student_id":"1"}
+2025-05-07 09:36:23
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 18
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [CONTENT_TYPE] => application/json
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:5173
+    [HTTP_SEC_FETCH_SITE] => same-site
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:5173/
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REMOTE_PORT] => 62883
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REQUEST_TIME_FLOAT] => 1746603383.2244
+    [REQUEST_TIME] => 1746603383
+)
+
+{"student_id":"1"}
+2025-05-07 09:36:50
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_UPGRADE_INSECURE_REQUESTS] => 1
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_ACCEPT] => text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7
+    [HTTP_SEC_FETCH_SITE] => none
+    [HTTP_SEC_FETCH_MODE] => navigate
+    [HTTP_SEC_FETCH_USER] => ?1
+    [HTTP_SEC_FETCH_DEST] => document
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [HTTP_COOKIE] => teacherId=1
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REMOTE_PORT] => 62930
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => GET
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REQUEST_TIME_FLOAT] => 1746603410.9422
+    [REQUEST_TIME] => 1746603410
+)
+
+
+2025-05-07 09:37:30
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 18
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [CONTENT_TYPE] => application/json
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:5173
+    [HTTP_SEC_FETCH_SITE] => same-site
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:5173/
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REMOTE_PORT] => 62974
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/check_finalized_quiz.php
+    [REQUEST_TIME_FLOAT] => 1746603450.7556
+    [REQUEST_TIME] => 1746603450
+)
+
+{"student_id":"1"}
+2025-05-07 09:38:11
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 335
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [CONTENT_TYPE] => application/json
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:5173
+    [HTTP_SEC_FETCH_SITE] => same-site
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:5173/
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/save_story2_quizzes.php
+    [REMOTE_PORT] => 63007
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/save_story2_quizzes.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/save_story2_quizzes.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/save_story2_quizzes.php
+    [REQUEST_TIME_FLOAT] => 1746603491.9167
+    [REQUEST_TIME] => 1746603491
+)
+
+{"quizResults":[{"student_id":"1","attempt":1,"question":"Is this story 2","answer":"Yes","is_correct":true,"is_final":true},{"student_id":"1","attempt":1,"question":"Who am I?","answer":"Nal","is_correct":true,"is_final":true},{"student_id":"1","attempt":1,"question":"How old am I?","answer":"24","is_correct":true,"is_final":true}]}
+2025-05-07 09:38:11
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 30
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [CONTENT_TYPE] => application/json
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:5173
+    [HTTP_SEC_FETCH_SITE] => same-site
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:5173/
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/save_student_ribbons.php
+    [REMOTE_PORT] => 63007
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/save_student_ribbons.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/save_student_ribbons.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/save_student_ribbons.php
+    [REQUEST_TIME_FLOAT] => 1746603491.9507
+    [REQUEST_TIME] => 1746603491
+)
+
+{"student_id":"1","ribbons":4}
+2025-05-07 09:38:11 Error: Table 'shenieva_db.students' doesn't exist
+2025-05-07 09:38:43
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 335
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [CONTENT_TYPE] => application/json
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:5173
+    [HTTP_SEC_FETCH_SITE] => same-site
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:5173/
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/save_story2_quizzes.php
+    [REMOTE_PORT] => 63051
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/save_story2_quizzes.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/save_story2_quizzes.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/save_story2_quizzes.php
+    [REQUEST_TIME_FLOAT] => 1746603523.2164
+    [REQUEST_TIME] => 1746603523
+)
+
+{"quizResults":[{"student_id":"1","attempt":1,"question":"Is this story 2","answer":"Yes","is_correct":true,"is_final":true},{"student_id":"1","attempt":1,"question":"Who am I?","answer":"Nal","is_correct":true,"is_final":true},{"student_id":"1","attempt":1,"question":"How old am I?","answer":"24","is_correct":true,"is_final":true}]}
+2025-05-07 09:38:43
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 30
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [CONTENT_TYPE] => application/json
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:5173
+    [HTTP_SEC_FETCH_SITE] => same-site
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:5173/
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/save_student_ribbons.php
+    [REMOTE_PORT] => 63051
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/save_student_ribbons.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/save_student_ribbons.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/save_student_ribbons.php
+    [REQUEST_TIME_FLOAT] => 1746603523.2489
+    [REQUEST_TIME] => 1746603523
+)
+
+{"student_id":"1","ribbons":4}
+2025-05-07 09:38:43 Error: Table 'shenieva_db.students' doesn't exist
+2025-05-07 09:45:16
+Array
+(
+    [MIBDIRS] => C:/xampp/php/extras/mibs
+    [MYSQL_HOME] => \xampp\mysql\bin
+    [OPENSSL_CONF] => C:/xampp/apache/bin/openssl.cnf
+    [PHP_PEAR_SYSCONF_DIR] => \xampp\php
+    [PHPRC] => \xampp\php
+    [TMP] => \xampp\tmp
+    [HTTP_HOST] => localhost
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_LENGTH] => 335
+    [HTTP_SEC_CH_UA_PLATFORM] => "Windows"
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/136.0.0.0 Safari/537.36 Edg/136.0.0.0
+    [HTTP_SEC_CH_UA] => "Chromium";v="136", "Microsoft Edge";v="136", "Not.A/Brand";v="99"
+    [CONTENT_TYPE] => application/json
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ACCEPT] => */*
+    [HTTP_ORIGIN] => http://localhost:5173
+    [HTTP_SEC_FETCH_SITE] => same-site
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_REFERER] => http://localhost:5173/
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [PATH] => C:\WINDOWS\system32;C:\WINDOWS;C:\WINDOWS\System32\Wbem;C:\WINDOWS\System32\WindowsPowerShell\v1.0\;C:\WINDOWS\System32\OpenSSH\;C:\Program Files\nodejs\;C:\Program Files\Git\cmd;C:\Users\User\AppData\Local\Programs\Python\Python313\Scripts\;C:\Users\User\AppData\Local\Programs\Python\Python313\;C:\Users\User\AppData\Local\Programs\Python\Launcher\;C:\Users\User\AppData\Local\pnpm;C:\Users\User\AppData\Local\Microsoft\WindowsApps;C:\Users\User\AppData\Local\Programs\Microsoft VS Code\bin;C:\Users\User\AppData\Local\GitHubDesktop\bin;C:\Users\User\AppData\Roaming\npm;D:\Applications\flutter_windows_3.24.5-stable\flutter\bin;C:\Program Files\Android\Android Studio\jbr;
+    [SystemRoot] => C:\WINDOWS
+    [COMSPEC] => C:\WINDOWS\system32\cmd.exe
+    [PATHEXT] => .COM;.EXE;.BAT;.CMD;.VBS;.VBE;.JS;.JSE;.WSF;.WSH;.MSC
+    [WINDIR] => C:\WINDOWS
+    [SERVER_SIGNATURE] => <address>Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12 Server at localhost Port 80</address>
+
+    [SERVER_SOFTWARE] => Apache/2.4.58 (Win64) OpenSSL/3.1.3 PHP/8.2.12
+    [SERVER_NAME] => localhost
+    [SERVER_ADDR] => ::1
+    [SERVER_PORT] => 80
+    [REMOTE_ADDR] => ::1
+    [DOCUMENT_ROOT] => C:/xampp/htdocs
+    [REQUEST_SCHEME] => http
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => C:/xampp/htdocs
+    [SERVER_ADMIN] => postmaster@localhost
+    [SCRIPT_FILENAME] => C:/xampp/htdocs/shenieva-teacher/src/lib/api/student-story2/save_story2_quizzes.php
+    [REMOTE_PORT] => 63328
+    [GATEWAY_INTERFACE] => CGI/1.1
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /shenieva-teacher/src/lib/api/student-story2/save_story2_quizzes.php
+    [SCRIPT_NAME] => /shenieva-teacher/src/lib/api/student-story2/save_story2_quizzes.php
+    [PHP_SELF] => /shenieva-teacher/src/lib/api/student-story2/save_story2_quizzes.php
+    [REQUEST_TIME_FLOAT] => 1746603916.3046
+    [REQUEST_TIME] => 1746603916
+)
+
+{"quizResults":[{"student_id":"1","attempt":1,"question":"Is this story 2","answer":"Yes","is_correct":true,"is_final":true},{"student_id":"1","attempt":1,"question":"Who am I?","answer":"Nal","is_correct":true,"is_final":true},{"student_id":"1","attempt":1,"question":"How old am I?","answer":"24","is_correct":true,"is_final":true}]}

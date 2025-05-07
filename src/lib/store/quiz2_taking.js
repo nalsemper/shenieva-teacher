@@ -1,57 +1,61 @@
+// src/lib/store/quiz2_taking.js
+// @ts-nocheck
 import { writable } from 'svelte/store';
 
-// Create the store with dynamic initialization
 export function createQuiz2Store(quizData) {
-  // Initial state for taken quiz data
-  const initialState = {
-    answers: quizData.map(item => ({ text: item.answer, assignedTo: null })),
-    score: 0, // Number of correct answers
-    totalPoints: 0, // Sum of points for correct answers
+  const initialAnswers = quizData.map(q => ({ text: q.answer, assignedTo: null }));
+  const store = writable({
+    answers: initialAnswers,
+    score: 0,
+    totalPoints: 0,
     attempts: 0,
     maxAttempts: 3
-  };
-
-  const { subscribe, set, update } = writable(initialState);
+  });
 
   return {
-    subscribe,
-    // Reset answers, score, and totalPoints for retake, keep attempts
-    resetForRetake: () =>
-      update(state => ({
-        ...state,
-        answers: quizData.map(item => ({ text: item.answer, assignedTo: null })),
-        score: 0,
-        totalPoints: 0
-      })),
-    // Submit answers and calculate score and totalPoints
-    submit: quizData =>
-      update(state => {
-        if (state.attempts >= state.maxAttempts) return state;
-        let correctCount = 0;
-        let pointsSum = 0;
-        state.answers.forEach(answer => {
-          const question = quizData.find(q => q.id === answer.assignedTo);
-          if (question && question.answer === answer.text) {
-            correctCount += 1;
-            pointsSum += question.points || 1; // Use points, default to 1 if missing
+    subscribe: store.subscribe,
+    updateAnswer(answerText, questionId) {
+      store.update(state => {
+        const answers = state.answers.map(ans => {
+          if (ans.text === answerText) {
+            return { ...ans, assignedTo: questionId };
           }
+          if (ans.assignedTo === questionId && ans.text !== answerText) {
+            return { ...ans, assignedTo: null };
+          }
+          return ans;
+        });
+        return { ...state, answers };
+      });
+    },
+    submit(quizData) {
+      store.update(state => {
+        let score = 0;
+        let totalPoints = 0;
+        const answers = state.answers.map(ans => {
+          const question = quizData.find(q => q.id === ans.assignedTo);
+          if (question && question.answer === ans.text) {
+            score += 1;
+            totalPoints += question.points || 1;
+          }
+          return ans;
         });
         return {
           ...state,
-          score: correctCount,
-          totalPoints: pointsSum,
+          answers,
+          score,
+          totalPoints,
           attempts: state.attempts + 1
         };
-      }),
-    // Update answers (for drag and drop)
-    updateAnswer: (answerText, assignedTo) =>
-      update(state => ({
+      });
+    },
+    resetForRetake() {
+      store.update(state => ({
         ...state,
-        answers: state.answers.map(item =>
-          item.text === answerText ? { ...item, assignedTo } : item
-        )
-      })),
-    // Reset entire quiz (e.g., for a new session)
-    reset: () => set(initialState)
+        answers: state.answers.map(ans => ({ ...ans, assignedTo: null })),
+        score: 0,
+        totalPoints: 0
+      }));
+    }
   };
 }

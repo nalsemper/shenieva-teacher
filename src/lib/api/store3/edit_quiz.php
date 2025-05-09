@@ -35,8 +35,8 @@ if ($data) {
         exit();
     }
 
-    $tableName = "quizzes_store2";
-    $choicesTable = "choices_store2";
+    $tableName = "quizzes_store3";
+    $choicesTable = "choices_store3";
 
     $stmt = $conn->prepare("UPDATE $tableName SET question = ?, points = ? WHERE id = ?");
     $stmt->bind_param("sii", $question, $points, $id);

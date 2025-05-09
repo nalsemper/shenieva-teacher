@@ -31,7 +31,7 @@ if ($data) {
         exit();
     }
 
-    $tableName = "quizzes_store2";
+    $tableName = "quizzes_store3";
     // choices_store2 deletion handled by ON DELETE CASCADE
 
     $stmt = $conn->prepare("DELETE FROM $tableName WHERE id = ?");

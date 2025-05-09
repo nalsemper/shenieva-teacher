@@ -1,17 +1,38 @@
-<script>
+<script lang="ts">
   import { createEventDispatcher } from 'svelte';
   import { studentData } from '$lib/store/student_data';
+  import type { Writable } from 'svelte/store';
 
-  export let quizData = [];
-  export let quiz2Store = null;
+  // Define the type for a single quiz question
+  interface QuizQuestion {
+    id: number;
+    question: string;
+    answer: string;
+    points: number;
+  }
+
+  // Define the type for the quiz store's data
+  interface Quiz2StoreData {
+    score: number;
+    totalPoints: number;
+    attempts: number;
+    maxAttempts: number;
+    answers: { text: string; assignedTo: number | null }[];
+  }
+
+  // Props
+  export let quizData: QuizQuestion[] = [];
+  export let quiz2Store: Writable<Quiz2StoreData> | null = null;
 
   const dispatch = createEventDispatcher();
 
+  // Derived state with type safety
   $: isPerfect = quiz2Store && $quiz2Store ? $quiz2Store.score === quizData.length : false;
   $: maxAttempts = quiz2Store && $quiz2Store ? $quiz2Store.attempts >= $quiz2Store.maxAttempts : false;
   $: maxScore = quizData.length;
   $: maxPoints = quizData.reduce((sum, q) => sum + (q.points || 1), 0);
 
+  // Compute results with typed answer
   $: results = quizData.map(question => {
     if (!quiz2Store || !$quiz2Store) {
       return {
@@ -21,7 +42,7 @@
         points: question.points || 1
       };
     }
-    const assignedAnswer = $quiz2Store.answers.find(answer => answer.assignedTo === question.id);
+    const assignedAnswer = $quiz2Store.answers.find((answer: { text: string; assignedTo: number | null }) => answer.assignedTo === question.id);
     const isCorrect = assignedAnswer && assignedAnswer.text === question.answer;
     return {
       question: question.question,
@@ -32,7 +53,7 @@
   });
 
   // Reusable function to save quiz results to the database
-  async function saveQuizResults(isFinal) {
+  async function saveQuizResults(isFinal: boolean): Promise<boolean> {
     const studentId = $studentData?.pk_studentID;
     if (!studentId) {
       console.error('No student ID found in studentData');
@@ -41,7 +62,7 @@
 
     const quizResults = results.map(result => ({
       student_id: studentId,
-      attempt: $quiz2Store.attempts,
+      attempt: $quiz2Store?.attempts ?? 1,
       question: result.question,
       answer: result.answer,
       is_correct: result.isCorrect,
@@ -76,6 +97,8 @@
     const success = await saveQuizResults(isPerfect || maxAttempts);
     if (success) {
       dispatch('action', { action: 'continue' });
+    } else {
+      console.error('Failed to save quiz results, cannot continue');
     }
   }
 
@@ -83,6 +106,8 @@
     const success = await saveQuizResults(false); // is_final is always false for retake
     if (success) {
       dispatch('action', { action: 'retake' });
+    } else {
+      console.error('Failed to save quiz results, cannot retake');
     }
   }
 </script>

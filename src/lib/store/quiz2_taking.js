@@ -1,15 +1,19 @@
-// src/lib/store/quiz2_taking.js
 // @ts-nocheck
 import { writable } from 'svelte/store';
 
 export function createQuiz2Store(quizData) {
+  const savedAttempts = localStorage.getItem('quiz2_attempts') ? parseInt(localStorage.getItem('quiz2_attempts'), 10) : 0;
   const initialAnswers = quizData.map(q => ({ text: q.answer, assignedTo: null }));
   const store = writable({
     answers: initialAnswers,
     score: 0,
     totalPoints: 0,
-    attempts: 0,
+    attempts: savedAttempts,
     maxAttempts: 3
+  });
+
+  store.subscribe(state => {
+    localStorage.setItem('quiz2_attempts', state.attempts.toString());
   });
 
   return {
@@ -55,6 +59,7 @@ export function createQuiz2Store(quizData) {
         answers: state.answers.map(ans => ({ ...ans, assignedTo: null })),
         score: 0,
         totalPoints: 0
+        // Note: attempts and maxAttempts are preserved
       }));
     }
   };

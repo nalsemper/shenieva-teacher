@@ -23,13 +23,21 @@ try {
     $data = json_decode(file_get_contents('php://input'), true);
     
     if (!isset($data['student_id'], $data['ribbons'])) {
-        throw new Exception("Missing required fields");
+        throw new Exception("Missing required fields: student_id or ribbons");
     }
 
     $student_id = (int)$data['student_id'];
     $ribbons = (int)$data['ribbons'];
 
-    // Update studentRibbon by adding new ribbons
+    // Validate inputs
+    if ($student_id <= 0) {
+        throw new Exception("Invalid student ID");
+    }
+    if ($ribbons < 0) {
+        throw new Exception("Invalid ribbon count");
+    }
+
+    // Update studentRibbon
     $query = "UPDATE students_table SET studentRibbon = COALESCE(studentRibbon, 0) + ? WHERE pk_studentID = ?";
     $stmt = $conn->prepare($query);
     if ($stmt === false) {
@@ -42,7 +50,7 @@ try {
     }
 
     if ($stmt->affected_rows === 0) {
-        throw new Exception("No student found with the given ID");
+        throw new Exception("No student found with ID: $student_id");
     }
 
     $stmt->close();
@@ -50,7 +58,7 @@ try {
 
 } catch (Exception $e) {
     http_response_code(500);
-    echo json_encode(['error' => 'Server error: ' . $e->getMessage()]);
+    echo json_encode(['error' => $e->getMessage()]);
 }
 
 $conn->close();

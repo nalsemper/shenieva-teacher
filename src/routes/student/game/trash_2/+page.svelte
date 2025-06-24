@@ -591,7 +591,7 @@
     async function fetchInitialTrashCount(studentID: number) {
         try {
             const response = await fetchWithTimeout(
-                'http://localhost/shenieva-teacher/src/lib/api/trash.php',
+                'http://localhost/shenieva-teacher/src/lib/api/trash2.php',
                 {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
@@ -636,7 +636,7 @@
 
         try {
             const response = await fetchWithTimeout(
-                'http://localhost/shenieva-teacher/src/lib/api/trash.php',
+                'http://localhost/shenieva-teacher/src/lib/api/trash2.php',
                 {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },

@@ -30,7 +30,7 @@
   }
 </script>
 
-<div class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+<div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
   <div class="bg-white rounded-2xl p-8 max-w-2xl w-full max-h-[80vh] overflow-y-auto shadow-2xl">
     <h2 class="text-3xl font-bold text-center text-purple-600 mb-6">Quiz Results</h2>
 

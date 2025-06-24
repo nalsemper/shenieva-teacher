@@ -11,7 +11,7 @@
 </script>
 
 <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-  <div class="bg-white rounded-2xl p-8 max-w-lg w-full shadow-2xl text-center">
+  <div class="bg-white rounded-2xl p-8 max-w-lg w-full shadow-xl text-center">
     <h2 class="text-3xl font-bold text-purple-600 mb-4">Congratulations!</h2>
     <p class="text-xl font-semibold text-gray-900 mb-6">
       {#if ribbons > 0}

@@ -7,13 +7,18 @@
 
   // Quiz state
   let quizData = [];
-  let error = null;
+  let error: string | null = null;
   const quizStore = writable({
     answers: []
   });
   let showResultModal = false;
   let showCongratsModal = false;
-  let quizResults = [];
+  let quizResults: Array<{
+    question: string;
+    answer: string;
+    isCorrect: boolean;
+    points: number;
+  }> = [];
   let earnedPoints = 0;
   let attemptCount = 0;
   let maxAttempts = 3;
@@ -77,7 +82,7 @@
       attemptCount = attemptData.attempts || 0;
 
     } catch (err) {
-      error = err.message;
+      error = `Initialization error: ${err.message}`;
       console.error('Mount error:', err);
     }
 
@@ -90,18 +95,18 @@
   $: allAnswered = $quizStore.answers.every(answer => answer.assignedTo !== null);
 
   // Drag and drop handlers
-  function handleDragStart(event, answer) {
+  function handleDragStart(event: DragEvent, answer: any) {
     $draggedAnswer = answer;
     if (event.dataTransfer && answer) {
       event.dataTransfer.setData('text/plain', answer.text);
     }
   }
 
-  function handleDragOver(event) {
+  function handleDragOver(event: DragEvent) {
     event.preventDefault();
   }
 
-  function handleDrop(event, question) {
+  function handleDrop(event: DragEvent, question: any) {
     event.preventDefault();
     const hasAnswer = $quizStore.answers.some(answer => answer.assignedTo === question.id);
     if ($draggedAnswer && !hasAnswer && $draggedAnswer.text) {
@@ -115,7 +120,7 @@
     $draggedAnswer = null;
   }
 
-  function handleDropToAnswerBox(event) {
+  function handleDropToAnswerBox(event: DragEvent) {
     event.preventDefault();
     if ($draggedAnswer && $draggedAnswer.text) {
       quizStore.update(store => {
@@ -130,6 +135,13 @@
 
   async function saveQuizResults(isFinal: boolean) {
     try {
+      if (!student_id) {
+        throw new Error('Invalid student ID');
+      }
+      if (!quizResults.length) {
+        throw new Error('No quiz results to save');
+      }
+      console.log('Saving quiz results:', { student_id, attempt: attemptCount + 1, is_final: isFinal });
       const response = await fetch('http://localhost:5173/api/student-story2/save_quiz_results.php', {
         method: 'POST',
         headers: {
@@ -144,20 +156,28 @@
       });
 
       const data = await response.json();
-      if (!response.ok || data.error) {
-        throw new Error(data.error || `Failed to save quiz results: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}: ${data.error || response.statusText}`);
       }
-      console.log('Quiz results saved:', data);
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      console.log('Quiz results saved successfully:', data);
     } catch (err) {
-      console.error('Error saving quiz results:', err.message);
-      error = 'Failed to save quiz results. Please try again.';
-      throw err;
+      console.error('saveQuizResults error:', err);
+      throw new Error(`Failed to save quiz results: ${err.message}`);
     }
   }
 
   async function saveRibbons(ribbons: number) {
     try {
-      console.log(`Attempting to save ${ribbons} ribbons for student_id: ${student_id}`);
+      if (!student_id) {
+        throw new Error('Invalid student ID');
+      }
+      if (ribbons < 0) {
+        throw new Error('Invalid ribbon count');
+      }
+      console.log(`Saving ${ribbons} ribbons for student_id: ${student_id}`);
       const response = await fetch('http://localhost:5173/api/student-story2/save_student_ribbons.php', {
         method: 'POST',
         headers: {
@@ -170,14 +190,16 @@
       });
 
       const data = await response.json();
-      if (!response.ok || data.error) {
-        throw new Error(data.error || `Failed to save ribbons: ${response.status}`);
+      if (!response.ok) {
+        throw new Error(`HTTP error ${response.status}: ${data.error || response.statusText}`);
       }
-      console.log('Ribbons saved:', data);
+      if (data.error) {
+        throw new Error(data.error);
+      }
+      console.log('Ribbons saved successfully:', data);
     } catch (err) {
-      console.error('Error saving ribbons:', err.message);
-      error = 'Error saving ribbons. Please try again.';
-      throw err;
+      console.error('saveRibbons error:', err);
+      throw new Error(`Failed to save ribbons: ${err.message}`);
     }
   }
 
@@ -190,11 +212,11 @@
         points: Number(quizData.find(q => q.id === answer.originalQuestionId)?.points || 0)
       }));
       earnedPoints = quizResults.reduce((sum, r) => sum + (r.isCorrect ? r.points : 0), 0);
-      console.log('Calculated earnedPoints:', earnedPoints);
+      console.log('Quiz submitted. Earned points:', earnedPoints, 'Results:', quizResults);
       showResultModal = true;
     } catch (err) {
       console.error('Error in handleSubmit:', err);
-      error = 'Error processing quiz results.';
+      error = `Error processing quiz: ${err.message}`;
     }
   }
 
@@ -212,23 +234,28 @@
           answers: randomizedAnswers
         });
         showResultModal = false;
+        console.log('Retake initiated. Attempt:', attemptCount + 1);
       }
     } catch (err) {
       console.error('Error during retake:', err);
-      error = 'Error resetting quiz.';
+      error = `Error resetting quiz: ${err.message}`;
     }
   }
 
   async function handleFinalSubmit() {
     try {
-      console.log('Final submit triggered');
+      console.log('Final submit started. Student ID:', student_id, 'Earned points:', earnedPoints);
+      if (!student_id) {
+        throw new Error('No student ID provided');
+      }
       await saveQuizResults(true);
       await saveRibbons(earnedPoints);
       showResultModal = false;
       showCongratsModal = true;
+      console.log('Final submit completed. Showing CongratsModal');
     } catch (err) {
-      console.error('Error in handleFinalSubmit:', err);
-      error = 'Error finalizing submission. Please try again.';
+      console.error('Error in handleFinalSubmit:', err.message, err.stack);
+      error = `Error finalizing submission: ${err.message}. Please try again.`;
     }
   }
 
@@ -239,7 +266,7 @@
       goto('/student/game/trash_2');
     } catch (err) {
       console.error('Error navigating:', err);
-      error = 'Error navigating to next page.';
+      error = `Error navigating to next page: ${err.message}`;
     }
   }
 </script>
@@ -269,7 +296,7 @@
       </h1>
 
       <!-- Instructions -->
-      <div class="bg-gradient-to-r from-blue-100▬to-purple-100 rounded-2xl shadow-2xl p-8 mb-10 w-full max-w-4xl text-center text-xl font-semibold text-gray-900 border-4 border-yellow-300 transform hover:scale-105 transition-transform">
+      <div class="bg-gradient-to-r from-blue-100 to-purple-100 rounded-2xl shadow-2xl p-8 mb-10 w-full max-w-4xl text-center text-xl font-semibold text-gray-900 border-4 border-yellow-300 transform hover:scale-105 transition-transform">
         <p class="mb-3 text-2xl text-purple-700">Drag the sparkly answers to the matching questions!</p>
         <p class="text-lg">Want to change an answer? Drag it back to the answer box!</p>
       </div>

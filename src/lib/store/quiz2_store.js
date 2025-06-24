@@ -19,5 +19,7 @@ export function getQuiz2Store() {
 export function resetQuiz2Store() {
   quiz2StoreInstance = null;
   localStorage.removeItem('quiz2_attempts');
+  localStorage.removeItem('quiz2_answers');
+  localStorage.removeItem('quiz2_data');
   console.log('Reset quiz2Store');
 }

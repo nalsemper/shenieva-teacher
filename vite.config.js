@@ -11,6 +11,9 @@ export default defineConfig({
 			changeOrigin: true,
 			rewrite: (path) => path.replace(/^\/api/, '')
 		  }
-		}
+		},
+		watch: {
+      ignored: ['**/src/lib/api/**/*', '**/src/server-logs/**/*']
+    }
 	  }
 });

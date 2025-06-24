@@ -5,9 +5,9 @@ header('Access-Control-Allow-Methods: POST');
 header('Access-Control-Allow-Headers: Content-Type');
 
 $host = 'localhost';
-$dbname = 'root'; // Replace with your database name
-$username = ''; // Replace with your DB username
-$password = 'shenieva_db'; // Replace with your DB password
+$dbname = 'your_database_name'; // Replace with your database name
+$username = 'your_username'; // Replace with your DB username
+$password = 'your_password'; // Replace with your DB password
 
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
@@ -23,6 +23,10 @@ try {
         echo json_encode(['error' => 'Invalid student ID or ribbons']);
         exit;
     }
+
+    // Log request for debugging
+    $logData = date('Y-m-d H:i:s') . "\n" . print_r($_SERVER, true) . "\n" . json_encode($data) . "\n\n";
+    file_put_contents(__DIR__ . '/../../../server-logs/debug.log', $logData, FILE_APPEND);
 
     // Update studentRibbon by incrementing
     $sql = "UPDATE students_table SET studentRibbon = studentRibbon + :ribbons WHERE pk_studentID = :studentId";

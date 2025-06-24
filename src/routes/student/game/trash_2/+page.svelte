@@ -714,7 +714,7 @@
         setInterval(() => { handleMovement(); update(); }, 1000 / 60);
     });
 
-    $: winMessage = (($studentData as StudentData)?.studentLevel ?? 0) < 1 
+    $: winMessage = (($studentData as StudentData)?.studentLevel ?? 0) < 2 
         ? "Congratulations! You have leveled up!\nGet ready for your next exciting adventure! 🏆✨" 
         : "Congratulations!\nGet ready for your next exciting adventure! 🏆✨";
 

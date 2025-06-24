@@ -1,65 +1,93 @@
-<script>
-  // @ts-nocheck
-  import { onMount, onDestroy } from 'svelte';
+<script lang="ts">
+  import { onMount } from 'svelte';
   import { writable } from 'svelte/store';
   import { goto } from '$app/navigation';
   import QuizResultModal2 from '../../components/modals/quiz1/QuizResultModal2.svelte';
-  import { initializeQuiz2Store, getQuiz2Store, resetQuiz2Store } from '$lib/store/quiz2_store';
+  import CongratsModal from '../../components/modals/quiz1/CongratsModal.svelte';
 
+  // Quiz state
   let quizData = [];
-  let quiz2Store = null;
   let error = null;
-  let showConfetti = false;
-  let showModal = false;
+  const quizStore = writable({
+    answers: []
+  });
+  let showResultModal = false;
+  let showCongratsModal = false;
+  let quizResults = [];
+  let earnedPoints = 0;
+  let attemptCount = 0;
+  let maxAttempts = 3;
+
+  // Assume student_id is available (e.g., from session or context)
+  let student_id = 1; // REPLACE WITH ACTUAL STUDENT ID RETRIEVAL LOGIC
 
   // Drag state
   const draggedAnswer = writable(null);
 
-  // Fetch quiz questions on mount
   onMount(async () => {
-    console.log('onMount running, quiz2Store exists:', !!quiz2Store);
-    quiz2Store = getQuiz2Store();
-    if (quiz2Store) {
-      console.log('Reusing quiz2Store, attempts:', $quiz2Store?.attempts);
-      return;
-    }
+    console.log('Quiz component mounted');
     try {
-      const response = await fetch('http://localhost/shenieva-teacher/src/lib/api/student-story2/get_story2_quizzes.php');
-      if (!response.ok) throw new Error(`Failed to fetch quiz data: ${response.statusText}`);
-      const rawData = await response.json();
-      // Parse id and points to numbers
-      quizData = rawData.map(q => ({
-        id: parseInt(q.id, 10),
-        question: q.question,
-        answer: q.answer,
-        points: parseInt(q.points, 10)
-      }));
-      console.log('Fetched quiz data:', quizData);
-      if (!Array.isArray(quizData) || quizData.length === 0) {
-        throw new Error('No quiz data received');
-      }
-      quiz2Store = initializeQuiz2Store(quizData);
-      console.log('Initialized quiz2Store, attempts:', $quiz2Store?.attempts);
-    } catch (err) {
-      error = err.message || 'Unknown error';
-      console.error('Error fetching quiz:', err);
-    }
-  });
+      // Fetch quiz data
+      const quizResponse = await fetch('http://localhost:5173/api/student-story2/get_story2_quizzes.php', {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
 
-  onDestroy(() => {
-    console.log('Quiz component destroyed');
+      if (!quizResponse.ok) {
+        throw new Error(`Failed to fetch quiz data: ${quizResponse.statusText}`);
+      }
+
+      const data = await quizResponse.json();
+      
+      if (data.error) {
+        throw new Error(data.error);
+      }
+
+      // Store original quiz data, ensuring points is a number
+      quizData = data.map(q => ({ ...q, points: Number(q.points) }));
+      
+      // Create randomized answers
+      const randomizedAnswers = data
+        .map(q => ({ text: q.answer, assignedTo: null, originalQuestionId: q.id, points: Number(q.points) }))
+        .sort(() => Math.random() - 0.5);
+      
+      quizStore.set({
+        answers: randomizedAnswers
+      });
+
+      // Fetch attempt count for the student
+      const attemptResponse = await fetch(`http://localhost:5173/api/student-story2/get_student_attempts.php?student_id=${student_id}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+        }
+      });
+
+      if (!attemptResponse.ok) {
+        throw new Error(`Failed to fetch attempt count: ${attemptResponse.statusText}`);
+      }
+
+      const attemptData = await attemptResponse.json();
+      if (attemptData.error) {
+        throw new Error(attemptData.error);
+      }
+
+      attemptCount = attemptData.attempts || 0;
+
+    } catch (err) {
+      error = err.message;
+      console.error('Mount error:', err);
+    }
+
+    return () => {
+      console.log('Quiz component destroyed');
+    };
   });
 
   // Derived state
-  $: allAnswered = quiz2Store && $quiz2Store ? $quiz2Store.answers.every(answer => answer.assignedTo !== null) : false;
-  $: maxAttemptsReached = quiz2Store && $quiz2Store ? $quiz2Store.attempts >= $quiz2Store.maxAttempts : false;
-  $: maxScore = quizData.length;
-  $: maxPoints = quizData.reduce((sum, q) => sum + (q.points || 1), 0);
-
-  // Reactive logging for modal changes
-  $: {
-    console.log('showModal changed:', showModal, 'Attempts:', $quiz2Store?.attempts);
-  }
+  $: allAnswered = $quizStore.answers.every(answer => answer.assignedTo !== null);
 
   // Drag and drop handlers
   function handleDragStart(event, answer) {
@@ -75,52 +103,155 @@
 
   function handleDrop(event, question) {
     event.preventDefault();
-    const hasAnswer = quiz2Store && $quiz2Store ? $quiz2Store.answers.some(answer => answer.assignedTo === question.id) : false;
-    if ($draggedAnswer && !hasAnswer && quiz2Store && $quiz2Store && $draggedAnswer.text) {
-      quiz2Store.updateAnswer($draggedAnswer.text, question.id);
+    const hasAnswer = $quizStore.answers.some(answer => answer.assignedTo === question.id);
+    if ($draggedAnswer && !hasAnswer && $draggedAnswer.text) {
+      quizStore.update(store => {
+        const updatedAnswers = store.answers.map(ans =>
+          ans.text === $draggedAnswer.text ? { ...ans, assignedTo: question.id } : ans
+        );
+        return { ...store, answers: updatedAnswers };
+      });
     }
     $draggedAnswer = null;
   }
 
   function handleDropToAnswerBox(event) {
     event.preventDefault();
-    if ($draggedAnswer && quiz2Store && $quiz2Store && $draggedAnswer.text) {
-      quiz2Store.updateAnswer($draggedAnswer.text, null);
+    if ($draggedAnswer && $draggedAnswer.text) {
+      quizStore.update(store => {
+        const updatedAnswers = store.answers.map(ans =>
+          ans.text === $draggedAnswer.text ? { ...ans, assignedTo: null } : ans
+        );
+        return { ...store, answers: updatedAnswers };
+      });
     }
     $draggedAnswer = null;
   }
 
-  // Handle submit
-  function handleSubmit() {
-    if (maxAttemptsReached || !quiz2Store || !$quiz2Store) return;
-    quiz2Store.submit(quizData);
-    showConfetti = true;
-    showModal = true;
-    console.log('Submitted quiz, attempts:', $quiz2Store.attempts);
-    setTimeout(() => (showConfetti = false), 3000);
+  async function saveQuizResults(isFinal: boolean) {
+    try {
+      const response = await fetch('http://localhost:5173/api/student-story2/save_quiz_results.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          student_id,
+          attempt: attemptCount + 1,
+          results: quizResults,
+          is_final: isFinal ? 1 : 0
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok || data.error) {
+        throw new Error(data.error || `Failed to save quiz results: ${response.status}`);
+      }
+      console.log('Quiz results saved:', data);
+    } catch (err) {
+      console.error('Error saving quiz results:', err.message);
+      error = 'Failed to save quiz results. Please try again.';
+      throw err;
+    }
   }
 
-  // Handle modal actions
-  function handleModalAction(event) {
-    console.log('Modal action:', event.detail.action, 'Attempts before:', $quiz2Store?.attempts);
-    showModal = false;
-    if (event.detail.action === 'continue') {
-      resetQuiz2Store(); // Clear store and storage
-      goto('/student/game/trash_2', { invalidateAll: false, replaceState: true, noScroll: true });
-    } else if (event.detail.action === 'retake' && !maxAttemptsReached && quiz2Store && $quiz2Store) {
-      quiz2Store.resetForRetake();
-      console.log('After retake, attempts:', $quiz2Store.attempts);
+  async function saveRibbons(ribbons: number) {
+    try {
+      console.log(`Attempting to save ${ribbons} ribbons for student_id: ${student_id}`);
+      const response = await fetch('http://localhost:5173/api/student-story2/save_student_ribbons.php', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          student_id,
+          ribbons
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok || data.error) {
+        throw new Error(data.error || `Failed to save ribbons: ${response.status}`);
+      }
+      console.log('Ribbons saved:', data);
+    } catch (err) {
+      console.error('Error saving ribbons:', err.message);
+      error = 'Error saving ribbons. Please try again.';
+      throw err;
+    }
+  }
+
+  function handleSubmit() {
+    try {
+      quizResults = $quizStore.answers.map(answer => ({
+        question: quizData.find(q => q.id === answer.assignedTo)?.question || 'Not assigned',
+        answer: answer.text,
+        isCorrect: answer.assignedTo === answer.originalQuestionId,
+        points: Number(quizData.find(q => q.id === answer.originalQuestionId)?.points || 0)
+      }));
+      earnedPoints = quizResults.reduce((sum, r) => sum + (r.isCorrect ? r.points : 0), 0);
+      console.log('Calculated earnedPoints:', earnedPoints);
+      showResultModal = true;
+    } catch (err) {
+      console.error('Error in handleSubmit:', err);
+      error = 'Error processing quiz results.';
+    }
+  }
+
+  async function handleRetake() {
+    try {
+      if (attemptCount < maxAttempts) {
+        await saveQuizResults(false);
+        attemptCount += 1;
+        // Reset quiz
+        const randomizedAnswers = quizData
+          .map(q => ({ text: q.answer, assignedTo: null, originalQuestionId: q.id, points: Number(q.points) }))
+          .sort(() => Math.random() - 0.5);
+        
+        quizStore.set({
+          answers: randomizedAnswers
+        });
+        showResultModal = false;
+      }
+    } catch (err) {
+      console.error('Error during retake:', err);
+      error = 'Error resetting quiz.';
+    }
+  }
+
+  async function handleFinalSubmit() {
+    try {
+      console.log('Final submit triggered');
+      await saveQuizResults(true);
+      await saveRibbons(earnedPoints);
+      showResultModal = false;
+      showCongratsModal = true;
+    } catch (err) {
+      console.error('Error in handleFinalSubmit:', err);
+      error = 'Error finalizing submission. Please try again.';
+    }
+  }
+
+  function handleProceed() {
+    try {
+      console.log('Proceeding to trash_2 page');
+      showCongratsModal = false;
+      goto('/student/game/trash_2');
+    } catch (err) {
+      console.error('Error navigating:', err);
+      error = 'Error navigating to next page.';
     }
   }
 </script>
 
 <div class="relative min-h-screen">
   {#if error}
-    <div class="text-red-600 text-2xl font-bold text-center mt-10">
-      Error: {error}
+    <div class="text-red-600 text-center text-2xl font-bold mt-4">
+      {error}
     </div>
-  {:else if quizData.length === 0 || !quiz2Store}
-    <div class="text-gray-600 text-2xl font-bold text-center mt-10">
+  {/if}
+  {#if quizData.length === 0 && !error}
+    <div class="text-gray-600 text-center text-2xl font-bold mt-10">
       Loading quiz...
     </div>
   {:else}
@@ -138,17 +269,10 @@
       </h1>
 
       <!-- Instructions -->
-      <div class="bg-gradient-to-r from-blue-100 to-purple-100 rounded-2xl shadow-2xl p-8 mb-10 w-full max-w-4xl text-center text-xl font-semibold text-gray-900 border-4 border-yellow-300 transform hover:scale-105 transition-transform">
+      <div class="bg-gradient-to-r from-blue-100▬to-purple-100 rounded-2xl shadow-2xl p-8 mb-10 w-full max-w-4xl text-center text-xl font-semibold text-gray-900 border-4 border-yellow-300 transform hover:scale-105 transition-transform">
         <p class="mb-3 text-2xl text-purple-700">Drag the sparkly answers to the matching questions!</p>
-        <p class="text-lg">Want to change an answer? Drag it back to the answer box! (3 attempts max)</p>
+        <p class="text-lg">Want to change an answer? Drag it back to the answer box!</p>
       </div>
-
-      <!-- Score and Points -->
-      {#if quiz2Store && $quiz2Store}
-        <div class="text-3xl font-bold text-blue-800 mb-8 animate-bounce">
-          Score: {$quiz2Store.score}/{maxScore} | Points: {$quiz2Store.totalPoints}/{maxPoints} | Attempts: {$quiz2Store.attempts}/{$quiz2Store.maxAttempts}
-        </div>
-      {/if}
 
       <!-- Answer Box -->
       <div
@@ -158,22 +282,20 @@
         on:drop={handleDropToAnswerBox}
         class="bg-gradient-to-b from-white to-gray-50 rounded-2xl shadow-xl p-8 mb-10 w-full max-w-4xl flex flex-wrap gap-6 justify-center border-4 border-dashed border-purple-400"
       >
-        {#if quiz2Store && $quiz2Store}
-          {#each $quiz2Store.answers as answer (answer.text)}
-            {#if !answer.assignedTo}
-              <div
-                role="button"
-                aria-label={`Drag answer: ${answer.text}`}
-                tabindex="0"
-                draggable="true"
-                on:dragstart={event => handleDragStart(event, answer)}
-                class="bg-gradient-to-r from-yellow-400 to-orange-400 text-purple-900 font-bold px-6 py-3 rounded-full cursor-move hover:scale-110 hover:shadow-lg transition-all transform"
-              >
-                {answer.text}
-              </div>
-            {/if}
-          {/each}
-        {/if}
+        {#each $quizStore.answers as answer (answer.text)}
+          {#if !answer.assignedTo}
+            <div
+              role="button"
+              aria-label={`Drag answer: ${answer.text}`}
+              tabindex="0"
+              draggable="true"
+              on:dragstart={event => handleDragStart(event, answer)}
+              class="bg-gradient-to-r from-yellow-400 to-orange-400 text-purple-900 font-bold px-6 py-3 rounded-full cursor-move hover:scale-110 hover:shadow-lg transition-all transform"
+            >
+              {answer.text}
+            </div>
+          {/if}
+        {/each}
       </div>
 
       <!-- Questions -->
@@ -187,83 +309,50 @@
             class="bg-white rounded-2xl shadow-lg p-8 text-xl font-semibold text-gray-900 flex items-center justify-between hover:bg-gradient-to-r hover:from-blue-50 hover:to-purple-50 transition-all transform hover:-translate-y-1 border-2 border-purple-200"
           >
             <span class="flex-1">{question.question}</span>
-            {#if quiz2Store && $quiz2Store}
-              {#each $quiz2Store.answers as answer}
-                {#if answer.assignedTo === question.id}
-                  <div
-                    role="button"
-                    aria-label={`Assigned answer: ${answer.text}`}
-                    tabindex="0"
-                    draggable="true"
-                    on:dragstart={event => handleDragStart(event, answer)}
-                    class="bg-gradient-to-r from-yellow-400 to-orange-400 text-purple-900 font-bold px-6 py-3 rounded-full cursor-move hover:scale-110 transition-transform"
-                  >
-                    {answer.text}
-                  </div>
-                {/if}
-              {/each}
-            {/if}
+            {#each $quizStore.answers as answer}
+              {#if answer.assignedTo === question.id}
+                <div
+                  role="button"
+                  aria-label={`Assigned answer: ${answer.text}`}
+                  tabindex="0"
+                  draggable="true"
+                  on:dragstart={event => handleDragStart(event, answer)}
+                  class="bg-gradient-to-r from-yellow-400 to-orange-400 text-purple-900 font-bold px-6 py-3 rounded-full cursor-move hover:scale-110 transition-transform"
+                >
+                  {answer.text}
+                </div>
+              {/if}
+            {/each}
           </div>
         {/each}
       </div>
 
       <!-- Submit Button -->
-      {#if allAnswered && !maxAttemptsReached}
+      {#if allAnswered}
         <button
           on:click={handleSubmit}
-          class="mt-8 bg-gradient-to-r from-purple-500 to-pink-500 text-white font-bold text-2xl px-10 py-4 rounded-full shadow-lg hover:scale-105 hover:shadow-xl transition-all transform animate-pulse"
+          class="mt-8 bg-gradient-to-r from-green-400 to-blue-500 text-white font-bold px-8 py-4 rounded-full hover:scale-105 transition-transform shadow-lg"
         >
-          Submit Answers!
+          Submit Quiz
         </button>
       {/if}
-
-      <!-- Confetti -->
-      {#if showConfetti}
-        <div class="fixed inset-0 pointer-events-none">
-          {#each Array(100) as _, i}
-            <div
-              class="absolute w-3 h-3 rounded-full animate-confetti"
-              style="
-                background-color: hsl({Math.random() * 360}, 80%, 60%);
-                left: {Math.random() * 100}%;
-                top: {Math.random() * 100}%;
-                animation-delay: {Math.random() * 1.5}s;
-                animation-duration: {1.5 + Math.random() * 2}s;
-              "
-            ></div>
-          {/each}
-        </div>
-      {/if}
     </div>
-  {/if}
 
-  <!-- Modal -->
-  {#if showModal}
-    <QuizResultModal2 quizData={quizData} quiz2Store={quiz2Store} on:action={handleModalAction} />
+    {#if showResultModal}
+      <QuizResultModal2
+        results={quizResults}
+        attemptCount={attemptCount}
+        maxAttempts={maxAttempts}
+        on:retake={handleRetake}
+        on:submit={handleFinalSubmit}
+      />
+    {/if}
+
+    {#if showCongratsModal}
+      <CongratsModal
+        ribbons={earnedPoints}
+        on:proceed={handleProceed}
+      />
+    {/if}
   {/if}
 </div>
-
-<style>
-  .animate-confetti {
-    animation: confetti-fall linear forwards;
-  }
-
-  @keyframes confetti-fall {
-    0% {
-      transform: translateY(0) rotate(0deg);
-      opacity: 1;
-    }
-    100% {
-      transform: translateY(100vh) rotate(720deg);
-      opacity: 0;
-    }
-  }
-
-  .delay-500 {
-    animation-delay: 0.5s;
-  }
-
-  .delay-1000 {
-    animation-delay: 1s;
-  }
-</style>

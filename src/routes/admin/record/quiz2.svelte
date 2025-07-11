@@ -25,70 +25,36 @@
     { key: "status", label: "Status" },
   ];
 
-  const quiz2Questions = [
-    {
-      text: "What is the largest planet in our solar system?",
-      correctAnswer: "Jupiter",
-    },
-    {
-      text: "Which element has the atomic number 1?",
-      correctAnswer: "Hydrogen",
-    },
-    {
-      text: "What year did World War II end?",
-      correctAnswer: "1945",
-    },
-  ];
-
-  const data = [
-    {
-      name: "Alice Gou",
-      gender: "Female",
-      datetime: "2025-03-03 10:15",
-      score: 90,
-      attempts: 3,
-      status: "Reviewed",
-      questions: [
-        { ...quiz2Questions[0], chosenAnswer: "Jupiter" },
-        { ...quiz2Questions[1], chosenAnswer: "Hydrogen" },
-        { ...quiz2Questions[2], chosenAnswer: "1945" },
-      ],
-    },
-    {
-      name: "Bob Ackerman",
-      gender: "Male",
-      datetime: "2025-03-03 11:00",
-      score: 65,
-      attempts: 2,
-      status: "Pending for Review",
-      questions: [
-        { ...quiz2Questions[0], chosenAnswer: "Earth" },
-        { ...quiz2Questions[1], chosenAnswer: "Hydrogen" },
-        { ...quiz2Questions[2], chosenAnswer: "1939" },
-      ],
-    },
-    {
-      name: "Charlie Johnson",
-      gender: "Male",
-      datetime: "2025-03-03 12:30",
-      score: 75,
-      attempts: 1,
-      status: "Reviewed",
-      questions: [
-        { ...quiz2Questions[0], chosenAnswer: "Jupiter" },
-        { ...quiz2Questions[1], chosenAnswer: "Oxygen" },
-        { ...quiz2Questions[2], chosenAnswer: "1945" },
-      ],
-    },
-  ];
+  async function loadData() {
+    try {
+      const res = await fetch(
+        "http://localhost/shenieva-teacher/src/lib/api/records/get_quiz2_results.php"
+      );
+      const data = await res.json();
+      attendees.set(data);
+    } catch (err) {
+      console.error("Failed to load quiz 2 data", err);
+    }
+  }
 
   function filterData() {
-    attendees.set(
-      data.filter((person) => {
-        let personDate = person.datetime.split(" ")[0];
+    attendees.update((items) => {
+      return items.filter((person) => {
         return selectedGender === "All" || person.gender === selectedGender;
-      })
-    );
+      });
+    });
+  }
+
+  function handleQuestionReviewed(event) {
+    const { taken_quiz_id, is_final } = event.detail;
+
+    // Optional: Update the local data (if you're storing quiz results in a reactive variable)
+    console.log(`Question with ID ${taken_quiz_id} marked as reviewed`);
+  }
+
+  function handleReviewComplete() {
+    console.log("Quiz fully reviewed, reloading table...");
+    loadData(); // reload the table with updated status
   }
 
   function sortBy(key) {
@@ -108,35 +74,33 @@
   }
 
   function openModal(person) {
-    console.log("Opening modal for:", person);
     selectedPerson.set(person);
     showModal.set(true);
   }
 
   function closeModal() {
-    console.log("Closing modal");
     showModal.set(false);
     selectedPerson.set(null);
   }
 
   function markAsReviewed() {
-    console.log("Marking as reviewed:", $selectedPerson.name);
     $selectedPerson.status = "Reviewed";
     showSuccessModal.set(true);
   }
 
   function closeSuccessModal() {
-    console.log("Closing success modal");
     showSuccessModal.set(false);
     closeModal();
   }
 
   onMount(() => {
-    filterData();
+    loadData();
   });
 </script>
 
-<div class="p-10 mb-14 mt-5 max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden">
+<div
+  class="p-10 mb-14 mt-5 max-w-6xl mx-auto bg-white rounded-3xl shadow-2xl overflow-hidden"
+>
   <div class="flex items-center gap-4 mb-6 px-4">
     <select
       bind:value={selectedGender}
@@ -179,7 +143,7 @@
             on:click={() => openModal(person)}
           >
             <td
-              class="p-4 font-medium 
+              class="p-4 font-medium
                 {rowIndex === $attendees.length - 1 ? 'rounded-bl-3xl' : ''}"
             >
               {person.name}
@@ -215,7 +179,7 @@
             </td>
             <td class="p-4 text-center">{person.attempts}</td>
             <td
-              class="p-4 text-center 
+              class="p-4 text-center
                 {rowIndex === $attendees.length - 1 ? 'rounded-br-3xl' : ''}"
             >
               <span
@@ -239,6 +203,9 @@
   {showModal}
   {closeModal}
   {markAsReviewed}
+  quizType="quiz2"
+  on:questionReviewed={handleQuestionReviewed}
+  on:reviewComplete={handleReviewComplete}
 />
 
 <SuccessModal

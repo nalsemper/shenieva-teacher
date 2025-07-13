@@ -231,8 +231,10 @@
   {showModal}
   {closeModal}
   {markAsReviewed}
+  quizType="quiz1"
   on:questionReviewed={handleQuestionReviewed}
 />
+
 
 <!-- Success Modal Component -->
 <SuccessModal

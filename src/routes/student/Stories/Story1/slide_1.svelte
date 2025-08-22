@@ -1,129 +1,80 @@
-<script>
-    import { onMount, onDestroy } from 'svelte';
-    import { language, isFast } from '$lib/store/story_lang_audio';
+<script lang="ts">
+    import { createEventDispatcher } from 'svelte';
+    const dispatch = createEventDispatcher();
 
     const slide = {
-        english: {
-            text: "Story 1- Page 1- Shenievia Reads stands at the edge of Readville Village. 'Time to head home!' she says with a grin. 🌟",
-            audioFast: '/src/assets/audio/fast.mp3',
-            audioSlow: '/src/assets/audio/slow.mp3'
-        },
-        cebuano: {
-            text: "Story 1- Page 1- Si Shenievia Reads nagbarug sa daplin sa Readville Village. 'Panahon na sa pagpauli!' ningisi sya 🌟",
-            audioFast: '/src/assets/audio/cebuano/fast.mp3',
-            audioSlow: '/src/assets/audio/cebuano/slow.mp3'
-        },
-        image: "/src/assets/readville.gif"
+        text: "Choose a story. 🌟",
     };
 
-    let currentLanguage;
-    let currentIsFast;
-    let audio;
-    let isPlaying = false;
+    const stories = [
+        {
+            id: 1,
+            title: "Maria's Promise",
+            image: "/src/assets/LEVEL_1/STORY_1/PIC1.jpg",
+            nextPath: "/src/routes/student/Stories/Story1/slide_1.svelte"
+        },
+        {
+            id: 2,
+            title: "Candice and Candies",
+            image: "/src/assets/LEVEL_1/STORY_2/PIC1.jpg",
+            nextPath: "/src/routes/student/Stories/Story2/slide_1.svelte"
+        },
+        {
+            id: 3,
+            title: "Hannah, the Honest Vendor",
+            image: "/src/assets/LEVEL_1/STORY_3/PIC1.jpg",
+            nextPath: "/src/routes/student/Stories/Story3/slide_1.svelte"
+        }
+    ];
 
-    // Subscribe to store values
-    language.subscribe(value => {
-        currentLanguage = value;
-        updateAudio();
-    });
-    isFast.subscribe(value => {
-        currentIsFast = value;
-        updateAudio();
-    });
-
-    $: currentText = slide[currentLanguage].text;
-
-    function updateAudio() {
-        if (audio) audio.pause();
-        audio = new Audio(
-            currentIsFast 
-                ? slide[currentLanguage].audioFast 
-                : slide[currentLanguage].audioSlow
-        );
-        if (isPlaying) playAudio();
-    }
-
-    onMount(() => {
-        updateAudio();
-        playAudio();
-    });
-
-    onDestroy(() => {
-        stopAudio();
-    });
-
-    function playAudio() {
-        stopAudio();
-        audio.currentTime = 0;
-        audio.play();
-        isPlaying = true;
-    }
-
-    function stopAudio() {
-        if (audio) audio.pause();
-        isPlaying = false;
-    }
-
-    function repeatSlide() {
-        playAudio();
+    function handleStorySelect(storyId: number): void {
+        const selectedStory = stories.find(s => s.id === storyId);
+        if (selectedStory) {
+            dispatch('storySelected', { storyId, nextPath: selectedStory.nextPath });
+        }
     }
 </script>
 
-<div class="flex flex-col justify-center items-center text-center slide relative">
-    {#if slide.image}
-        <div class="image-container">
-            <img
-                src={slide.image}
-                alt="Story Scene"
-                class="block mx-auto rounded-[2vw] shadow-lg"
-            />
-        </div>
-    {/if}
-    <p class="text-[4vw] md:text-2xl text-gray-800 font-semibold text-fade">
-        {currentText}
+<div class="flex flex-col justify-center items-center text-center slide">
+    <p class="text-[6vw] md:text-3xl text-gray-800 font-semibold text-fade mb-8">
+        {slide.text}
     </p>
 
-    <!-- Kid-Friendly Controls -->
-    <div class="controls absolute top-0 right-4 flex flex-col gap-2">
-        <button 
-            on:click={repeatSlide}
-            class="kid-button bg-yellow-400 hover:bg-yellow-500 repeat-button"
-        >
-            <span class="icon">🔄</span>
-        </button>
-        
-        <button 
-            on:click={() => isFast.set(!$isFast)}
-            class="kid-button bg-purple-400 hover:bg-purple-500 speed-button"
-            class:fast={$isFast}
-            class:slow={!$isFast}
-        >
-            <span class="icon">{$isFast ? '🐇' : '🐢'}</span>
-        </button>
+    <div class="story-container">
+        {#each stories as story}
+            <button 
+                class="story-button"
+                on:click={() => handleStorySelect(story.id)}
+            >
+                <img
+                    src={story.image}
+                    alt={story.title}
+                    class="story-image"
+                />
+                <span class="story-label">{story.title}</span>
+            </button>
+        {/each}
     </div>
 </div>
 
 <style>
+    :global(body) {
+        margin: 0;
+        padding: 0;
+        overflow-x: hidden;
+        overflow-y: auto;
+        background: none;
+    }
+
     .slide {
         animation: fadeIn 1000ms ease-in forwards;
         will-change: opacity;
-    }
-
-    .image-container {
-        width: 80vw;
-        height: 80vh;
-        max-width: 800px;
-        max-height: 400px;
-        margin-bottom: 2vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-    }
-
-    .image-container img {
-        width: 100%;
-        height: 100%;
-        object-fit: contain;
+        padding: 2rem;
+        box-sizing: border-box;
+        max-width: 100vw;
+        min-height: 100vh;
+        position: relative;
+        isolation: isolate;
     }
 
     .text-fade {
@@ -137,58 +88,59 @@
         transform: translateZ(0);
     }
 
-    .kid-button {
-        width: 3rem;
-        height: 3rem;
-        border-radius: 50%;
-        border: 2px solid #fff;
-        box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+    .story-container {
         display: flex;
+        flex-wrap: wrap;
         justify-content: center;
+        gap: 2.5rem;
+        margin-top: 2rem;
+        width: 85%;
+        max-width: 900px;
+        box-sizing: border-box;
+    }
+
+    .story-button {
+        background: #ffffff;
+        border: 2px solid #e2e8f0;
+        border-radius: 1rem;
+        padding: 1.2rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        display: flex;
+        flex-direction: column;
         align-items: center;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        width: 250px;
+        max-width: 32%;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        box-sizing: border-box;
     }
 
-    .kid-button:hover {
-        transform: scale(1.1);
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+    .story-button:hover, .story-button:focus {
+        transform: scale(1.3);
+        border-color: #4299e1;
+        box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        z-index: 10;
     }
 
-    .repeat-button:active {
-        animation: rotateRightToLeft 0.5s ease;
+    .story-button:hover .story-image, .story-button:focus .story-image {
+        max-height: 250px;
     }
 
-    .speed-button.fast:active {
-        animation: rotateLeftToRight 0.5s ease;
+    .story-image {
+        width: 100%;
+        max-height: 200px;
+        object-fit: contain;
+        margin-bottom: 0.5rem;
+        transition: max-height 0.3s ease;
     }
 
-    .speed-button.slow:active {
-        animation: rotateRightToLeft 0.5s ease;
-    }
-
-    .icon {
-        font-size: 1.5rem;
-        line-height: 1;
-    }
-
-    .repeat-button {
-        background: linear-gradient(135deg, #fbbf24, #f59e0b);
-    }
-
-    .speed-button {
-        background: linear-gradient(135deg, #c084fc, #9333ea);
-    }
-
-    @keyframes rotateRightToLeft {
-        0% { transform: rotate(0deg); }
-        50% { transform: rotate(-180deg); }
-        100% { transform: rotate(-360deg); }
-    }
-
-    @keyframes rotateLeftToRight {
-        0% { transform: rotate(0deg); }
-        50% { transform: rotate(180deg); }
-        100% { transform: rotate(360deg); }
+    .story-label {
+        color: #2d3748;
+        font-size: 1.4rem;
+        font-weight: 500;
+        text-align: center;
+        white-space: normal;
+        line-height: 1.3;
     }
 
     @keyframes fadeIn {

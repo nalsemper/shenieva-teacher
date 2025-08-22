@@ -4,7 +4,7 @@
 
     const slide = {
         english: {
-            text: "Shenievia Reads stands at the edge of Readville Village. 'Time to head home!' she says with a grin. 🌟",
+            text: "Slide 2 ni - Shenievia Reads stands at the edge of Readville Village. 'Time to head home!' she says with a grin. 🌟",
             audioFast: '/src/assets/audio/fast.mp3',
             audioSlow: '/src/assets/audio/slow.mp3'
         },

@@ -2,17 +2,53 @@
     import { goto } from '$app/navigation'; // Import goto for SvelteKit navigation
     import { studentData } from '$lib/store/student_data'; // Import studentData store
 
+    let loading = false; // State to track loading status
+
     const slide = {
         text: "Congratulations! You've finished Part 1 of Shenievia Reads' journey through Readville Village! 🎉",
         image: "/src/assets/school-bg.gif" // Placeholder; replace with your celebratory GIF
     };
 
-    function continueToQuiz() {
-        // Check studentLevel from the studentData store
-        if ($studentData && $studentData.studentLevel >= 1) {
-            goto('/student/game/trash_1'); // Navigate to game if level is 1 or higher
-        } else {
-            goto('/student/quizzes/quiz1'); // Navigate to quiz if level is below 1 or no data
+    async function continueToQuiz() {
+        try {
+            loading = true; // Show loading indicator
+
+            // Get student ID from store
+            let studentId;
+            studentData.subscribe((data) => {
+                studentId = data?.pk_studentID;
+            })();
+
+            if (!studentId) {
+                console.error('No student ID found. Please log in.');
+                goto('/student/quizzes/quiz2'); // Default to quiz if no student ID
+                return;
+            }
+
+            // Check if the student has finalized the quiz
+            const response = await fetch('http://localhost/shenieva-teacher/src/lib/api/student-story3/check_taken_quiz3.php', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ student_id: studentId }),
+            });
+
+            const result = await response.json();
+
+            if (response.ok && result.is_finalized) {
+                // Quiz is finalized, navigate to trash game
+                goto('/student/game/trash_3');
+            } else {
+                // Quiz not finalized, navigate to quiz
+                goto('/student/quizzes/quiz2');
+            }
+        } catch (error) {
+            console.error('Error checking quiz status:', error);
+            // Default to quiz on error
+            goto('/student/quizzes/quiz3');
+        } finally {
+            loading = false; // Hide loading indicator
         }
     }
 </script>
@@ -30,12 +66,19 @@
     <p class="text-[4vw] md:text-2xl text-gray-800 font-semibold text-fade">
         {slide.text}
     </p>
-    <button
-        class="mt-[2vh] bg-teal-300 text-gray-900 px-[6vw] py-[2vh] rounded-[3vw] text-[5vw] md:text-3xl font-bold shadow-md hover:bg-teal-400 hover:scale-105 transition-all duration-300 flex items-center justify-center kid-button"
-        on:click={continueToQuiz}
-    >
-        Continue 🌟
-    </button>
+    {#if loading}
+        <div class="mt-[2vh] flex items-center justify-center">
+            <div class="loader"></div>
+            <span class="ml-2 text-[4vw] md:text-xl text-gray-800">Checking quiz status...</span>
+        </div>
+    {:else}
+        <button
+            class="mt-[2vh] bg-teal-300 text-gray-900 px-[6vw] py-[2vh] rounded-[3vw] text-[5vw] md:text-3xl font-bold shadow-md hover:bg-teal-400 hover:scale-105 transition-all duration-300 flex items-center justify-center kid-button"
+            on:click={continueToQuiz}
+        >
+            Continue 🌟
+        </button>
+    {/if}
 </div>
 
 <style>
@@ -85,6 +128,24 @@
 
     .kid-button:active {
         transform: scale(1.1); /* Bounce on click */
+    }
+
+    .loader {
+        border: 4px solid #f3f3f3; /* Light grey */
+        border-top: 4px solid #14b8a6; /* Teal */
+        border-radius: 50%;
+        width: 24px;
+        height: 24px;
+        animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+        0% {
+            transform: rotate(0deg);
+        }
+        100% {
+            transform: rotate(360deg);
+        }
     }
 
     @keyframes fadeIn {

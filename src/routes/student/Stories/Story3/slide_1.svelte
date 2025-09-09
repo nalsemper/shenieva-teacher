@@ -1,44 +1,31 @@
 <script>
     import { onMount, onDestroy } from 'svelte';
-    import { language, isFast } from '$lib/store/story_lang_audio';
+    import { isFast } from '$lib/store/story_lang_audio';
 
     const slide = {
-        english: {
-            text: "Shenievia Reads stands at the edge of Readville Village. 'Time to head home!' she says with a grin. 🌟",
-            audioFast: '/src/assets/audio/fast.mp3',
-            audioSlow: '/src/assets/audio/slow.mp3'
-        },
-        cebuano: {
-            text: "Si Shenievia Reads nagbarug sa daplin sa Readville Village. 'Panahon na sa pagpauli!' ningisi sya 🌟",
-            audioFast: '/src/assets/audio/cebuano/fast.mp3',
-            audioSlow: '/src/assets/audio/cebuano/slow.mp3'
-        },
+        text: "Shenievia Reads stands at the edge of Readville Village. 'Time to head home!' she says with a grin. 🌟",
+        audioFast: '/src/assets/audio/fast.mp3',
+        audioSlow: '/src/assets/audio/slow.mp3',
         image: "/src/assets/readville.gif"
     };
 
-    let currentLanguage;
     let currentIsFast;
     let audio;
     let isPlaying = false;
 
-    // Subscribe to store values
-    language.subscribe(value => {
-        currentLanguage = value;
-        updateAudio();
-    });
     isFast.subscribe(value => {
         currentIsFast = value;
         updateAudio();
     });
 
-    $: currentText = slide[currentLanguage].text;
+    $: currentText = slide.text;
 
     function updateAudio() {
         if (audio) audio.pause();
         audio = new Audio(
             currentIsFast 
-                ? slide[currentLanguage].audioFast 
-                : slide[currentLanguage].audioSlow
+                ? slide.audioFast 
+                : slide.audioSlow
         );
         if (isPlaying) playAudio();
     }
@@ -54,8 +41,10 @@
 
     function playAudio() {
         stopAudio();
-        audio.currentTime = 0;
-        audio.play();
+        if (audio) {
+            audio.currentTime = 0;
+            audio.play();
+        }
         isPlaying = true;
     }
 
@@ -90,15 +79,6 @@
             class="kid-button bg-yellow-400 hover:bg-yellow-500 repeat-button"
         >
             <span class="icon">🔄</span>
-        </button>
-        
-        <button 
-            on:click={() => isFast.set(!$isFast)}
-            class="kid-button bg-purple-400 hover:bg-purple-500 speed-button"
-            class:fast={$isFast}
-            class:slow={!$isFast}
-        >
-            <span class="icon">{$isFast ? '🐇' : '🐢'}</span>
         </button>
     </div>
 </div>

@@ -1,3 +1,7 @@
+/* Force Century Gothic font for all elements */
+html, body, * {
+  font-family: 'Century Gothic', CenturyGothic, AppleGothic, sans-serif !important;
+}
 @import 'tailwindcss';
 
 @import "flowbite/src/themes/default";

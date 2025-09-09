@@ -1,7 +1,7 @@
 <script>
     const slide = {
-        text: "Vendor 1- SLIDE 2.🌟",
-        image: "/src/assets/readville.gif" // Using your updated GIF
+        text: "Maria's Promise - Slide 6 🌟",
+        image: "/src/assets/LEVEL_1/STORY_1/PIC6.jpg"
     };
 </script>
 
@@ -23,9 +23,8 @@
 <style>
     .slide {
         animation: fadeIn 1000ms ease-in forwards;
-        will-change: opacity; /* Hint to browser for smoother animation */
+        will-change: opacity;
     }
-
     .image-container {
         width: 80vw;
         height: 80vh;
@@ -36,52 +35,34 @@
         justify-content: center;
         align-items: center;
     }
-
     .image-container img {
         width: 100%;
         height: 100%;
         object-fit: contain;
     }
-
     .text-fade {
         white-space: pre-wrap;
         overflow-wrap: break-word;
         max-width: 80%;
         animation: textFadeIn 1000ms ease-in forwards;
-        will-change: opacity; /* Optimize text animation */
-        -webkit-font-smoothing: antialiased; /* Improve text clarity */
-        -moz-osx-font-smoothing: grayscale; /* Improve text clarity */
-        transform: translateZ(0); /* Force hardware acceleration without blur */
+        will-change: opacity;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+        transform: translateZ(0);
     }
-
     @keyframes fadeIn {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
-
     @keyframes textFadeIn {
-        from {
-            opacity: 0;
-        }
-        to {
-            opacity: 1;
-        }
+        from { opacity: 0; }
+        to { opacity: 1; }
     }
-
     :global(.slide) {
         animation: fadeOut 1000ms ease-out forwards;
     }
-
     @keyframes fadeOut {
-        from {
-            opacity: 1;
-        }
-        to {
-            opacity: 0;
-        }
+        from { opacity: 1; }
+        to { opacity: 0; }
     }
 </style>

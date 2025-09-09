@@ -6,39 +6,21 @@
     type SvelteComponent = any;
 
     let StorySlide: SvelteComponent | null = null;
-    export let storyKey: string = '';
+    export let storyKey: string;
     export let showModal: boolean = false;
     export let onClose: () => void = () => {};
 
-    let currentSlide: number = 1;
+    let currentSlide: number = 0;
     let isLoading: boolean = true;
     let showLanguageModal: boolean = false;
-    let maxSlides = 7;
 
-    async function loadStorySlide(key: string, slideNumber: number = 1): Promise<void> {
-        console.log('Attempting to load story slide:', { key, slideNumber, currentSlide });
-        
-        if (slideNumber > maxSlides) {
-            console.log('Slide number exceeds max slides');
-            return;
-        }
-
+    async function loadStorySlide(key: string): Promise<void> {
         try {
-            const path = `../../Stories/Story1/${key}/slide_${slideNumber}.svelte`;
-            console.log('Loading slide from path:', path);
-            const module = await import(/* @vite-ignore */ path);
-            console.log('Module loaded:', module);
+            const module = await import(/* @vite-ignore */ `../../Stories/Story1/${key}/slide_1.svelte`);
             StorySlide = module.default;
-            currentSlide = slideNumber;
-            console.log('Slide loaded successfully, current slide:', currentSlide);
         } catch (error) {
             console.error("Failed to load story slide:", error);
             StorySlide = null;
-            if (slideNumber > 1) {
-                console.log('Attempting to load previous slide');
-                currentSlide = slideNumber - 1;
-                await loadStorySlide(key, currentSlide);
-            }
         }
     }
 
@@ -51,32 +33,29 @@
         showLanguageModal = false;
     }
 
-    async function nextSlide(): Promise<void> {
-        if (currentSlide < maxSlides) {
-            console.log('Moving to next slide:', currentSlide + 1);
-            StorySlide = null;
-            language.set('english'); // Set English as default for new slide
-            await loadStorySlide(storyKey, currentSlide + 1);
+    function nextSlide(): void {
+        if (currentSlide === 0 && storyKey) {
+            loadStorySlide(storyKey);
+            currentSlide = 1;
         }
     }
 
-    async function prevSlide(): Promise<void> {
-        if (currentSlide > 1) {
-            console.log('Moving to previous slide:', currentSlide - 1);
-            StorySlide = null;
-            language.set('english'); // Set English as default for new slide
-            await loadStorySlide(storyKey, currentSlide - 1);
+    function prevSlide(): void {
+        if (currentSlide > 0) {
+            currentSlide -= 1;
+            if (currentSlide === 0) {
+                StorySlide = null;
+            }
         }
     }
 
     function closeModal(): void {
         onClose();
         showModal = false;
-        currentSlide = 1;
+        currentSlide = 0;
         isLoading = true;
         StorySlide = null;
         showLanguageModal = false;
-        storyKey = '';
     }
 
     $: if (showModal && isLoading) {
@@ -85,13 +64,9 @@
         }, 1000);
     }
 
-    $: if (showModal && storyKey) {
-        console.log('Modal and storyKey detected, loading slide');
-        language.set('english'); // Set English as default when starting story
-        loadStorySlide(storyKey, 1);
+    $: if (showModal && storyKey && currentSlide === 0) {
+        loadStorySlide(storyKey);
     }
-
-    $: console.log('Current state:', { storyKey, currentSlide, showModal, isLoading, StorySlide });
 </script>
 
 {#if showModal}
@@ -115,12 +90,12 @@
             transition:slide={{ duration: 300 }}
         >
             <div
-                class="modal-content-wrapper bg-white rounded-[2vw] shadow-2xl w-[90vw] max-w-[1000px] h-[90vh] max-h-[800px]"
+                class="bg-white p-0 rounded-[3vw] shadow-2xl w-[250vw] max-w-[1100px] h-[85vh] flex flex-col items-center justify-between relative"
                 transition:fade={{ duration: 500 }}
             >
-                <div class="content-wrapper">
-                    {#key `${storyKey}-${currentSlide}`}
-                        {#if !storyKey}
+                <div class="w-[100%] h-[100%] flex flex-col items-center justify-center">
+                    {#key currentSlide}
+                        {#if currentSlide === 0}
                             <Slide1 />
                         {:else if StorySlide}
                             <svelte:component this={StorySlide} />
@@ -128,7 +103,7 @@
                     {/key}
                 </div>
 
-                <!-- Language Button -->
+                <!-- Language Button with Active Language Indicator -->
                 <div class="language-button-container">
                     <button 
                         on:click={toggleLanguageModal}
@@ -170,113 +145,68 @@
                     </div>
                 {/if}
 
-                <!-- Navigation Buttons -->
-                {#if StorySlide}
+                {#if currentSlide !== 0}
                     <button
-                        class="nav-button right-button"
+                        class="absolute right-[1vw] top-1/2 transform -translate-y-1/2 text-[8vw] md:text-6xl text-lime-500 hover:text-lime-600 transition-transform duration-200"
                         on:click={nextSlide}
                         aria-label="Next slide"
                     >
                         ➡️
                     </button>
+                {/if}
                 
-                    {#if currentSlide > 1}
-                        <button
-                            class="nav-button left-button"
-                            on:click={prevSlide}
-                            aria-label="Previous slide"
-                            in:fade={{ duration: 300 }}
-                        >
-                            ⬅️
-                        </button>
-                    {/if}
+                {#if currentSlide > 0}
+                    <button
+                        class="absolute left-[1vw] top-1/2 transform -translate-y-1/2 text-[8vw] md:text-6xl text-lime-500 hover:text-lime-600 transition-transform duration-200"
+                        on:click={prevSlide}
+                        aria-label="Previous slide"
+                        in:fade={{ duration: 300 }}
+                    >
+                        ⬅️
+                    </button>
                 {/if}
             </div>
-
-            <!-- Close Button -->
-            <button
-                class="exit-button"
-                on:click={closeModal}
-                aria-label="Close modal"
-                in:fade={{ duration: 300 }}
-            >
-                ✕
-            </button>
         </div>
+
+        <button
+            class="fixed top-[2vh] right-[2vw] bg-red-500 text-white rounded-full w-[10vw] h-[10vw] max-w-[60px] max-h-[60px] flex items-center justify-center text-[5vw] md:text-2xl shadow-lg hover:bg-red-600 transition-all duration-200 z-50 exit-button"
+            on:click={closeModal}
+            aria-label="Close modal"
+            in:fade={{ duration: 300 }}
+        >
+            ✕
+        </button>
     {/if}
 {/if}
 
 <style>
-    .modal-content-wrapper {
-        display: flex;
-        position: relative;
-        overflow: hidden;
-        padding: 2rem;
+    button:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
     }
 
-    .content-wrapper {
-        width: 100%;
-        height: 100%;
-        display: flex;
-        align-items: center;
-        justify-content: center;
+    @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+    }
+    .animate-spin {
+        animation: spin 1s linear infinite;
     }
 
-    .nav-button {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: clamp(2rem, 8vw, 4rem);
-        color: #10B981;
-        background: none;
-        border: none;
-        cursor: pointer;
-        padding: 1rem;
-        transition: all 0.2s;
-        z-index: 10;
-    }
-
-    .nav-button:hover {
-        color: #059669;
-        transform: translateY(-50%) scale(1.1);
-    }
-
-    .right-button {
-        right: 1vw;
-    }
-
-    .left-button {
-        left: 1vw;
-    }
-
-    .exit-button {
-        position: fixed;
-        top: 2vh;
-        right: 2vw;
-        background: #EF4444;
-        color: white;
-        border: none;
-        border-radius: 50%;
-        width: clamp(40px, 10vw, 60px);
-        height: clamp(40px, 10vw, 60px);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: clamp(1rem, 5vw, 1.5rem);
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        transition: all 0.2s;
-    }
-
-    .exit-button:hover {
-        background: #DC2626;
+    button:active:not(:disabled) {
         transform: scale(1.1);
     }
 
+    .exit-button:hover {
+        transform: scale(1.1);
+    }
+
+    /* Language Button Styles */
     .language-button-container {
         position: absolute;
         top: 1rem;
         right: 4rem;
-        z-index: 20;
+        z-index: 1000;
     }
 
     .language-button {
@@ -295,60 +225,62 @@
         transform: scale(1.1);
     }
 
+    .language-button:active {
+        animation: bounce 0.3s ease;
+    }
+
     .icon {
         font-size: 1.5rem;
         font-weight: bold;
     }
 
+    /* Language Modal Styles */
     .modal-overlay {
         position: fixed;
-        inset: 0;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
         background: rgba(0, 0, 0, 0.5);
         display: flex;
         justify-content: center;
         align-items: center;
-        z-index: 30;
+        z-index: 2000;
     }
 
     .modal-content {
         background: white;
         padding: 2rem;
         border-radius: 1rem;
-        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-        max-width: 90vw;
-        width: 400px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+        text-align: center;
     }
 
     .language-option {
+        display: block;
         width: 100%;
         padding: 0.75rem;
         margin: 0.5rem 0;
         border-radius: 0.5rem;
-        border: none;
         color: white;
         font-size: 1.25rem;
         font-weight: bold;
+        transition: transform 0.2s ease;
         background-color: #10b98183;
-        cursor: pointer;
-        transition: all 0.2s;
     }
 
     .language-option:hover {
         transform: scale(1.05);
-        background-color: #059669;
     }
 
     .language-option.active {
-        background-color: #059669;
+        background-color: #06d594;
         border: 2px solid #047857;
     }
 
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-
-    .animate-spin {
-        animation: spin 1s linear infinite;
+    @keyframes bounce {
+        0% { transform: scale(1); }
+        50% { transform: scale(0.9); }
+        100% { transform: scale(1); }
     }
 </style>

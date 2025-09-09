@@ -1,7 +1,7 @@
 <script>
     const slide = {
-        text: "Vendor 2.🌟",
-        image: "/src/assets/readville.gif" // Using your updated GIF
+        text: "Hannah, the Honest Vendor - Slide 1 🌟",
+        image: "/src/assets/LEVEL_1/STORY_3/PIC1.jpg"
     };
 </script>
 

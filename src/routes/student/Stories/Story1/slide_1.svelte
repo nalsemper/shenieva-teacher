@@ -1,6 +1,5 @@
 <script lang="ts">
-    import { createEventDispatcher } from 'svelte';
-    const dispatch = createEventDispatcher();
+    import StoryModal from '../../components/modals/story_1.svelte';
 
     const slide = {
         text: "Choose a story. 🌟",
@@ -11,27 +10,34 @@
             id: 1,
             title: "Maria's Promise",
             image: "/src/assets/LEVEL_1/STORY_1/PIC1.jpg",
-            nextPath: "/src/routes/student/Stories/Story1/slide_1.svelte"
+            key: "story1-1"
         },
         {
             id: 2,
             title: "Candice and Candies",
             image: "/src/assets/LEVEL_1/STORY_2/PIC1.jpg",
-            nextPath: "/src/routes/student/Stories/Story2/slide_1.svelte"
+            key: "story1-2"
         },
         {
             id: 3,
             title: "Hannah, the Honest Vendor",
             image: "/src/assets/LEVEL_1/STORY_3/PIC1.jpg",
-            nextPath: "/src/routes/student/Stories/Story3/slide_1.svelte"
+            key: "story1-3"
         }
     ];
 
-    function handleStorySelect(storyId: number): void {
-        const selectedStory = stories.find(s => s.id === storyId);
-        if (selectedStory) {
-            dispatch('storySelected', { storyId, nextPath: selectedStory.nextPath });
-        }
+    let showModal = false;
+    let selectedStoryKey: string | null = null;
+
+    function handleStorySelect(storyKey: string): void {
+        console.log('Selected story:', storyKey); // For debugging
+        selectedStoryKey = storyKey;
+        showModal = true;
+    }
+
+    function closeModal(): void {
+        showModal = false;
+        selectedStoryKey = null;
     }
 </script>
 
@@ -44,7 +50,7 @@
         {#each stories as story}
             <button 
                 class="story-button"
-                on:click={() => handleStorySelect(story.id)}
+                on:click={() => handleStorySelect(story.key)}
             >
                 <img
                     src={story.image}
@@ -55,6 +61,10 @@
             </button>
         {/each}
     </div>
+
+    {#if showModal && selectedStoryKey}
+        <StoryModal showModal={showModal} on:close={closeModal} storyKey={selectedStoryKey} />
+    {/if}
 </div>
 
 <style>
@@ -69,78 +79,77 @@
     .slide {
         animation: fadeIn 1000ms ease-in forwards;
         will-change: opacity;
-        padding: 2rem;
+        padding: 1rem;
         box-sizing: border-box;
-        max-width: 100vw;
-        min-height: 100vh;
-        position: relative;
-        isolation: isolate;
+        width: 100%;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
     }
 
     .text-fade {
         white-space: pre-wrap;
         overflow-wrap: break-word;
-        max-width: 80%;
+        width: fit-content;
         animation: textFadeIn 1000ms ease-in forwards;
         will-change: opacity;
         -webkit-font-smoothing: antialiased;
         -moz-osx-font-smoothing: grayscale;
-        transform: translateZ(0);
     }
 
     .story-container {
         display: flex;
         flex-wrap: wrap;
         justify-content: center;
-        gap: 2.5rem;
-        margin-top: 2rem;
-        width: 85%;
+        gap: 1rem;
+        flex: 1;
+        width: 100%;
         max-width: 900px;
         box-sizing: border-box;
+        align-items: center;
     }
 
     .story-button {
         background: #ffffff;
         border: 2px solid #e2e8f0;
-        border-radius: 1rem;
-        padding: 1.2rem;
+        border-radius: 0.75rem;
+        padding: 0.75rem;
         cursor: pointer;
         transition: all 0.3s ease;
         display: flex;
         flex-direction: column;
         align-items: center;
-        width: 250px;
-        max-width: 32%;
+        width: 30%;
+        min-width: 150px;
+        max-width: 200px;
+        aspect-ratio: 3/4;
         box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         box-sizing: border-box;
     }
 
     .story-button:hover, .story-button:focus {
-        transform: scale(1.3);
+        transform: scale(1.1);
         border-color: #4299e1;
         box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         z-index: 10;
     }
 
-    .story-button:hover .story-image, .story-button:focus .story-image {
-        max-height: 250px;
-    }
-
     .story-image {
         width: 100%;
-        max-height: 200px;
+        height: 70%;
         object-fit: contain;
         margin-bottom: 0.5rem;
-        transition: max-height 0.3s ease;
     }
 
     .story-label {
         color: #2d3748;
-        font-size: 1.4rem;
+        font-size: clamp(0.9rem, 1.5vw, 1.1rem);
         font-weight: 500;
         text-align: center;
         white-space: normal;
-        line-height: 1.3;
+        line-height: 1.2;
     }
 
     @keyframes fadeIn {
@@ -151,10 +160,6 @@
     @keyframes textFadeIn {
         from { opacity: 0; }
         to { opacity: 1; }
-    }
-
-    :global(.slide) {
-        animation: fadeOut 1000ms ease-out forwards;
     }
 
     @keyframes fadeOut {

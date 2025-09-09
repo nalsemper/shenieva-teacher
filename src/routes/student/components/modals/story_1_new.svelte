@@ -55,7 +55,6 @@
         if (currentSlide < maxSlides) {
             console.log('Moving to next slide:', currentSlide + 1);
             StorySlide = null;
-            language.set('english'); // Set English as default for new slide
             await loadStorySlide(storyKey, currentSlide + 1);
         }
     }
@@ -64,7 +63,6 @@
         if (currentSlide > 1) {
             console.log('Moving to previous slide:', currentSlide - 1);
             StorySlide = null;
-            language.set('english'); // Set English as default for new slide
             await loadStorySlide(storyKey, currentSlide - 1);
         }
     }
@@ -87,7 +85,6 @@
 
     $: if (showModal && storyKey) {
         console.log('Modal and storyKey detected, loading slide');
-        language.set('english'); // Set English as default when starting story
         loadStorySlide(storyKey, 1);
     }
 
@@ -118,14 +115,16 @@
                 class="modal-content-wrapper bg-white rounded-[2vw] shadow-2xl w-[90vw] max-w-[1000px] h-[90vh] max-h-[800px]"
                 transition:fade={{ duration: 500 }}
             >
-                <div class="content-wrapper">
-                    {#key `${storyKey}-${currentSlide}`}
-                        {#if !storyKey}
-                            <Slide1 />
-                        {:else if StorySlide}
-                            <svelte:component this={StorySlide} />
-                        {/if}
-                    {/key}
+                <div class="content-scroll-container">
+                    <div class="content-wrapper">
+                        {#key `${storyKey}-${currentSlide}`}
+                            {#if !storyKey}
+                                <Slide1 />
+                            {:else if StorySlide}
+                                <svelte:component this={StorySlide} />
+                            {/if}
+                        {/key}
+                    </div>
                 </div>
 
                 <!-- Language Button -->
@@ -209,17 +208,41 @@
 <style>
     .modal-content-wrapper {
         display: flex;
+        flex-direction: column;
         position: relative;
-        overflow: hidden;
-        padding: 2rem;
+        padding: 1rem;
+    }
+
+    .content-scroll-container {
+        flex: 1;
+        overflow-y: auto;
+        overflow-x: hidden;
+        position: relative;
+        height: calc(100% - 2rem);
+        scrollbar-width: thin;
+        scrollbar-color: rgba(0, 0, 0, 0.2) transparent;
+    }
+
+    .content-scroll-container::-webkit-scrollbar {
+        width: 6px;
+    }
+
+    .content-scroll-container::-webkit-scrollbar-track {
+        background: transparent;
+    }
+
+    .content-scroll-container::-webkit-scrollbar-thumb {
+        background-color: rgba(0, 0, 0, 0.2);
+        border-radius: 3px;
     }
 
     .content-wrapper {
-        width: 100%;
-        height: 100%;
+        min-height: 100%;
         display: flex;
+        flex-direction: column;
         align-items: center;
-        justify-content: center;
+        justify-content: flex-start;
+        padding: 1rem;
     }
 
     .nav-button {

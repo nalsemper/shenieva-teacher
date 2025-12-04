@@ -2,7 +2,7 @@
     import { fade } from 'svelte/transition';
     import { onMount, onDestroy } from 'svelte';
     import { audioStore } from '$lib/store/audio_store';
-    import { language, narratorSpeed } from '\/store/story_lang_audio';
+    import { language, narratorSpeed } from '$lib/store/story_lang_audio';
 
     const slide = {
         english: { text: "In their village, Maya and her parents live humbly. Maya's parents are working in the market to provide for their needs. During school breaks, Maya enjoys helping her parents in the market and happily serves their customers." },

@@ -2,7 +2,7 @@
     import { fade } from 'svelte/transition';
     import { onMount, onDestroy } from 'svelte';
     import { audioStore } from '$lib/store/audio_store';
-    import { language, narratorSpeed } from '\/store/story_lang_audio';
+    import { language, narratorSpeed } from '$lib/store/story_lang_audio';
 
     const slide = {
         english: { text: "Then, he noticed that there were empty bottles of medicine for his sick little brother." },

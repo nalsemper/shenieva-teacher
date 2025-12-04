@@ -2,7 +2,7 @@
     import { fade } from 'svelte/transition';
     import { onMount, onDestroy } from 'svelte';
     import { audioStore } from '$lib/store/audio_store';
-    import { language, narratorSpeed } from '\/store/story_lang_audio';
+    import { language, narratorSpeed } from '$lib/store/story_lang_audio';
 
     const slide = {
         english: { text: "Royce is a child known for saving things and money. He has been saving money for a long time because he wants to buy his dream toy." },

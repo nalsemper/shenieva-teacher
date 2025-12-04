@@ -2,7 +2,7 @@
     import { fade } from 'svelte/transition';
     import { onMount, onDestroy } from 'svelte';
     import { audioStore } from '$lib/store/audio_store';
-    import { language, narratorSpeed } from '\/store/story_lang_audio';
+    import { language, narratorSpeed } from '$lib/store/story_lang_audio';
 
     const slide = {
         english: { text: "As he makes his way to the market, he contemplates whether to purchase the toy or the medicine for his sick brother." },

@@ -2,7 +2,7 @@
     import { fade } from 'svelte/transition';
     import { onMount, onDestroy } from 'svelte';
     import { audioStore } from '$lib/store/audio_store';
-    import { language, narratorSpeed } from '\/store/story_lang_audio';
+    import { language, narratorSpeed } from '$lib/store/story_lang_audio';
 
     const slide = {
         english: { text: "Hector's mother brought him to the hospital. The doctor said, \"Hector's weight is above average for his age right now. He needs to practice eating healthy foods like vegetables and fruits, avoid eating too many sweets like chocolate and should start exercising.\" Hector listened to what the doctor said." },

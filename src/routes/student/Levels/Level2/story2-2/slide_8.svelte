@@ -2,7 +2,7 @@
     import { fade } from 'svelte/transition';
     import { onMount, onDestroy } from 'svelte';
     import { audioStore } from '$lib/store/audio_store';
-    import { language, narratorSpeed } from '\/store/story_lang_audio';
+    import { language, narratorSpeed } from '$lib/store/story_lang_audio';
 
     const slide = {
         english: { text: "Maya returned home to her family and shared the story of how she helped the old woman. Her parents were proud and praised Maya for being compassionate and helping a person in need. Maya learned that small acts of kindness can make a big difference." },

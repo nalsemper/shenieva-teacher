@@ -2,7 +2,7 @@
     import { fade } from 'svelte/transition';
     import { onMount, onDestroy } from 'svelte';
     import { audioStore } from '$lib/store/audio_store';
-    import { language, narratorSpeed } from '\/store/story_lang_audio';
+    import { language, narratorSpeed } from '$lib/store/story_lang_audio';
 
     const slide = {
         english: { text: "Thankfully, the woman was brought to the nearest clinic to receive aid while Maya watched over her. When the old woman woke up, she felt grateful to Maya for her kindness and help. Maya smiled and felt happy." },

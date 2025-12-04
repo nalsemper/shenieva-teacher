@@ -1,16 +1,102 @@
 <script lang="ts">
-    import { language } from '$lib/store/story_lang_audio';
+    import { onMount, onDestroy } from 'svelte';
+    import { audioStore } from '$lib/store/audio_store';
+    import { language, narratorSpeed } from '\/store/story_lang_audio';
 
     const story = {
         title: {
             english: "Liloy and Lingling The Dog",
             cebuano: "Si Liloy ug si Lingling Ang Iro"
         },
-    image: '/converted/assets/LEVEL_3/STORY_3/PIC1.webp'
+        image: '/converted/assets/LEVEL_3/STORY_3/pic1.webp'
     };
+
+    // Audio elements
+    let audioEl: HTMLAudioElement | null = null;
+    const audioSrc = '/assets/audio/story-telling/Level_3/story_3/title/LILOY AND LINGLING, THE DOG TITLE.mp3';
+
+    // Story mode state and BGM ducking (duck to 9%)
+    let _savedBgmVolume: number | null = null;
+    let storyModeActive = false;
+
+    function enterStoryMode() {
+        if (!storyModeActive) {
+            try { audioStore.init(); } catch (e) {}
+            try { _savedBgmVolume = audioStore.getVolume(); } catch (e) { _savedBgmVolume = 0.7; }
+            try { audioStore.lockVolume(0.09); } catch (e) { audioStore.setVolume(0.09, true); }
+            storyModeActive = true;
+        }
+    }
+
+    function exitStoryMode() {
+        if (storyModeActive) {
+            const v = typeof _savedBgmVolume === 'number' ? _savedBgmVolume : 0.7;
+            try { audioStore.unlockVolume(); } catch (e) { audioStore.setVolume(v, true); }
+            _savedBgmVolume = null;
+            storyModeActive = false;
+        }
+    }
+
+    // container ref to detect visibility
+    let containerEl: HTMLElement | null = null;
+    let io: IntersectionObserver | null = null;
+
+    // autoplay title audio when component mounts and when slide becomes visible
+    onMount(() => {
+        setTimeout(() => {
+            if (audioEl) {
+                enterStoryMode();
+                audioEl.play().catch(e => console.warn('[story] Title audio play blocked:', e));
+            }
+        }, 80);
+
+        if (typeof IntersectionObserver !== 'undefined') {
+            io = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+                        if (audioEl) {
+                            enterStoryMode();
+                            audioEl.play().catch(e => console.warn('[story] Play blocked:', e));
+                        }
+                    }
+                });
+            }, { threshold: [0, 0.5, 1] });
+
+            if (containerEl) {
+                io.observe(containerEl);
+            }
+        }
+
+        // If autoplay is blocked, listen for first user gesture
+        const userGestureHandler = () => {
+            if (audioEl) {
+                enterStoryMode();
+                audioEl.play().catch(e => console.warn('[story] Play blocked:', e));
+            }
+            window.removeEventListener('pointerdown', userGestureHandler);
+            window.removeEventListener('keydown', userGestureHandler);
+        };
+        window.addEventListener('pointerdown', userGestureHandler, { once: true });
+        window.addEventListener('keydown', userGestureHandler, { once: true });
+
+        return () => {
+            exitStoryMode();
+            if (io) {
+                io.disconnect();
+                io = null;
+            }
+        };
+    });
+
+    onDestroy(() => {
+        if (audioEl) {
+            try { audioEl.pause(); } catch (e) {}
+            audioEl = null;
+        }
+    });
 </script>
 
-<div class="slide-container">
+<div class="slide-container" bind:this={containerEl}>
     <h1 class="title">
         {$language === 'english' ? story.title.english : story.title.cebuano}
     </h1>
@@ -20,6 +106,8 @@
     </div>
 
     <div class="story-text" aria-hidden="true"></div>
+
+    <audio bind:this={audioEl} src={audioSrc} on:ended={exitStoryMode}></audio>
 </div>
 
 <style>

@@ -1,7 +1,7 @@
 <script lang="ts">
     // transitions removed to disable animations
     import Slide1 from "../../Levels/Level2/slide_1.svelte";
-    import { language } from "$lib/store/story_lang_audio";
+    import { language, narratorSpeed } from "$lib/store/story_lang_audio";
     import { goto } from '$app/navigation';
     import { studentData } from '$lib/store/student_data';
     import { onMount, onDestroy } from 'svelte';
@@ -34,7 +34,7 @@
     const maxSlidesMap: Record<string, number> = {
         'story2-1': 8,
         'story2-2': 8,
-        'story2-3': 8
+        'story2-3': 10
     };
 
     // Define quiz slides per story
@@ -215,22 +215,25 @@
 
     async function loadFinalSlide(): Promise<void> {
         try {
-            console.log('Loading final slide (helper)');
+            console.log('[Level2 Modal] Loading final slide (helper)');
             // set the currentSlide immediately so the template can show the static fallback while import resolves
             currentSlide = maxSlides + 1;
+            console.log('[Level2 Modal] currentSlide set to:', currentSlide);
             
             const moduleLoader = slideModules['../../Levels/Level2/slide_last.svelte'];
+            console.log('[Level2 Modal] moduleLoader found:', !!moduleLoader);
             if (moduleLoader) {
                 const module = await moduleLoader() as any;
                 StorySlide = module.default;
+                console.log('[Level2 Modal] Final slide loaded successfully');
             } else {
-                console.error('Final slide module not found');
+                console.error('[Level2 Modal] Final slide module not found');
             }
             // ensure any optimistic flags reset
             slideAllAnswered = true;
             showQuizReview = false;
         } catch (error) {
-            console.error('Failed to load final slide', error);
+            console.error('[Level2 Modal] Failed to load final slide', error);
         }
     }
 
@@ -251,6 +254,8 @@
     }
 
     async function closeModal(): Promise<void> {
+        // Reset narrator speed when exiting story
+        narratorSpeed.set('normal');
         onClose();
         showModal = false;
         currentSlide = 1;

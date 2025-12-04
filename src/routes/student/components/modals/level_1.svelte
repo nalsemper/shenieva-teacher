@@ -1,7 +1,7 @@
 <script lang="ts">
     import { slide, fade } from "svelte/transition";
     import Slide1 from "../../Levels/Level1/slide_1.svelte";
-    import { language } from "$lib/store/story_lang_audio";
+    import { language, narratorSpeed } from "$lib/store/story_lang_audio";
     import { goto } from '$app/navigation';
     import { studentData } from '$lib/store/student_data';
     import { preloadLevelAssets } from '$lib/utils/story_assets';
@@ -180,6 +180,8 @@
     }
 
     async function closeModal(): Promise<void> {
+        // Reset narrator speed when exiting story
+        narratorSpeed.set('normal');
         onClose();
         showModal = false;
         currentSlide = 1;

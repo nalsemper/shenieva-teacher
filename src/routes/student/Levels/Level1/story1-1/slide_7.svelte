@@ -1,10 +1,10 @@
 <script>
     import { fade } from 'svelte/transition';
-    import { language } from "$lib/store/story_lang_audio";
+    import { language, narratorSpeed } from "$lib/store/story_lang_audio";
     import { onMount, onDestroy } from 'svelte';
     import { audioStore } from '$lib/store/audio_store';
 
-    let speed = 'normal';
+    let speed = $narratorSpeed;
     let isPlaying = false;
     /** @type {HTMLAudioElement | null} */
     let audioEl = null;
@@ -90,16 +90,13 @@
             <span class="label">Narration</span>
         </div>
         <div class="speed-select compact">
-            <label class="chip {speed === 'normal' ? 'active' : ''}">
-                <input type="radio" name="speed7" bind:group={speed} value="normal" />
+            <label class="chip {speed === 'normal' ? 'active' : ''}" on:click={() => { narratorSpeed.set('normal'); speed = 'normal'; }}>
                 <span class="txt">Normal</span>
             </label>
-            <label class="chip {speed === 'slow' ? 'active' : ''}">
-                <input type="radio" name="speed7" bind:group={speed} value="slow" />
+            <label class="chip {speed === 'slow' ? 'active' : ''}" on:click={() => { narratorSpeed.set('slow'); speed = 'slow'; }}>
                 <span class="txt">Slow</span>
             </label>
-            <label class="chip {speed === 'fast' ? 'active' : ''}">
-                <input type="radio" name="speed7" bind:group={speed} value="fast" />
+            <label class="chip {speed === 'fast' ? 'active' : ''}" on:click={() => { narratorSpeed.set('fast'); speed = 'fast'; }}>
                 <span class="txt">Fast</span>
             </label>
         </div>

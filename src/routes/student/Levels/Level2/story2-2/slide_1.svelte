@@ -1,16 +1,107 @@
 <script>
-    import { language } from '$lib/store/story_lang_audio';
+    import { fade } from 'svelte/transition';
+    import { onMount, onDestroy } from 'svelte';
+    import { audioStore } from '$lib/store/audio_store';
+    import { language, narratorSpeed } from '\/store/story_lang_audio';
 
     const story = {
         title: {
             english: "Helpful Maya",
             cebuano: "Ang Matinabangong si Maya"
         },
-    image: '/converted/assets/LEVEL_2/STORY_2/PIC5.webp'
+        image: '/converted/assets/LEVEL_2/STORY_2/PIC5.webp'
     };
+
+    // Audio state
+    let audioEl;
+    let containerEl;
+    let isPlaying = false;
+    let observer;
+    let storyModeActive = false;
+    let playToken = 0;
+
+    // Title audio (no speed variants)
+    const audioSrc = '/assets/audio/story-telling/Level_2/story_2/title/HELPFUL MAYA TITLE.mp3';
+
+    function enterStoryMode() {
+        if (!storyModeActive) {
+            storyModeActive = true;
+            audioStore.lockVolume(0.09);
+        }
+    }
+
+    function exitStoryMode() {
+        if (storyModeActive) {
+            storyModeActive = false;
+            audioStore.unlockVolume();
+        }
+    }
+
+    function startNarration() {
+        if (!audioEl) return;
+        enterStoryMode();
+        const token = ++playToken;
+        audioEl.pause();
+        audioEl.src = audioSrc;
+        audioEl.load();
+        setTimeout(() => {
+            if (token !== playToken) return;
+            audioEl.play().catch(e => console.warn('[story] Play blocked:', e));
+        }, 150);
+    }
+
+    onMount(() => {
+        if (typeof IntersectionObserver !== 'undefined' && containerEl) {
+            observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach(entry => {
+                        console.log('[story] IntersectionObserver entry', entry.intersectionRatio, entry.isIntersecting);
+                        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+                            startNarration();
+                        } else {
+                            if (audioEl && !audioEl.paused) {
+                                audioEl.pause();
+                            }
+                        }
+                    });
+                },
+                { threshold: 0.5 }
+            );
+            observer.observe(containerEl);
+        }
+
+        const handleGesture = () => {
+            if (audioEl && audioEl.paused && containerEl) {
+                const rect = containerEl.getBoundingClientRect();
+                const vh = window.innerHeight;
+                if (rect.top < vh && rect.bottom > 0) {
+                    console.log('[story] onMount - attempting startNarration');
+                    startNarration();
+                }
+            }
+        };
+        window.addEventListener('pointerdown', handleGesture, { once: true });
+        window.addEventListener('keydown', handleGesture, { once: true });
+
+        return () => {
+            window.removeEventListener('pointerdown', handleGesture);
+            window.removeEventListener('keydown', handleGesture);
+        };
+    });
+
+    onDestroy(() => {
+        if (observer && containerEl) {
+            observer.unobserve(containerEl);
+            observer.disconnect();
+        }
+        if (audioEl && !audioEl.paused) {
+            audioEl.pause();
+        }
+        exitStoryMode();
+    });
 </script>
 
-<div class="slide-container">
+<div class="slide-container" bind:this={containerEl}>
     <h1 class="title">
         {$language === 'english' ? story.title.english : story.title.cebuano}
     </h1>
@@ -20,6 +111,13 @@
     </div>
 
     <div class="story-text" aria-hidden="true"></div>
+
+    <audio 
+        bind:this={audioEl} 
+        on:play={() => isPlaying = true}
+        on:pause={() => isPlaying = false}
+        on:ended={exitStoryMode}
+    ></audio>
 </div>
 
 <style>

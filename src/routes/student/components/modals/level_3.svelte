@@ -1,6 +1,6 @@
 <script lang="ts">
     import Slide1 from "../../Levels/Level3/slide_1.svelte";
-    import { language } from "$lib/store/story_lang_audio";
+    import { language, narratorSpeed } from "$lib/store/story_lang_audio";
     import { studentData } from '$lib/store/student_data';
     import { tick } from 'svelte';
     import { goto } from '$app/navigation';
@@ -191,6 +191,8 @@
     }
 
     async function closeModal(): Promise<void> {
+        // Reset narrator speed when exiting story
+        narratorSpeed.set('normal');
         onClose();
         showModal = false;
         currentSlide = 0;
@@ -399,7 +401,7 @@
         z-index: 2000;
     }
     .hotspot-right { right: 0; width: 25%; }
-    .hotspot-left { left: 0; width: 25%; }
+    .hotspot-left { left: 0; width: 25%; top: 120px; } /* Offset to avoid narrator UI */
 
     @keyframes spin {
         0% { transform: rotate(0deg); }

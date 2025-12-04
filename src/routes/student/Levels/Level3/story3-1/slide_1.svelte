@@ -1,16 +1,96 @@
 <script lang="ts">
-    import { language } from '$lib/store/story_lang_audio';
+    import { onMount, onDestroy } from 'svelte';
+    import { audioStore } from '$lib/store/audio_store';
+    import { language, narratorSpeed } from '\/store/story_lang_audio';
+    
 
     const story = {
         title: {
-            english: "Tonya’s tooth",
+            english: "Tonya's tooth",
             cebuano: "Ngipon ni Tonya"
         },
-            image: '/converted/assets/LEVEL_3/STORY_1/PIC6.webp'
+        image: '/converted/assets/LEVEL_3/STORY_1/PIC6.webp'
     };
+
+    // Audio state for title
+    let audioEl: HTMLAudioElement;
+    let containerEl: HTMLElement;
+    let isPlaying = false;
+    let observer: IntersectionObserver;
+    let storyModeActive = false;
+
+    const audioSrc = '/assets/audio/story-telling/Level_3/story_1/title/TONYA_S TOOTH TITLE.mp3';
+
+    function enterStoryMode() {
+        if (!storyModeActive) {
+            storyModeActive = true;
+            audioStore.lockVolume(0.09);
+        }
+    }
+
+    function exitStoryMode() {
+        if (storyModeActive) {
+            storyModeActive = false;
+            audioStore.unlockVolume();
+        }
+    }
+
+    function startTitleAudio() {
+        if (!audioEl) return;
+        enterStoryMode();
+        audioEl.play().catch(e => console.warn('[story] Play blocked:', e));
+    }
+
+    onMount(() => {
+        if (typeof IntersectionObserver !== 'undefined' && containerEl) {
+            observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach(entry => {
+                        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+                            startTitleAudio();
+                        } else {
+                            if (audioEl && !audioEl.paused) {
+                                audioEl.pause();
+                            }
+                        }
+                    });
+                },
+                { threshold: 0.5 }
+            );
+            observer.observe(containerEl);
+        }
+
+        const handleGesture = () => {
+            if (audioEl && audioEl.paused && containerEl) {
+                const rect = containerEl.getBoundingClientRect();
+                const vh = window.innerHeight;
+                if (rect.top < vh && rect.bottom > 0) {
+                    startTitleAudio();
+                }
+            }
+        };
+        window.addEventListener('pointerdown', handleGesture, { once: true });
+        window.addEventListener('keydown', handleGesture, { once: true });
+
+        return () => {
+            window.removeEventListener('pointerdown', handleGesture);
+            window.removeEventListener('keydown', handleGesture);
+        };
+    });
+
+    onDestroy(() => {
+        if (observer && containerEl) {
+            observer.unobserve(containerEl);
+            observer.disconnect();
+        }
+        if (audioEl && !audioEl.paused) {
+            audioEl.pause();
+        }
+        exitStoryMode();
+    });
 </script>
 
-<div class="slide-container">
+<div class="slide-container" bind:this={containerEl}>
     <h1 class="title">
         {$language === 'english' ? story.title.english : story.title.cebuano}
     </h1>
@@ -20,6 +100,14 @@
     </div>
 
     <div class="story-text" aria-hidden="true"></div>
+
+    <audio 
+        bind:this={audioEl}
+        src={audioSrc}
+        on:play={() => isPlaying = true}
+        on:pause={() => isPlaying = false}
+        on:ended={exitStoryMode}
+    ></audio>
 </div>
 
 <style>

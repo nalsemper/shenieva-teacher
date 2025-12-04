@@ -6,3 +6,7 @@ import { writable } from 'svelte/store';
 export const audioEnabled = writable(false);
 export const language = writable('english');
 export const isFast = writable(true);
+
+// Narrator speed setting persists across slides within a story
+// Resets to 'normal' when story exits
+export const narratorSpeed = writable('normal');

@@ -11,7 +11,7 @@
             cebuano: "Si Candice ug ang mga Kendi"
         },
         text: {
-            english: "There was once a child who loved candies, her name is Candice. She eats candies for breakfast, lunch and dinner..",
+            english: "There was once a child who loved candies, her name is Candice. She eats candies for breakfast, lunch and dinner.",
             cebuano: "Adunay tag-iya sa usa ka sari-sari nga tindahan nga ginganlan ug Lena. Nagaserbisyo siya sa mga kustomer matag adlaw uban ang usa ka pahiyom."
         },
     image: "/converted/assets/LEVEL_1/STORY_2/PIC1.webp"
@@ -126,13 +126,13 @@
             <span class="label">Narration</span>
         </div>
         <div class="speed-select compact">
-            <label class="chip {speed === 'normal' ? 'active' : ''}" on:click={() => { narratorSpeed.set('normal'); speed = 'normal'; safeStartAudio(); }}>
+            <label class="chip {speed === 'normal' ? 'active' : ''}" on:click={() => { narratorSpeed.set('normal'); speed = 'normal'; setTimeout(() => safeStartAudio(), 50); }}>
                 <span class="txt">Normal</span>
             </label>
-            <label class="chip {speed === 'slow' ? 'active' : ''}" on:click={() => { narratorSpeed.set('slow'); speed = 'slow'; safeStartAudio(); }}>
+            <label class="chip {speed === 'slow' ? 'active' : ''}" on:click={() => { narratorSpeed.set('slow'); speed = 'slow'; setTimeout(() => safeStartAudio(), 50); }}>
                 <span class="txt">Slow</span>
             </label>
-            <label class="chip {speed === 'fast' ? 'active' : ''}" on:click={() => { narratorSpeed.set('fast'); speed = 'fast'; safeStartAudio(); }}>
+            <label class="chip {speed === 'fast' ? 'active' : ''}" on:click={() => { narratorSpeed.set('fast'); speed = 'fast'; setTimeout(() => safeStartAudio(), 50); }}>
                 <span class="txt">Fast</span>
             </label>
         </div>

@@ -40,7 +40,14 @@
 
     onMount(()=>{
         setTimeout(()=>{ enterStoryMode(); safeStart(audioSrc); }, 80);
-        const userGesture = () => { enterStoryMode(); safeStart(audioSrc); window.removeEventListener('pointerdown', userGesture); window.removeEventListener('keydown', userGesture); };
+        const userGesture = () => { 
+            if (!isPlaying) {
+                enterStoryMode(); 
+                safeStart(audioSrc);
+            }
+            window.removeEventListener('pointerdown', userGesture); 
+            window.removeEventListener('keydown', userGesture); 
+        };
         window.addEventListener('pointerdown', userGesture, { once: true });
         window.addEventListener('keydown', userGesture, { once: true });
     });

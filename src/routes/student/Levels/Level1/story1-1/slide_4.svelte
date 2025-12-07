@@ -20,20 +20,32 @@
     image: "/converted/assets/LEVEL_1/STORY_1/PIC4.webp"
     };
 
-    // playlist per speed: M4, Maria 1, M5
+    // playlist per speed
+    // fast: M4, Maria 1 (M4 pauses at 4s, plays Maria 1, then resumes M4)
+    // normal/slow: M4, Maria 1, M5
     $: playlist = (() => {
-    const base = '/assets/audio/story-telling/Level_1/story_1';
+        const base = '/assets/audio/story-telling/Level_1/story_1';
         const sp = speed === 'slow' ? 'slow' : (speed === 'fast' ? 'fast' : 'normal');
-        return [
-            encodeURI(`${base}/${sp}/slide_4/M4.mp3`),
-            encodeURI(`${base}/${sp}/slide_4/Maria 1.mp3`),
-            encodeURI(`${base}/${sp}/slide_4/M5.mp3`)
-        ];
+        
+        if (speed === 'fast') {
+            return [
+                encodeURI(`${base}/${sp}/slide_4/M4.mp3`),
+                encodeURI(`${base}/${sp}/slide_4/Maria 1.mp3`)
+            ];
+        } else {
+            return [
+                encodeURI(`${base}/${sp}/slide_4/M4.mp3`),
+                encodeURI(`${base}/${sp}/slide_4/Maria 1.mp3`),
+                encodeURI(`${base}/${sp}/slide_4/M5.mp3`)
+            ];
+        }
     })();
 
     let playToken = 0;
     let _startTimer = null;
     let playlistIndex = 0;
+    let m4PausedTime = 0; // Store pause position for M4.mp3 in fast mode
+    let timeUpdateListener = null;
 
     function safeStartList(list){
         if (!audioEl) return;
@@ -41,17 +53,62 @@
         playToken++;
         const token = playToken;
         playlistIndex = 0;
+        m4PausedTime = 0;
         enterStoryMode();
         _startTimer = setTimeout(()=>{
             if (!audioEl) { _startTimer = null; return; }
             if (token !== playToken) { _startTimer = null; return; }
-            audioEl.src = list[playlistIndex];
+            
+            // Use current playlist, not the passed list parameter
+            const currentPlaylist = list || playlist;
+            audioEl.src = currentPlaylist[playlistIndex];
+            
+            // For fast mode, set up time listener to pause M4 at 4 seconds
+            if (speed === 'fast' && playlistIndex === 0) {
+                setupM4TimeListener();
+            }
+            
             audioEl.play().then(()=>{ isPlaying = true; }).catch(()=>{ isPlaying = false; });
             _startTimer = null;
         }, 150);
     }
 
+    function setupM4TimeListener() {
+        if (!audioEl) return;
+        
+        // Remove previous listener if exists
+        if (timeUpdateListener) {
+            audioEl.removeEventListener('timeupdate', timeUpdateListener);
+        }
+        
+        timeUpdateListener = () => {
+            if (audioEl && audioEl.currentTime >= 4.0 && playlistIndex === 0) {
+                m4PausedTime = audioEl.currentTime;
+                audioEl.pause();
+                audioEl.removeEventListener('timeupdate', timeUpdateListener);
+                timeUpdateListener = null;
+                
+                // Auto-advance to Maria 1.mp3
+                playlistIndex = 1;
+                audioEl.src = playlist[1];
+                audioEl.play().then(()=>{ isPlaying = true; }).catch(()=>{ isPlaying = false; });
+            }
+        };
+        
+        audioEl.addEventListener('timeupdate', timeUpdateListener);
+    }
+
     function handleAudioEnd(){
+        // Special handling for fast mode: after Maria 1, resume M4 from paused position
+        if (speed === 'fast' && playlistIndex === 1 && m4PausedTime > 0) {
+            playlistIndex = 2; // Mark as on "virtual" third track
+            audioEl.src = playlist[0]; // Back to M4.mp3
+            audioEl.currentTime = m4PausedTime;
+            audioEl.play().then(()=>{ isPlaying = true; }).catch(()=>{ isPlaying = false; });
+            m4PausedTime = 0; // Reset for next playback
+            return;
+        }
+        
         playlistIndex++;
         if (playlistIndex < playlist.length){
             audioEl.src = playlist[playlistIndex];
@@ -83,6 +140,10 @@
 
     onDestroy(()=>{
         if (io){ try{ io.disconnect(); }catch{} io = null; }
+        if (timeUpdateListener && audioEl) {
+            try { audioEl.removeEventListener('timeupdate', timeUpdateListener); } catch {}
+            timeUpdateListener = null;
+        }
         if (audioEl){ try{ audioEl.pause(); }catch{} audioEl = null; }
         exitStoryMode();
     });
@@ -95,13 +156,13 @@
             <span class="label">Narration</span>
         </div>
         <div class="speed-select compact">
-            <label class="chip {speed === 'normal' ? 'active' : ''}" on:click={() => { narratorSpeed.set('normal'); speed = 'normal'; }}>
+            <label class="chip {speed === 'normal' ? 'active' : ''}" on:click={() => { narratorSpeed.set('normal'); speed = 'normal'; setTimeout(() => safeStartList(playlist), 50); }}>
                 <span class="txt">Normal</span>
             </label>
-            <label class="chip {speed === 'slow' ? 'active' : ''}" on:click={() => { narratorSpeed.set('slow'); speed = 'slow'; }}>
+            <label class="chip {speed === 'slow' ? 'active' : ''}" on:click={() => { narratorSpeed.set('slow'); speed = 'slow'; setTimeout(() => safeStartList(playlist), 50); }}>
                 <span class="txt">Slow</span>
             </label>
-            <label class="chip {speed === 'fast' ? 'active' : ''}" on:click={() => { narratorSpeed.set('fast'); speed = 'fast'; }}>
+            <label class="chip {speed === 'fast' ? 'active' : ''}" on:click={() => { narratorSpeed.set('fast'); speed = 'fast'; setTimeout(() => safeStartList(playlist), 50); }}>
                 <span class="txt">Fast</span>
             </label>
         </div>

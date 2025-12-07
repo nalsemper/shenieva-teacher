@@ -143,15 +143,15 @@
             <span class="label">Narration</span>
         </div>
         <div class="speed-select compact">
-            <label class="chip {speed === 'normal' ? 'active' : ''}" on:click={() => { speed = 'normal'; safeStartList(playlist); }}>
+            <label class="chip {speed === 'normal' ? 'active' : ''}" on:click={() => { speed = 'normal'; setTimeout(() => safeStartList(playlist), 50); }}>
                 <input type="radio" name="speed5" bind:group={speed} value="normal" />
                 <span class="txt">Normal</span>
             </label>
-            <label class="chip {speed === 'slow' ? 'active' : ''}" on:click={() => { speed = 'slow'; safeStartList(playlist); }}>
+            <label class="chip {speed === 'slow' ? 'active' : ''}" on:click={() => { speed = 'slow'; setTimeout(() => safeStartList(playlist), 50); }}>
                 <input type="radio" name="speed5" bind:group={speed} value="slow" />
                 <span class="txt">Slow</span>
             </label>
-            <label class="chip {speed === 'fast' ? 'active' : ''}" on:click={() => { speed = 'fast'; safeStartList(playlist); }}>
+            <label class="chip {speed === 'fast' ? 'active' : ''}" on:click={() => { speed = 'fast'; setTimeout(() => safeStartList(playlist), 50); }}>
                 <input type="radio" name="speed5" bind:group={speed} value="fast" />
                 <span class="txt">Fast</span>
             </label>

@@ -93,7 +93,7 @@
 
         // If autoplay is blocked, listen for first user gesture
         const userGestureHandler = () => {
-            safeStartAudio();
+            if (!isPlaying) safeStartAudio();
             window.removeEventListener('pointerdown', userGestureHandler);
             window.removeEventListener('keydown', userGestureHandler);
         };
@@ -124,16 +124,13 @@
             <span class="label">Narration</span>
         </div>
         <div class="speed-select compact">
-            <label class="chip {speed === 'normal' ? 'active' : ''}" on:click={() => { speed = 'normal'; safeStartAudio(); }}>
-                <input type="radio" name="speed3" bind:group={speed} value="normal" />
+            <label class="chip {speed === 'normal' ? 'active' : ''}" on:click={() => { narratorSpeed.set('normal'); speed = 'normal'; setTimeout(() => safeStartAudio(), 50); }}>
                 <span class="txt">Normal</span>
             </label>
-            <label class="chip {speed === 'slow' ? 'active' : ''}" on:click={() => { speed = 'slow'; safeStartAudio(); }}>
-                <input type="radio" name="speed3" bind:group={speed} value="slow" />
+            <label class="chip {speed === 'slow' ? 'active' : ''}" on:click={() => { narratorSpeed.set('slow'); speed = 'slow'; setTimeout(() => safeStartAudio(), 50); }}>
                 <span class="txt">Slow</span>
             </label>
-            <label class="chip {speed === 'fast' ? 'active' : ''}" on:click={() => { speed = 'fast'; safeStartAudio(); }}>
-                <input type="radio" name="speed3" bind:group={speed} value="fast" />
+            <label class="chip {speed === 'fast' ? 'active' : ''}" on:click={() => { narratorSpeed.set('fast'); speed = 'fast'; setTimeout(() => safeStartAudio(), 50); }}>
                 <span class="txt">Fast</span>
             </label>
         </div>

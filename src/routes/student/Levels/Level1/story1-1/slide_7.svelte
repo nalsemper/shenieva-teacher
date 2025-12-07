@@ -20,11 +20,14 @@
     image: "/converted/assets/LEVEL_1/STORY_1/PIC6.webp"
     };
 
-    // single file playlist for slide 7: M8
+    // single file playlist for slide 7
+    // normal/slow: M8.mp3
+    // fast: M6.mp3
     $: playlist = (() => {
-    const base = '/assets/audio/story-telling/Level_1/story_1';
+        const base = '/assets/audio/story-telling/Level_1/story_1';
         const sp = speed === 'slow' ? 'slow' : (speed === 'fast' ? 'fast' : 'normal');
-        return [ encodeURI(`${base}/${sp}/slide_7/M8.mp3`) ];
+        const filename = speed === 'fast' ? 'M6.mp3' : 'M8.mp3';
+        return [ encodeURI(`${base}/${sp}/slide_7/${filename}`) ];
     })();
 
     let playToken = 0;
@@ -90,13 +93,13 @@
             <span class="label">Narration</span>
         </div>
         <div class="speed-select compact">
-            <label class="chip {speed === 'normal' ? 'active' : ''}" on:click={() => { narratorSpeed.set('normal'); speed = 'normal'; }}>
+            <label class="chip {speed === 'normal' ? 'active' : ''}" on:click={() => { narratorSpeed.set('normal'); speed = 'normal'; setTimeout(() => safeStartList(playlist), 50); }}>
                 <span class="txt">Normal</span>
             </label>
-            <label class="chip {speed === 'slow' ? 'active' : ''}" on:click={() => { narratorSpeed.set('slow'); speed = 'slow'; }}>
+            <label class="chip {speed === 'slow' ? 'active' : ''}" on:click={() => { narratorSpeed.set('slow'); speed = 'slow'; setTimeout(() => safeStartList(playlist), 50); }}>
                 <span class="txt">Slow</span>
             </label>
-            <label class="chip {speed === 'fast' ? 'active' : ''}" on:click={() => { narratorSpeed.set('fast'); speed = 'fast'; }}>
+            <label class="chip {speed === 'fast' ? 'active' : ''}" on:click={() => { narratorSpeed.set('fast'); speed = 'fast'; setTimeout(() => safeStartList(playlist), 50); }}>
                 <span class="txt">Fast</span>
             </label>
         </div>

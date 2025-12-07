@@ -19,36 +19,35 @@
     let audioEl = null;
     let playlistIndex = 0;
     let c2PausedTime = 0; // Track where C2 was paused for fast speed
+    let timeUpdateListener = null;
 
     // Playlist with 3 audio files per speed
+    // fast: C2, Mother 1 (C2 pauses at 5s, plays Mother 1, then resumes C2)
+    // normal/slow: C2, Mother 1, C3
     $: playlist = (() => {
         const base = '/assets/audio/story-telling/Level_1/story_2';
         const sp = speed === 'slow' ? 'slow' : (speed === 'fast' ? 'fast' : 'normal');
         
-        // Fast speed uses special sequence: C2 (5sec) -> Mother 1 -> C2 (resume)
         if (speed === 'fast') {
             return [
-                `${base}/fast/slide_2/C2.mp3`,
-                `${base}/fast/slide_2/Mother 1.mp3`,
-                `${base}/fast/slide_2/C2.mp3` // Will resume from paused time
+                encodeURI(`${base}/${sp}/slide_2/C2.mp3`),
+                encodeURI(`${base}/${sp}/slide_2/Mother 1.mp3`)
             ];
         }
         
         return [
-            `${base}/${sp}/slide_2/C2.mp3`,
-            `${base}/${sp}/slide_2/Mother 1.mp3`,
-            `${base}/${sp}/slide_2/C3.mp3`
+            encodeURI(`${base}/${sp}/slide_2/C2.mp3`),
+            encodeURI(`${base}/${sp}/slide_2/Mother 1.mp3`),
+            encodeURI(`${base}/${sp}/slide_2/C3.mp3`)
         ];
     })();
 
     let playToken = 0;
     let _startTimer = /** @type {ReturnType<typeof setTimeout> | null} */ (null);
-    let _pauseTimer = /** @type {ReturnType<typeof setTimeout> | null} */ (null);
 
     function safeStartList() {
         if (!audioEl) return;
         if (_startTimer) { clearTimeout(_startTimer); _startTimer = null; }
-        if (_pauseTimer) { clearTimeout(_pauseTimer); _pauseTimer = null; }
         const token = ++playToken;
         playlistIndex = 0;
         c2PausedTime = 0;
@@ -56,56 +55,62 @@
         _startTimer = setTimeout(() => {
             if (!audioEl) { _startTimer = null; return; }
             if (token !== playToken) { _startTimer = null; return; }
-            audioEl.src = playlist[0];
-            audioEl.currentTime = 0;
-            audioEl.play().catch(() => { isPlaying = false; });
             
-            // For fast speed, pause C2 after 5 seconds
-            if (speed === 'fast') {
-                _pauseTimer = setTimeout(() => {
-                    if (!audioEl || token !== playToken) { _pauseTimer = null; return; }
-                    c2PausedTime = audioEl.currentTime;
-                    audioEl.pause();
-                    // Immediately play Mother 1
-                    playlistIndex = 1;
-                    audioEl.src = playlist[1];
-                    audioEl.currentTime = 0;
-                    audioEl.play().catch(() => { isPlaying = false; });
-                    _pauseTimer = null;
-                }, 5000);
+            const currentPlaylist = playlist;
+            audioEl.src = currentPlaylist[playlistIndex];
+            
+            // For fast mode, set up time listener to pause C2 at 5 seconds
+            if (speed === 'fast' && playlistIndex === 0) {
+                setupC2TimeListener();
             }
             
+            audioEl.play().then(() => { isPlaying = true; }).catch(() => { isPlaying = false; });
             _startTimer = null;
         }, 150);
     }
 
-    function handleAudioEnd() {
-        if (_pauseTimer) { clearTimeout(_pauseTimer); _pauseTimer = null; }
+    function setupC2TimeListener() {
+        if (!audioEl) return;
         
-        playlistIndex++;
-        
-        // Special handling for fast speed
-        if (speed === 'fast') {
-            if (playlistIndex === 2) {
-                // Resume C2 from where it was paused
-                if (audioEl) {
-                    audioEl.src = playlist[2];
-                    audioEl.currentTime = c2PausedTime;
-                    audioEl.play().catch(() => { isPlaying = false; });
-                }
-                return;
-            } else if (playlistIndex >= 3) {
-                exitStoryMode();
-                return;
-            }
+        // Remove previous listener if exists
+        if (timeUpdateListener) {
+            audioEl.removeEventListener('timeupdate', timeUpdateListener);
         }
         
-        // Normal/slow speed handling
+        timeUpdateListener = () => {
+            if (audioEl && audioEl.currentTime >= 5.0 && playlistIndex === 0) {
+                c2PausedTime = audioEl.currentTime;
+                audioEl.pause();
+                audioEl.removeEventListener('timeupdate', timeUpdateListener);
+                timeUpdateListener = null;
+                
+                // Auto-advance to Mother 1.mp3
+                playlistIndex = 1;
+                audioEl.src = playlist[1];
+                audioEl.play().then(() => { isPlaying = true; }).catch(() => { isPlaying = false; });
+            }
+        };
+        
+        audioEl.addEventListener('timeupdate', timeUpdateListener);
+    }
+
+    function handleAudioEnd() {
+        // Special handling for fast mode: after Mother 1, resume C2 from paused position
+        if (speed === 'fast' && playlistIndex === 1 && c2PausedTime > 0) {
+            playlistIndex = 2; // Mark as on "virtual" third track
+            audioEl.src = playlist[0]; // Back to C2.mp3
+            audioEl.currentTime = c2PausedTime;
+            audioEl.play().then(() => { isPlaying = true; }).catch(() => { isPlaying = false; });
+            c2PausedTime = 0; // Reset for next playback
+            return;
+        }
+        
+        playlistIndex++;
         if (playlistIndex < playlist.length && audioEl) {
             audioEl.src = playlist[playlistIndex];
-            audioEl.currentTime = 0;
-            audioEl.play().catch(() => { isPlaying = false; });
+            audioEl.play().then(() => { isPlaying = true; }).catch(() => { isPlaying = false; });
         } else {
+            isPlaying = false;
             exitStoryMode();
         }
     }
@@ -159,7 +164,7 @@
 
         // If autoplay is blocked, listen for first user gesture
         const userGestureHandler = () => {
-            safeStartList();
+            if (!isPlaying) safeStartList();
             window.removeEventListener('pointerdown', userGestureHandler);
             window.removeEventListener('keydown', userGestureHandler);
         };
@@ -176,7 +181,10 @@
     });
 
     onDestroy(() => {
-        if (_pauseTimer) { clearTimeout(_pauseTimer); _pauseTimer = null; }
+        if (timeUpdateListener && audioEl) {
+            audioEl.removeEventListener('timeupdate', timeUpdateListener);
+            timeUpdateListener = null;
+        }
         if (audioEl) {
             try { audioEl.pause(); } catch (e) {}
             audioEl = null;
@@ -191,13 +199,13 @@
             <span class="label">Narration</span>
         </div>
         <div class="speed-select compact">
-            <label class="chip {speed === 'normal' ? 'active' : ''}" on:click={() => { narratorSpeed.set('normal'); speed = 'normal'; safeStartList(); }}>
+            <label class="chip {speed === 'normal' ? 'active' : ''}" on:click={() => { narratorSpeed.set('normal'); speed = 'normal'; setTimeout(() => safeStartList(), 50); }}>
                 <span class="txt">Normal</span>
             </label>
-            <label class="chip {speed === 'slow' ? 'active' : ''}" on:click={() => { narratorSpeed.set('slow'); speed = 'slow'; safeStartList(); }}>
+            <label class="chip {speed === 'slow' ? 'active' : ''}" on:click={() => { narratorSpeed.set('slow'); speed = 'slow'; setTimeout(() => safeStartList(), 50); }}>
                 <span class="txt">Slow</span>
             </label>
-            <label class="chip {speed === 'fast' ? 'active' : ''}" on:click={() => { narratorSpeed.set('fast'); speed = 'fast'; safeStartList(); }}>
+            <label class="chip {speed === 'fast' ? 'active' : ''}" on:click={() => { narratorSpeed.set('fast'); speed = 'fast'; setTimeout(() => safeStartList(), 50); }}>
                 <span class="txt">Fast</span>
             </label>
         </div>

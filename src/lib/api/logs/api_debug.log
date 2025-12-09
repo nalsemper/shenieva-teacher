@@ -1,2 +1,20 @@
 # api_debug.log - created by automation
 # PHP entries will be appended as JSON lines by api_debug_log()
+{"ts":"2025-11-22T06:39:40+00:00","label":"login_teacher_attempt","remote_addr":"124.217.113.165","method":"POST","uri":"/api/login_teacher.php","data":{"idNo":"t001"}}
+{"ts":"2025-11-22T06:39:40+00:00","label":"login_teacher_success","remote_addr":"124.217.113.165","method":"POST","uri":"/api/login_teacher.php","data":{"idNo":"t001","teacherId":1}}
+{"ts":"2025-11-22T06:41:59+00:00","label":"login_teacher_attempt","remote_addr":"124.217.113.165","method":"POST","uri":"/api/login_teacher.php","data":{"idNo":"t001"}}
+{"ts":"2025-11-22T06:41:59+00:00","label":"login_teacher_success","remote_addr":"124.217.113.165","method":"POST","uri":"/api/login_teacher.php","data":{"idNo":"t001","teacherId":1}}
+{"ts":"2025-11-22T06:42:04+00:00","label":"login_teacher_attempt","remote_addr":"124.217.113.165","method":"POST","uri":"/api/login_teacher.php","data":{"idNo":"t001"}}
+{"ts":"2025-11-22T06:42:04+00:00","label":"login_teacher_success","remote_addr":"124.217.113.165","method":"POST","uri":"/api/login_teacher.php","data":{"idNo":"t001","teacherId":1}}
+{"ts":"2025-11-22T06:42:10+00:00","label":"login_teacher_attempt","remote_addr":"124.217.113.165","method":"POST","uri":"/api/login_teacher.php","data":{"idNo":"t001"}}
+{"ts":"2025-11-22T06:42:10+00:00","label":"login_teacher_success","remote_addr":"124.217.113.165","method":"POST","uri":"/api/login_teacher.php","data":{"idNo":"t001","teacherId":1}}
+{"ts":"2025-11-22T06:42:16+00:00","label":"login_teacher_attempt","remote_addr":"124.217.113.165","method":"POST","uri":"/api/login_teacher.php","data":{"idNo":"t002"}}
+{"ts":"2025-11-22T06:42:16+00:00","label":"login_teacher_success","remote_addr":"124.217.113.165","method":"POST","uri":"/api/login_teacher.php","data":{"idNo":"t002","teacherId":2}}
+{"ts":"2025-11-22T06:42:19+00:00","label":"login_teacher_attempt","remote_addr":"124.217.113.165","method":"POST","uri":"/api/login_teacher.php","data":{"idNo":"t001"}}
+{"ts":"2025-11-22T06:42:19+00:00","label":"login_teacher_success","remote_addr":"124.217.113.165","method":"POST","uri":"/api/login_teacher.php","data":{"idNo":"t001","teacherId":1}}
+{"ts":"2025-11-22T06:42:35+00:00","label":"login_teacher_attempt","remote_addr":"124.217.113.165","method":"POST","uri":"/api/login_teacher.php","data":{"idNo":"t001"}}
+{"ts":"2025-11-22T06:42:35+00:00","label":"login_teacher_success","remote_addr":"124.217.113.165","method":"POST","uri":"/api/login_teacher.php","data":{"idNo":"t001","teacherId":1}}
+{"ts":"2025-11-22T07:05:00+00:00","label":"login_teacher_attempt","remote_addr":"124.217.113.165","method":"POST","uri":"/api/login_teacher.php","data":{"idNo":"t001"}}
+{"ts":"2025-11-22T07:05:00+00:00","label":"login_teacher_success","remote_addr":"124.217.113.165","method":"POST","uri":"/api/login_teacher.php","data":{"idNo":"t001","teacherId":1}}
+{"ts":"2025-12-03T14:05:29+00:00","label":"login_teacher_attempt","remote_addr":"49.146.53.229","method":"POST","uri":"/api/login_teacher.php","data":{"idNo":"Snow"}}
+{"ts":"2025-12-03T14:05:29+00:00","label":"login_teacher_not_found","remote_addr":"49.146.53.229","method":"POST","uri":"/api/login_teacher.php","data":{"idNo":"Snow"}}

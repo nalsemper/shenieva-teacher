@@ -1,17 +1,16 @@
 <?php
 // src/lib/api/update_student.php
 
-// Allow requests from any origin (for development). Restrict in production.
-header("Access-Control-Allow-Origin: *");
+// Include CORS handling
+include_once __DIR__ . '/cors.php';
 
-// Allow only the POST method.
-header("Access-Control-Allow-Methods: POST");
-
-// Allow specific headers.
-header("Access-Control-Allow-Headers: Content-Type");
-
-// Set content type to JSON.
 header('Content-Type: application/json');
+
+// Handle preflight
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 
 include 'conn.php';
 

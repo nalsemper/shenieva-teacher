@@ -26,7 +26,12 @@ try {
 
 try {
     // join with students_table to include idNo and gender for display/filtering
-    $query = "SELECT a.fk_studentID, a.studentName, a.attendanceDateTime, s.idNo, s.studentGender AS gender, s.studentLevel FROM attendance_table a LEFT JOIN students_table s ON a.fk_studentID = s.pk_studentID ORDER BY a.attendanceDateTime DESC";
+    // Only include attendance records for non-archived students
+    $query = "SELECT a.fk_studentID, a.studentName, a.attendanceDateTime, s.idNo, s.studentGender AS gender, s.studentLevel 
+              FROM attendance_table a 
+              LEFT JOIN students_table s ON a.fk_studentID = s.pk_studentID 
+              WHERE s.archive = 0
+              ORDER BY a.attendanceDateTime DESC";
     $stmt = $pdo->prepare($query);
     $stmt->execute();
 

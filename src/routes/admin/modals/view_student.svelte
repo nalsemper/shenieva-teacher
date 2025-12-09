@@ -6,6 +6,7 @@
   import { apiUrl } from '$lib/api_base';
 
   export let selectedPerson; // Student data passed from parent
+  export let isArchived = false; // Flag to indicate if viewing archived student
 
   const dispatch = createEventDispatcher();
 

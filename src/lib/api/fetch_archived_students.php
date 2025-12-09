@@ -1,5 +1,7 @@
 <?php
-// fetch_students.php
+// src/lib/api/fetch_archived_students.php
+// Fetch all archived students (archive = 1)
+
 // Include CORS handling
 include_once __DIR__ . '/cors.php';
 
@@ -13,8 +15,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
 
 include 'conn.php';
 
-// Only fetch non-archived students (archive = 0)
-$sql = "SELECT pk_studentID, idNo, studentName, studentGender, studentLevel, studentRibbon, studentColtrash FROM students_table WHERE archive = 0";
+$sql = "SELECT pk_studentID, idNo, studentName, studentGender, studentLevel, studentRibbon, studentColtrash, studentProgress 
+        FROM students_table 
+        WHERE archive = 1
+        ORDER BY studentName ASC";
+        
 $result = $conn->query($sql);
 
 $students = [];

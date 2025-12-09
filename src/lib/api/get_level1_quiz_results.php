@@ -60,7 +60,7 @@ try {
                     lq.createdAt
                 FROM level1_quiz lq
                 JOIN students_table s ON lq.studentID = s.pk_studentID
-                WHERE lq.storyTitle = ?
+                WHERE lq.storyTitle = ? AND s.archive = 0
                 ORDER BY s.studentName, lq.attempt DESC, lq.createdAt DESC";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('s', $storyTitle);
@@ -83,7 +83,7 @@ try {
                     lq.createdAt
                 FROM level1_quiz lq
                 JOIN students_table s ON lq.studentID = s.pk_studentID
-                WHERE lq.studentID = ?
+                WHERE lq.studentID = ? AND s.archive = 0
                 ORDER BY lq.attempt DESC, lq.createdAt DESC";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param('i', $studentID);
@@ -106,6 +106,7 @@ try {
                     lq.createdAt
                 FROM level1_quiz lq
                 JOIN students_table s ON lq.studentID = s.pk_studentID
+                WHERE s.archive = 0
                 ORDER BY s.studentName, lq.storyTitle, lq.attempt DESC, lq.createdAt DESC";
         $stmt = $conn->prepare($sql);
     }

@@ -2,17 +2,16 @@
 
 // delete_student.php
 
-// Allow requests from any origin (for development purposes). 
-// In production, restrict this to your Svelte app's origin.
-header("Access-Control-Allow-Origin: *"); 
+// Include CORS handling
+include_once __DIR__ . '/cors.php';
 
-// Allow only the DELETE method.
-header("Access-Control-Allow-Methods: DELETE");
+header('Content-Type: application/json');
 
-// Allow specific headers.
-header("Access-Control-Allow-Headers: Content-Type");
-
-// Set content type to JSON.
+// Handle preflight
+if ($_SERVER['REQUEST_METHOD'] === 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
 header('Content-Type: application/json');
 
 include 'conn.php';

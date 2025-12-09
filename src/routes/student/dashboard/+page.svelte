@@ -10,13 +10,33 @@
   import Stats from '../stats/+page.svelte';
   import Profile from '../profile/+page.svelte';
   import Settings from '../settings/+page.svelte';
+  import DashboardTutorial from '../components/DashboardTutorial.svelte';
 
   let activeTab = "play";
   let showLogoutModal = false;
   let hoveredTab = null;
   let audioInitialized = false;
+  let showTutorial = false;
 
   onMount(() => {
+    // Check tutorial flags and student level
+    const tutorialShownThisSession = sessionStorage.getItem('dashboardTutorialShown');
+    const studentLevel = $studentData?.studentLevel;
+    const isLevel0 = studentLevel === 0 || studentLevel === '0';
+    
+    console.log('Dashboard Tutorial Check:', {
+      tutorialShownThisSession,
+      studentLevel,
+      isLevel0,
+      willShow: isLevel0 && !tutorialShownThisSession
+    });
+    
+    // Show tutorial ONLY for level 0 students on first dashboard visit after login
+    if (isLevel0 && !tutorialShownThisSession) {
+      showTutorial = true;
+      sessionStorage.setItem('dashboardTutorialShown', 'true');
+    }
+
     // Start background music automatically when dashboard loads
     // (User has already interacted via name input, gender selection, welcome page)
     audioStore.playTrack('default');
@@ -36,6 +56,10 @@
       document.removeEventListener('touchstart', enableAudio);
     };
   });
+
+  function handleTutorialComplete() {
+    showTutorial = false;
+  }
 
   function wiggleButton(tab) {
     activeTab = tab;
@@ -62,6 +86,10 @@
     clearQuiz1State();
     resetStudentData();
     
+    // Clear tutorial flags so it shows again on next login
+    localStorage.removeItem('dashboardTutorialCompleted');
+    sessionStorage.removeItem('dashboardTutorialShown');
+    
     // Clear village progress tracking
     localStorage.removeItem('villageVisitedScenes');
     localStorage.removeItem('villageVisitedLevels');
@@ -85,6 +113,10 @@
 
   function cancelLogout() {
     showLogoutModal = false;
+  }
+
+  function showHelp() {
+    showTutorial = true;
   }
 </script>
 
@@ -225,6 +257,15 @@
     ⏻
   </button>
 
+  <!-- Help/Tutorial Button -->
+  <button
+    title="Show Tutorial"
+    class="absolute bottom-[2vh] left-[2vw] w-[6vw] h-[6vw] max-w-[48px] max-h-[48px] bg-purple-400 text-white text-[2vw] md:text-[1.25rem] font-bold rounded-full hover:bg-purple-500 transition-all duration-300 hover:scale-110 active:scale-100 z-30 flex items-center justify-center border-[0.5vw] border-white shadow-[0_0.75vw_1.5vw_rgba(0,0,0,0.4),inset_0_0.5vw_0.75vw_rgba(255,255,255,0.7),inset_0_-0.5vw_0.75vw_rgba(0,0,0,0.3)]"
+    on:click={showHelp}
+  >
+    ?
+  </button>
+
   <!-- Logout Modal -->
   {#if showLogoutModal}
     <div
@@ -257,6 +298,11 @@
         </div>
       </div>
     </div>
+  {/if}
+
+  <!-- Dashboard Tutorial -->
+  {#if showTutorial}
+    <DashboardTutorial on:complete={handleTutorialComplete} />
   {/if}
 </div>
 

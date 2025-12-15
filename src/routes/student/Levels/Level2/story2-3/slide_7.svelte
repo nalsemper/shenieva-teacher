@@ -41,18 +41,22 @@
 
     /** @type {{id:string,text:string,assignedTo:number|null}[]} */
     let answers = [
-        { id: 'a1', text: "Royce will buy the medicine because his brother needs it.", assignedTo: null },
-        { id: 'a2', text: "Royce will feel happy to help, even if he’s a bit sad about the toy.", assignedTo: null },
-        { id: 'a3', text: "Royce’s mother will feel proud and thankful to Royce.", assignedTo: null },
-        { id: 'a4', text: "Royce will start saving again for his dream remote car.", assignedTo: null }
+        { id: 'a1', text: 'Royce will buy the medicine because his brother needs it.', assignedTo: null },
+        { id: 'a2', text: 'Royce will feel happy to help, even if he\'s a bit sad about the toy.', assignedTo: null },
+        { id: 'a3', text: 'Royce\'s mother will feel proud and thankful to Royce.', assignedTo: null },
+        { id: 'a4', text: 'Royce will start saving again for his dream remote car.', assignedTo: null }
     ];
 
     answers = shuffleArray(answers);
 
     /** @type {{id:string,text:string,assignedTo:number|null}|null} */
     let dragged = null;
+    
+    // Check if quiz is locked (submitted)
+    $: isLocked = $studentData?.submittedQuizzes?.['story2-3'] || false;
+    
     /** @param {DragEvent} event @param {{id:string,text:string,assignedTo:number|null}} ans */
-    function handleDragStart(event, ans) { dragged = ans; if (event.dataTransfer) event.dataTransfer.setData('text/plain', ans.id); }
+    function handleDragStart(event, ans) { if (isLocked) return; dragged = ans; if (event.dataTransfer) event.dataTransfer.setData('text/plain', ans.id); }
     /** @param {{id:string,text:string,assignedTo:number|null}} ans */
     function makeStartDrag(ans) { return /** @param {DragEvent} ev */ function (ev) { handleDragStart(ev, ans); }; }
     /** @param {{id:string,text:string,assignedTo:number|null}} ans */
@@ -63,7 +67,7 @@
     /** @param {DragEvent} event @param {{id:number}} q */
     function handleDropOnQuestion(event, q) {
         event.preventDefault();
-        if (!dragged) return;
+        if (isLocked || !dragged) return;
         const draggedId = dragged.id;
         const prevAssigned = dragged.assignedTo;
         const existing = answers.find(a => a.assignedTo === q.id) || null;
@@ -77,7 +81,7 @@
     }
 
     /** @param {DragEvent} event */
-    function handleDropToBox(event) { event.preventDefault(); if (!dragged) return; const draggedId = dragged.id; answers = answers.map(a => a.id === draggedId ? { ...a, assignedTo: null } : a); dragged = null; persistAnswers(); }
+    function handleDropToBox(event) { event.preventDefault(); if (isLocked || !dragged) return; const draggedId = dragged.id; answers = answers.map(a => a.id === draggedId ? { ...a, assignedTo: null } : a); dragged = null; persistAnswers(); }
 
     function persistAnswers() {
         /** @type {Record<number,string>} */
@@ -138,7 +142,7 @@
             <div class="answers-header">Drag answers into the questions</div>
             <div class="answer-box" role="list" on:dragover={handleDragOver} on:drop={handleDropToBox} aria-label="Answer box">
                 {#each answers.filter(a => !a.assignedTo) as a, i}
-                    <div role="button" tabindex="0" use:fitText={{min:10,step:1}} draggable="true" on:dragstart={makeStartDrag(a)} class="answer-pill pill-{i}">{a.text}</div>
+                    <div role="button" tabindex="0" use:fitText={{min:10,step:1}} draggable={!isLocked} on:dragstart={makeStartDrag(a)} class="answer-pill pill-{i}" class:locked={isLocked}>{a.text}</div>
                 {/each}
             </div>
         </section>
@@ -151,7 +155,7 @@
                     </div>
                     <div class="assigned-below" aria-live="polite">
                         {#each answers.filter(a => a.assignedTo === q.id) as assigned}
-                            <div role="button" tabindex="0" use:fitText={{min:8,step:1}} draggable="true" on:dragstart={makeStartDragAssigned(assigned)} class="answer-pill assigned-pill">{assigned.text}</div>
+                            <div role="button" tabindex="0" use:fitText={{min:8,step:1}} draggable={!isLocked} on:dragstart={makeStartDragAssigned(assigned)} class="answer-pill assigned-pill" class:locked={isLocked}>{assigned.text}</div>
                         {/each}
                     </div>
                 </div>
@@ -178,6 +182,7 @@
     .answers-header { font-weight:700; color:#0f172a; font-size:clamp(0.9rem,2.2vw,1.05rem); }
     .answer-box { display:flex; flex-direction:column; gap:0.5rem; padding:0.75rem; border-radius:0.75rem; background:linear-gradient(180deg,#fff7ed,#fffbeb); max-height:48vh; overflow:auto; }
     .answer-pill { padding:0.35rem 0.5rem; border-radius:0.5rem; font-weight:700; cursor:grab; color:white; display:block; word-break:break-word; box-shadow:0 4px 8px rgba(0,0,0,0.08); min-height:2.4rem; display:flex; align-items:center; font-size:clamp(0.7rem,1.6vw,0.95rem); }
+    .answer-pill.locked { cursor:not-allowed; opacity:0.6; }
     .pill-0 { background:#ef476f; }
     .pill-1 { background:#f266ff; color:#fff; }
     .pill-2 { background:#06d6a0; }

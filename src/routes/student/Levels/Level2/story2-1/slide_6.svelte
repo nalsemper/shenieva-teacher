@@ -58,10 +58,10 @@
 
         /** @type {{id:string,text:string,assignedTo:number|null}[]} */
         let answers = [
-        { id: 'a1', text: "His mother will bring him to the doctor.", assignedTo: null },
+        { id: 'a1', text: 'His mother will bring him to the doctor.', assignedTo: null },
         { id: 'a2', text: "The doctor will say that Hector's weight is above average for his age right now.", assignedTo: null },
         { id: 'a3', text: "He will tell Hector that he needs to improve his eating habits and start exercising. Avoid too many sweets like chocolates and he should start eating more vegetables and fruits.", assignedTo: null },
-        { id: 'a4', text: "He will have a healthy body.", assignedTo: null }
+        { id: 'a4', text: 'He will have a healthy body.', assignedTo: null }
     ];
 
     // Shuffle answers at startup so they don't match question sequence by default
@@ -69,9 +69,13 @@
 
         /** @type {{id:string,text:string,assignedTo:number|null}|null} */
         let dragged = null;
+        
+        // Check if quiz is locked (submitted)
+        $: isLocked = $studentData?.submittedQuizzes?.['story2-1'] || false;
 
         /** @param {DragEvent} event @param {{id:string,text:string,assignedTo:number|null}} ans */
         function handleDragStart(event, ans) {
+            if (isLocked) return; // Prevent dragging if quiz is submitted
             dragged = ans;
             if (event.dataTransfer) event.dataTransfer.setData('text/plain', ans.id);
         }
@@ -108,7 +112,7 @@
         /** @param {DragEvent} event @param {{id:number}} q */
         function handleDropOnQuestion(event, q) {
             event.preventDefault();
-            if (!dragged) return;
+            if (isLocked || !dragged) return;
                 // allow swapping: if a question already has an answer, swap assignments
                 const draggedId = dragged.id;
                 const prevAssigned = dragged.assignedTo; // number|null
@@ -125,7 +129,7 @@
         /** @param {DragEvent} event */
         function handleDropToBox(event) {
             event.preventDefault();
-            if (!dragged) return;
+            if (isLocked || !dragged) return;
             // unassign
                 const draggedId = dragged.id;
                 answers = answers.map(a => a.id === draggedId ? { ...a, assignedTo: null } : a);
@@ -220,7 +224,7 @@
             <div class="answers-header">Drag answers into the questions</div>
                     <div class="answer-box" role="list" on:dragover={handleDragOver} on:drop={handleDropToBox} aria-label="Answer box">
                 {#each answers.filter(a => !a.assignedTo) as a, i}
-                    <div role="button" tabindex="0" use:fitText={{min:10,step:1}} draggable="true" on:dragstart={makeStartDrag(a)} class="answer-pill pill-{i}">{a.text}</div>
+                    <div role="button" tabindex="0" use:fitText={{min:10,step:1}} draggable={!isLocked} on:dragstart={makeStartDrag(a)} class="answer-pill pill-{i}" class:locked={isLocked}>{a.text}</div>
                 {/each}
             </div>
         </section>
@@ -237,7 +241,7 @@
                     <!-- Assigned answers shown under the question text -->
                     <div class="assigned-below" aria-live="polite">
                         {#each answers.filter(a => a.assignedTo === q.id) as assigned}
-                            <div role="button" tabindex="0" use:fitText={{min:8,step:1}} draggable="true" on:dragstart={makeStartDragAssigned(assigned)} class="answer-pill assigned-pill">{assigned.text}</div>
+                            <div role="button" tabindex="0" use:fitText={{min:8,step:1}} draggable={!isLocked} on:dragstart={makeStartDragAssigned(assigned)} class="answer-pill assigned-pill" class:locked={isLocked}>{assigned.text}</div>
                         {/each}
                     </div>
                 </div>
@@ -275,6 +279,7 @@
 
         /* kid-friendly colored pills (distinct per answer index) - make them card-like */
     .answer-pill { padding:0.35rem 0.5rem; border-radius:0.5rem; font-weight:700; cursor:grab; color:white; display:block; word-break:break-word; box-shadow:0 4px 8px rgba(0,0,0,0.08); min-height:2.4rem; display:flex; align-items:center; font-size:clamp(0.7rem,1.6vw,0.95rem); }
+    .answer-pill.locked { cursor:not-allowed; opacity:0.6; }
         .pill-0 { background:#ef476f; }
     .pill-1 { background:#f266ff; color:#fff; }
         .pill-2 { background:#06d6a0; }

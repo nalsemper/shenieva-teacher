@@ -5,8 +5,8 @@
     import { language, narratorSpeed } from '$lib/store/story_lang_audio';
 
     const slide = {
-        english: { text: "Maya returned home to her family and shared the story of how she helped the old woman. Her parents were proud and praised Maya for being compassionate and helping a person in need. Maya learned that small acts of kindness can make a big difference." },
-        cebuano: { text: "Mibalik si Maya sa iyang panimalay ug gisultian ang iyang pamilya sa nahinabo kung giunsa niya pagtabang ang tigulang. Nagmalipay ang iyang mga ginikanan ug gipasidunggan si Maya sa iyang pagkamaayo ug pagtabang sa nanginahanglan. Nakakat-on si Maya nga ang gagmay'ng buhat sa kaayo makadala ug dakong kalainan." },
+        english: { text: "Since then, she became known for being a helpful child. " },
+        cebuano: { text: "Sukad niadto, nahimong ilado si Maya isip usa ka matinabangong bata." },
         image: '/converted/assets/LEVEL_2/STORY_2/PIC6.webp'
     };
 
@@ -27,7 +27,7 @@
     $: audioSrc = (() => {
         const base = '/assets/audio/story-telling/Level_2/story_2';
         const sp = speed === 'slow' ? 'slow' : (speed === 'fast' ? 'fast' : 'normal');
-        const filename = sp === 'slow' ? 'H6.mp3' : 'HM6.mp3';
+        const filename = sp === 'slow' ? 'h6_b.mp3' : 'HM6.mp3';
         return `${base}/${sp}/slide_8/${filename}`;
     })();
 

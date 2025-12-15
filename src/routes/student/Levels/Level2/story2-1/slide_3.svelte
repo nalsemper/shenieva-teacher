@@ -149,7 +149,9 @@
 
         // If autoplay is blocked, listen for first user gesture and then start narration
         const userGestureHandler = () => {
-            safeStartList(playlist);
+            if (!isPlaying && playToken === 0) {
+                safeStartList(playlist);
+            }
             window.removeEventListener('pointerdown', userGestureHandler);
             window.removeEventListener('keydown', userGestureHandler);
         };

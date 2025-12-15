@@ -133,7 +133,7 @@
             io = new IntersectionObserver(entries=>{ entries.forEach(entry=>{ if (entry.isIntersecting && entry.intersectionRatio>0.5) safeStartList(playlist); }); }, { threshold: [0.5] });
             if (containerEl) io.observe(containerEl);
         }
-        const userGesture = ()=>{ safeStartList(playlist); window.removeEventListener('pointerdown', userGesture); window.removeEventListener('keydown', userGesture); };
+        const userGesture = ()=>{ if (!isPlaying && playToken === 0) { safeStartList(playlist); } window.removeEventListener('pointerdown', userGesture); window.removeEventListener('keydown', userGesture); };
         window.addEventListener('pointerdown', userGesture, { once: true });
         window.addEventListener('keydown', userGesture, { once: true });
     });

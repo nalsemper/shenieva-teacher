@@ -94,7 +94,9 @@
 
         // If autoplay is blocked, listen for first user gesture
         const userGestureHandler = () => {
-            safeStartAudio();
+            if (!isPlaying && playToken === 0) {
+                safeStartAudio();
+            }
             window.removeEventListener('pointerdown', userGestureHandler);
             window.removeEventListener('keydown', userGestureHandler);
         };

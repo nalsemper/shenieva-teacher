@@ -59,12 +59,13 @@
             const currentPlaylist = playlist;
             audioEl.src = currentPlaylist[playlistIndex];
             
-            // For fast mode, set up time listener to pause C2 at 5 seconds
-            if (speed === 'fast' && playlistIndex === 0) {
-                setupC2TimeListener();
-            }
-            
-            audioEl.play().then(() => { isPlaying = true; }).catch(() => { isPlaying = false; });
+            audioEl.play().then(() => { 
+                isPlaying = true;
+                // Set up time listener AFTER audio starts playing for accurate timing
+                if (speed === 'fast' && playlistIndex === 0) {
+                    setupC2TimeListener();
+                }
+            }).catch(() => { isPlaying = false; });
             _startTimer = null;
         }, 150);
     }
@@ -164,7 +165,9 @@
 
         // If autoplay is blocked, listen for first user gesture
         const userGestureHandler = () => {
-            if (!isPlaying) safeStartList();
+            if (!isPlaying && playToken === 0) {
+                safeStartList();
+            }
             window.removeEventListener('pointerdown', userGestureHandler);
             window.removeEventListener('keydown', userGestureHandler);
         };

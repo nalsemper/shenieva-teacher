@@ -22,7 +22,7 @@
     const GRID_WIDTH = 160;
     const GRID_HEIGHT = 20;
     const TILE_SIZE = 32;
-    const PLAYER_SIZE = 32;
+    const PLAYER_SIZE = 55;
     const PLAYER_SPEED = 1.5;
     const HOUSE_SIZE = 200;
     const TREE_SIZE = 180;
@@ -113,12 +113,13 @@
         const gender = currentStudent?.studentGender ?? 'Male';
         const genderFolder = gender === 'Female' ? 'girl' : 'boy';
         
-        // Character sprites (all directions)
-        ['walking_right', 'walking_left', 'walking_front', 'walking_back'].forEach(dir => {
-            for (let i = 1; i <= 3; i++) {
-                urls.push(`/converted/trash_collect_game/${genderFolder}/walking_sprite/${dir}/${i}.webp`);
-            }
-        });
+        // Character sprites - Shenievia (forward and back have 3 frames, front has 1)
+        for (let i = 1; i <= 3; i++) {
+            urls.push(`/converted/assets/Level_Walkthrough/shenievia/${genderFolder}/forward/${i}.webp`);
+            urls.push(`/converted/assets/Level_Walkthrough/shenievia/${genderFolder}/back/${i}.webp`);
+        }
+        // Front sprite (only 1 frame)
+        urls.push(`/converted/assets/Level_Walkthrough/shenievia/${genderFolder}/front/1.webp`);
         
         // Ground tiles
         urls.push('/converted/trash_collect_game/ground/soil.webp');
@@ -140,6 +141,10 @@
             urls.push(`/converted/trash_collect_game/trash/${encodeURIComponent(fileName)}`);
         });
         
+        // Audio files
+        urls.push('/assets/trash_collect_game/audio/collect_effect.mp3');
+        urls.push('/assets/trash_collect_game/audio/game_bg.mp3');
+        
         return urls;
     };
 
@@ -154,29 +159,51 @@
     async function handlePreloadDone() {
         loadingText = 'Almost ready...';
         loadingProgress = 100;
-        // Wait a moment to show 100%
-        await new Promise(resolve => setTimeout(resolve, 200));
-        
-        // Hide preloader first to mount the canvas
-        showPreloader = false;
         
         // Wait for next tick to ensure canvas is mounted
-        await new Promise(resolve => setTimeout(resolve, 0));
+        await new Promise(resolve => setTimeout(resolve, 50));
         
-        // Initialize the game
+        // Initialize the game but keep loading screen visible
         await initGame();
         
-        // Wait for at least one render cycle to complete
+        // Wait for game loop to start and render at least 2-3 frames with all assets
         loadingText = 'Rendering game...';
-        await new Promise(resolve => setTimeout(resolve, 100));
+        await new Promise(resolve => setTimeout(resolve, 300));
         
-        // Ensure assets are visible on screen
+        // Verify all critical assets are loaded and complete
+        const allAssetsReady = 
+            assets.ground?.complete &&
+            assets.character?.walking_down?.every((img: HTMLImageElement) => img?.complete) &&
+            assets.house?.every((img: HTMLImageElement) => img?.complete) &&
+            assets.trees?.every((img: HTMLImageElement) => img?.complete) &&
+            assets.trash?.every((img: HTMLImageElement) => img?.complete);
+        
+        if (!allAssetsReady) {
+            console.warn('Some assets not fully loaded, waiting longer...');
+            await new Promise(resolve => setTimeout(resolve, 500));
+        }
+        
+        // Ensure at least one full draw cycle has completed
         if (ctx && assets) {
             draw();
             await new Promise(resolve => setTimeout(resolve, 100));
         }
         
         assetsRendered = true;
+        
+        // Now hide the loading screen
+        showPreloader = false;
+        
+        // Wait for DOM update and resize canvas now that it's visible
+        await new Promise(resolve => setTimeout(resolve, 50));
+        resizeCanvas();
+        
+        // Verify canvas has proper dimensions
+        if (!gameCanvas.width || !gameCanvas.height) {
+            console.error('Canvas not properly sized after resize');
+            await new Promise(resolve => setTimeout(resolve, 50));
+            resizeCanvas();
+        }
     }
     
     // Custom progress handler for loading screen
@@ -207,16 +234,14 @@
         const currentStudent = $studentData as StudentData | null;
         const gender = currentStudent?.studentGender ?? 'Male';
 
-        const character = gender === 'Female' ? {
-            walking_right: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/converted/trash_collect_game/girl/walking_sprite/walking_right/${i+1}.webp`))),
-            walking_left: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/converted/trash_collect_game/girl/walking_sprite/walking_left/${i+1}.webp`))),
-            walking_front: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/converted/trash_collect_game/girl/walking_sprite/walking_front/${i+1}.webp`))),
-            walking_back: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/converted/trash_collect_game/girl/walking_sprite/walking_back/${i+1}.webp`)))
-        } : {
-            walking_right: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/converted/trash_collect_game/boy/walking_sprite/walking_right/${i+1}.webp`))),
-            walking_left: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/converted/trash_collect_game/boy/walking_sprite/walking_left/${i+1}.webp`))),
-            walking_front: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/converted/trash_collect_game/boy/walking_sprite/walking_front/${i+1}.webp`))),
-            walking_back: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/converted/trash_collect_game/boy/walking_sprite/walking_back/${i+1}.webp`)))
+        const genderFolder = gender === 'Female' ? 'girl' : 'boy';
+        // Front sprite only has 1 frame, use it for all 3 frames in animation
+        const frontSprite = await loadImage(`/converted/assets/Level_Walkthrough/shenievia/${genderFolder}/front/1.webp`);
+        const character = {
+            walking_right: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/converted/assets/Level_Walkthrough/shenievia/${genderFolder}/forward/${i+1}.webp`))),
+            walking_left: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/converted/assets/Level_Walkthrough/shenievia/${genderFolder}/back/${i+1}.webp`))),
+            walking_front: [frontSprite, frontSprite, frontSprite],
+            walking_back: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/converted/assets/Level_Walkthrough/shenievia/${genderFolder}/back/${i+1}.webp`)))
         };
 
         const ground = {
@@ -403,7 +428,7 @@
     }
 
     function updateCamera() {
-        if (!gameCanvas) return;
+        if (!gameCanvas || !gameCanvas.width || !gameCanvas.height) return;
         const canvasWidthInTiles = gameCanvas.width / (TILE_SIZE * scaleFactor);
         cameraX = Math.max(0, Math.min(
             player.x - canvasWidthInTiles * TILE_SIZE / 2,
@@ -845,7 +870,6 @@
             console.log('Initial trash collected from DB:', trashCollectedTotal);
         }
 
-        resizeCanvas();
         generateMap();
         window.addEventListener('keydown', (e: KeyboardEvent) => { keys[e.key as keyof Keys] = true; });
         window.addEventListener('keyup', (e: KeyboardEvent) => { keys[e.key as keyof Keys] = false; });
@@ -926,13 +950,13 @@
             <!-- Logo or Title -->
             <div class="loading-logo">
                 <h1 class="loading-title">Trash Collection Adventure</h1>
-                <div class="loading-subtitle">🌿 Keep Shenievia Clean! 🌿</div>
+                <div class="loading-subtitle">🌿 Keep Readville Village Clean! 🌿</div>
             </div>
             
             <!-- Character Preview -->
             {#if $studentData}
             <div class="loading-character">
-                <img src="/converted/trash_collect_game/{$studentData.studentGender === 'Female' ? 'girl' : 'boy'}/walking_sprite/walking_front/1.webp" alt="Character" />
+                <img src="/converted/assets/Level_Walkthrough/shenievia/{$studentData.studentGender === 'Female' ? 'girl' : 'boy'}/front/1.webp" alt="Character" />
             </div>
             {/if}
             
@@ -955,9 +979,9 @@
             </div>
         </div>
     </div>
-{:else}
+{/if}
 
-<main>
+<main style:display={showPreloader ? 'none' : 'block'}>
     <div class="game-wrapper">
         <h1 class="title">Shenievia Adventure!</h1>
         <div class="trash-indicator">
@@ -1010,8 +1034,6 @@
     </div>
 </main>
 
-{/if}
-
 <style>
     /* Loading Screen Styles */
     .loading-screen {
@@ -1030,17 +1052,20 @@
     .loading-content {
         text-align: center;
         color: white;
-        max-width: 700px;
-        padding: 40px;
+        max-width: 90vw;
+        width: 100%;
+        max-height: 90vh;
+        padding: clamp(8px, 1.5vw, 15px);
         display: flex;
         flex-direction: column;
         align-items: center;
         justify-content: center;
-        gap: 20px;
+        gap: clamp(3px, 0.8vh, 10px);
+        overflow-y: auto;
     }
 
     .loading-logo {
-        margin-bottom: 20px;
+        margin-bottom: clamp(3px, 0.8vh, 10px);
         animation: fadeInScale 0.8s ease-out;
     }
 
@@ -1056,9 +1081,10 @@
     }
 
     .loading-title {
-        font-size: 3.5rem;
+        font-size: clamp(1.2rem, 4vw, 2rem);
         font-weight: bold;
         margin: 0;
+        line-height: 1.2;
         text-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
         background: linear-gradient(45deg, #fef9c3, #fef08a, #fde047);
         -webkit-background-clip: text;
@@ -1077,16 +1103,17 @@
     }
 
     .loading-subtitle {
-        font-size: 1.4rem;
-        margin-top: 0;
+        font-size: clamp(0.75rem, 2.5vw, 1rem);
+        margin-top: clamp(2px, 0.5vh, 5px);
         opacity: 0.95;
         font-style: italic;
         color: #fef9c3;
         text-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        line-height: 1.3;
     }
 
     .loading-character {
-        margin: 30px 0;
+        margin: clamp(15px, 3vh, 25px) 0;
         animation: characterBounce 2s ease-in-out infinite;
         display: flex;
         justify-content: center;
@@ -1094,7 +1121,7 @@
     }
 
     .loading-character img {
-        height: 150px;
+        height: clamp(80px, 12vh, 120px);
         width: auto;
         filter: drop-shadow(0 10px 25px rgba(0, 0, 0, 0.4));
     }
@@ -1105,14 +1132,14 @@
     }
 
     .loading-bar-container {
-        margin: 20px 0;
+        margin: clamp(10px, 1.5vh, 15px) 0;
         width: 100%;
-        max-width: 550px;
+        max-width: clamp(300px, 80vw, 450px);
     }
 
     .loading-bar {
         width: 100%;
-        height: 28px;
+        height: clamp(18px, 2.5vh, 24px);
         background-color: rgba(255, 255, 255, 0.25);
         border-radius: 18px;
         overflow: hidden;
@@ -1147,31 +1174,33 @@
     }
 
     .loading-percentage {
-        margin-top: 15px;
-        font-size: 2.2rem;
+        margin-top: clamp(5px, 1vh, 10px);
+        font-size: clamp(1.1rem, 3.5vw, 1.6rem);
         font-weight: bold;
         text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         color: #fef9c3;
+        line-height: 1.2;
     }
 
     .loading-text {
-        font-size: 1.3rem;
-        margin: 15px 0 10px;
+        font-size: clamp(0.8rem, 2vw, 1rem);
+        margin: clamp(5px, 1vh, 10px) 0;
         opacity: 0.95;
-        min-height: 32px;
+        min-height: clamp(18px, 3vh, 24px);
         color: #fef9c3;
+        line-height: 1.3;
     }
 
     .loading-dots {
         display: flex;
         justify-content: center;
-        gap: 10px;
-        margin-top: 15px;
+        gap: clamp(6px, 1vw, 10px);
+        margin-top: clamp(5px, 1vh, 10px);
     }
 
     .dot {
-        width: 12px;
-        height: 12px;
+        width: clamp(8px, 1.5vw, 12px);
+        height: clamp(8px, 1.5vw, 12px);
         background-color: #fef9c3;
         border-radius: 50%;
         animation: dotPulse 1.4s ease-in-out infinite;

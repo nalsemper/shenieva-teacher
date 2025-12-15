@@ -58,22 +58,23 @@
             if (token !== playToken) { _startTimer = null; return; }
             audioEl.src = playlist[0];
             audioEl.currentTime = 0;
-            audioEl.play().catch(() => { isPlaying = false; });
-            
-            // For fast speed, pause H4 after 7 seconds
-            if (speed === 'fast') {
-                _pauseTimer = setTimeout(() => {
-                    if (!audioEl || token !== playToken) { _pauseTimer = null; return; }
-                    h4PausedTime = audioEl.currentTime;
-                    audioEl.pause();
-                    // Immediately play Hannah_
-                    playlistIndex = 1;
-                    audioEl.src = playlist[1];
-                    audioEl.currentTime = 0;
-                    audioEl.play().catch(() => { isPlaying = false; });
-                    _pauseTimer = null;
-                }, 7000);
-            }
+            audioEl.play().then(() => {
+                isPlaying = true;
+                // For fast speed, pause H4 after 7 seconds - start timer AFTER audio plays
+                if (speed === 'fast') {
+                    _pauseTimer = setTimeout(() => {
+                        if (!audioEl || token !== playToken) { _pauseTimer = null; return; }
+                        h4PausedTime = audioEl.currentTime;
+                        audioEl.pause();
+                        // Immediately play Hannah_
+                        playlistIndex = 1;
+                        audioEl.src = playlist[1];
+                        audioEl.currentTime = 0;
+                        audioEl.play().catch(() => { isPlaying = false; });
+                        _pauseTimer = null;
+                    }, 7000);
+                }
+            }).catch(() => { isPlaying = false; });
             
             _startTimer = null;
         }, 150);
@@ -159,7 +160,9 @@
 
         // If autoplay is blocked, listen for first user gesture
         const userGestureHandler = () => {
-            safeStartList();
+            if (!isPlaying && playToken === 0) {
+                safeStartList();
+            }
             window.removeEventListener('pointerdown', userGestureHandler);
             window.removeEventListener('keydown', userGestureHandler);
         };

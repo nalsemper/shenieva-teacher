@@ -63,12 +63,13 @@
             const currentPlaylist = list || playlist;
             audioEl.src = currentPlaylist[playlistIndex];
             
-            // For fast mode, set up time listener to pause M5 at 4 seconds
-            if (speed === 'fast' && playlistIndex === 0) {
-                setupM5TimeListener();
-            }
-            
-            audioEl.play().then(()=>{ isPlaying = true; }).catch(()=>{ isPlaying = false; });
+            audioEl.play().then(()=>{ 
+                isPlaying = true;
+                // Set up time listener AFTER audio starts playing for accurate timing
+                if (speed === 'fast' && playlistIndex === 0) {
+                    setupM5TimeListener();
+                }
+            }).catch(()=>{ isPlaying = false; });
             _startTimer = null;
         }, 150);
     }
@@ -132,7 +133,7 @@
             io = new IntersectionObserver(entries=>{ entries.forEach(entry=>{ if (entry.isIntersecting && entry.intersectionRatio>0.5) safeStartList(playlist); }); }, { threshold: [0.5] });
             if (containerEl) io.observe(containerEl);
         }
-        const userGesture = ()=>{ safeStartList(playlist); window.removeEventListener('pointerdown', userGesture); window.removeEventListener('keydown', userGesture); };
+        const userGesture = ()=>{ if (!isPlaying && playToken === 0) { safeStartList(playlist); } window.removeEventListener('pointerdown', userGesture); window.removeEventListener('keydown', userGesture); };
         window.addEventListener('pointerdown', userGesture, { once: true });
         window.addEventListener('keydown', userGesture, { once: true });
     });

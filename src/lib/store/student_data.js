@@ -13,10 +13,16 @@ import { browser } from '$app/environment';
  * @property {number | null} studentColtrash
  * @property {number | null} studentProgress
  * @property {Record<string, string>} answeredQuestions
+ * @property {Record<string, boolean>} submittedQuizzes
  */
 
 const storedData = browser ? localStorage.getItem('studentData') : null;
-const initialData = storedData !== null ? JSON.parse(storedData) : null;
+let initialData = storedData !== null ? JSON.parse(storedData) : null;
+
+// Ensure submittedQuizzes exists
+if (initialData && !initialData.submittedQuizzes) {
+  initialData.submittedQuizzes = {};
+}
 
 /** @type {import('svelte/store').Writable<StudentData | null>} */
 export const studentData = writable(initialData);

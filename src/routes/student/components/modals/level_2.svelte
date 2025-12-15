@@ -75,6 +75,14 @@
                 3: 'She will feel thankful to Maya for her kindness and for being helpful.',
                 4: 'She will praise and thank Maya.'
             }
+        },
+        'story2-3': {
+            'story2-3_slide7': {
+                1: 'Royce will buy the medicine because his brother needs it.',
+                2: 'Royce will feel happy to help, even if he\'s a bit sad about the toy.',
+                3: 'Royce\'s mother will feel proud and thankful to Royce.',
+                4: 'Royce will start saving again for his dream remote car.'
+            }
         }
     };
 
@@ -201,6 +209,16 @@
     let showQuizReview: boolean = false;
     /** @type {{qnum:number,questionText:string,studentAnswer:string,isCorrect:boolean}[]} */
     let quizReviewResults: Array<{qnum:number,questionText:string,studentAnswer:string,isCorrect:boolean}> = [];
+    
+    // Lock quiz when review is shown
+    $: if (showQuizReview && storyKey) {
+        studentData.update(data => {
+            if (!data) return data;
+            const submittedQuizzes = data.submittedQuizzes || {};
+            submittedQuizzes[storyKey] = true;
+            return { ...data, submittedQuizzes };
+        });
+    }
 
     async function continueAfterReview(): Promise<void> {
         showQuizReview = false;

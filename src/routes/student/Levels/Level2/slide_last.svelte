@@ -185,11 +185,21 @@
 
     async function continueToQuiz() {
         try {
+            // Mark this quiz as submitted to lock editing BEFORE any other operations
+            // This prevents users from going back and changing answers while viewing results
+            studentData.update(data => {
+                if (!data) return data;
+                const submittedQuizzes = data.submittedQuizzes || {};
+                submittedQuizzes[storyKey] = true;
+                return { ...data, submittedQuizzes };
+            });
+            
             // Check if quiz already exists in database first
             await checkQuizExistsInDatabase();
 
             const snapshot = $studentData || {};
             const answers = snapshot.answeredQuestions || {};
+            
             // Score counts each correctly matched sub-item as 1 point.
             const score = Object.keys(correctAnswers[storyKey] || {}).reduce((acc, qid) => {
                 const userRaw = answers[qid];

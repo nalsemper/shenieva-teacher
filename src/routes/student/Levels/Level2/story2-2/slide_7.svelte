@@ -19,17 +19,33 @@
     let observer;
     let storyModeActive = false;
     let playToken = 0;
+    let playlistIndex = 0;
 
     // Speed selector
     let speed = $narratorSpeed;
 
-    // Audio source with speed variants (slow has different filename)
-    $: audioSrc = (() => {
+    // Playlist for slow speed (H5.mp3 then h6_a.mp3), single file for normal/fast
+    let playlist = [];
+    
+    function updatePlaylist() {
         const base = '/assets/audio/story-telling/Level_2/story_2';
-        const sp = speed === 'slow' ? 'slow' : (speed === 'fast' ? 'fast' : 'normal');
-        const filename = sp === 'slow' ? 'H5.mp3' : 'HM5.mp3';
-        return `${base}/${sp}/slide_7/${filename}`;
-    })();
+        
+        if (speed === 'slow') {
+            playlist = [
+                `${base}/slow/slide_7/H5.mp3`,
+                `${base}/slow/slide_7/h6_a.mp3`
+            ];
+        } else if (speed === 'fast') {
+            playlist = [`${base}/fast/slide_7/HM5.mp3`];
+        } else {
+            playlist = [`${base}/normal/slide_7/HM5.mp3`];
+        }
+    }
+    
+    $: {
+        speed;
+        updatePlaylist();
+    }
 
     function enterStoryMode() {
         if (!storyModeActive) {
@@ -49,8 +65,9 @@
         if (!audioEl) return;
         enterStoryMode();
         const token = ++playToken;
+        playlistIndex = 0;
         audioEl.pause();
-        audioEl.src = audioSrc;
+        audioEl.src = playlist[playlistIndex];
         audioEl.load();
         setTimeout(() => {
             if (token !== playToken) return;
@@ -58,17 +75,27 @@
         }, 150);
     }
 
-    // watch for speed changes to auto-play new narration
-    $: if (audioEl && speed && audioSrc) {
-        enterStoryMode();
-        const token = ++playToken;
-        audioEl.pause();
-        audioEl.src = audioSrc;
-        audioEl.load();
-        setTimeout(() => {
-            if (token !== playToken) return;
-            audioEl.play().catch(e => console.warn('[story] Play blocked:', e));
-        }, 150);
+    function handleAudioEnd() {
+        playlistIndex++;
+        if (playlistIndex < playlist.length) {
+            const token = playToken;
+            audioEl.src = playlist[playlistIndex];
+            audioEl.load();
+            setTimeout(() => {
+                if (token !== playToken) return;
+                audioEl.play().catch(e => console.warn('[story] Play blocked:', e));
+            }, 100);
+        } else {
+            isPlaying = false;
+            exitStoryMode();
+        }
+    }
+
+    // Watch for speed changes and restart narration
+    let previousSpeed = speed;
+    $: if (audioEl && speed !== previousSpeed) {
+        previousSpeed = speed;
+        startNarration();
     }
 
     onMount(() => {
@@ -124,12 +151,18 @@
     <div class="top-left-audio">
         <div class="audio-indicator">
             <span class="dot" class:playing={isPlaying}></span>
-            <span class="label">Narration</span>
+            <span class="label">Audio</span>
         </div>
         <div class="speed-select compact">
-            <label class="chip {speed === 'normal' ? 'active' : ''}" on:click={() => { narratorSpeed.set('normal'); speed = 'normal'; }}><span class="txt">Normal</span></label>
-            <label class="chip {speed === 'slow' ? 'active' : ''}" on:click={() => { narratorSpeed.set('slow'); speed = 'slow'; }}><span class="txt">Slow</span></label>
-            <label class="chip {speed === 'fast' ? 'active' : ''}" on:click={() => { narratorSpeed.set('fast'); speed = 'fast'; }}><span class="txt">Fast</span></label>
+            <label class="chip {speed === 'normal' ? 'active' : ''}" on:click={() => { narratorSpeed.set('normal'); speed = 'normal'; }}>
+                <span class="txt">Normal</span>
+            </label>
+            <label class="chip {speed === 'slow' ? 'active' : ''}" on:click={() => { narratorSpeed.set('slow'); speed = 'slow'; }}>
+                <span class="txt">Slow</span>
+            </label>
+            <label class="chip {speed === 'fast' ? 'active' : ''}" on:click={() => { narratorSpeed.set('fast'); speed = 'fast'; }}>
+                <span class="txt">Fast</span>
+            </label>
         </div>
     </div>
 
@@ -140,7 +173,7 @@
         bind:this={audioEl} 
         on:play={() => isPlaying = true}
         on:pause={() => isPlaying = false}
-        on:ended={exitStoryMode}
+        on:ended={handleAudioEnd}
     ></audio>
 </div>
 

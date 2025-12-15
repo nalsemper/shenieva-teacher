@@ -49,6 +49,43 @@ export function preloadImages(urls = [], onProgress = () => {}) {
   }));
 }
 
+/**
+ * Preload a single asset (image or audio)
+ * @param {string} url
+ * @returns {Promise<void>}
+ */
+function preloadAsset(url) {
+  return new Promise((resolve) => {
+    try {
+      // Check if it's an audio file
+      if (url.match(/\.(mp3|ogg|wav|m4a)$/i)) {
+        const audio = document.createElement('audio');
+        audio.preload = 'auto';
+        audio.oncanplaythrough = () => resolve();
+        audio.onerror = (e) => {
+          console.warn('Audio failed to load:', url, e);
+          resolve();
+        };
+        audio.src = url;
+        audio.load();
+      } else {
+        // Assume it's an image
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+        img.onload = () => resolve();
+        img.onerror = (e) => {
+          console.warn('Image failed to load:', url, e);
+          resolve();
+        };
+        img.src = url;
+      }
+    } catch (err) {
+      console.warn('preloadAsset error for', url, err);
+      resolve();
+    }
+  });
+}
+
 // Helper: progressively preload in batches to reduce memory spike
 /**
  * @param {string[]} urls
@@ -60,10 +97,9 @@ export async function preloadImagesBatched(urls = [], onProgress = () => {}, bat
   let done = 0;
   for (let i = 0; i < urls.length; i += batchSize) {
     const slice = urls.slice(i, i + batchSize);
-    // p is batch progress 0..1
-    await preloadImages(slice, (p) => {
-      onProgress((done + p * slice.length) / total);
-    });
+    // Preload each asset in the batch
+    await Promise.all(slice.map(url => preloadAsset(url)));
     done += slice.length;
+    onProgress(done / total);
   }
 }

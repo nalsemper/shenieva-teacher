@@ -47,7 +47,8 @@
                 encodeURI(`${base}/${sp}/slide_10/M9.mp3`),
                 encodeURI(`${base}/${sp}/slide_10/Maria 2.mp3`),
                 encodeURI(`${base}/${sp}/slide_10/M10.mp3`),
-                encodeURI(`${base}/${sp}/slide_10/Lena 2.mp3`)
+                encodeURI(`${base}/${sp}/slide_10/Lena 2.mp3`),
+                encodeURI(`${base}/${sp}/slide_10/M11.mp3`)
             ];
         }
     })();
@@ -75,12 +76,13 @@
             const currentPlaylist = list || playlist;
             audioEl.src = currentPlaylist[playlistIndex];
             
-            // For fast mode, set up time listener to pause M7 at 4s and 8s
-            if (speed === 'fast' && playlistIndex === 0) {
-                setupM7TimeListener();
-            }
-            
-            audioEl.play().then(()=>{ isPlaying = true; }).catch(()=>{ isPlaying = false; });
+            audioEl.play().then(()=>{ 
+                isPlaying = true;
+                // Set up time listener AFTER audio starts playing for accurate timing
+                if (speed === 'fast' && playlistIndex === 0) {
+                    setupM7TimeListener();
+                }
+            }).catch(()=>{ isPlaying = false; });
             _startTimer = null;
         }, 150);
     }
@@ -135,8 +137,11 @@
                 playlistIndex = 0; // Back to M7
                 audioEl.src = playlist[0];
                 audioEl.currentTime = m7PausedTime;
-                setupM7TimeListener(); // Re-setup listener for 8s pause
-                audioEl.play().then(()=>{ isPlaying = true; }).catch(()=>{ isPlaying = false; });
+                audioEl.play().then(()=>{ 
+                    isPlaying = true;
+                    // Set up listener AFTER audio starts playing
+                    setupM7TimeListener();
+                }).catch(()=>{ isPlaying = false; });
                 return;
             }
             // After Lena 2, resume M7 from 8s pause and play to end
@@ -174,7 +179,7 @@
             io = new IntersectionObserver(entries=>{ entries.forEach(entry=>{ if (entry.isIntersecting && entry.intersectionRatio>0.5) safeStartList(playlist); }); }, { threshold: [0.5] });
             if (containerEl) io.observe(containerEl);
         }
-        const userGesture = ()=>{ safeStartList(playlist); window.removeEventListener('pointerdown', userGesture); window.removeEventListener('keydown', userGesture); };
+        const userGesture = ()=>{ if (!isPlaying && playToken === 0) { safeStartList(playlist); } window.removeEventListener('pointerdown', userGesture); window.removeEventListener('keydown', userGesture); };
         window.addEventListener('pointerdown', userGesture, { once: true });
         window.addEventListener('keydown', userGesture, { once: true });
     });

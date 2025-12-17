@@ -22,11 +22,11 @@
     const GRID_WIDTH = 160;
     const GRID_HEIGHT = 20;
     const TILE_SIZE = 32;
-    const PLAYER_SIZE = 55;
+    const PLAYER_SIZE = 45;
     const PLAYER_SPEED = 2;
-    const HOUSE_SIZE = 300;
-    const TREE_SIZE = 180;
-    const TRASH_SIZE = 50;
+    const HOUSE_SIZE = 420;
+    const TREE_SIZE = 200;
+    const TRASH_SIZE = 55;
 
     interface Player {
         x: number;
@@ -113,13 +113,13 @@
         const gender = currentStudent?.studentGender ?? 'Male';
         const genderFolder = gender === 'Female' ? 'girl' : 'boy';
         
-        // Character sprites - Shenievia (forward and back have 3 frames, front has 1)
-        for (let i = 1; i <= 3; i++) {
-            urls.push(`/converted/assets/Level_Walkthrough/shenievia/${genderFolder}/forward/${i}.webp`);
-            urls.push(`/converted/assets/Level_Walkthrough/shenievia/${genderFolder}/back/${i}.webp`);
-        }
-        // Front sprite (only 1 frame)
-        urls.push(`/converted/assets/Level_Walkthrough/shenievia/${genderFolder}/front/1.webp`);
+        // Character sprites - all 4 directions with 3 frames each
+        const directions = ['walking_right', 'walking_left', 'walking_front', 'walking_back'];
+        directions.forEach(dir => {
+            for (let i = 1; i <= 3; i++) {
+                urls.push(`/assets/trash_collect_game/${genderFolder}/walking_sprite/${dir}/${i}.png`);
+            }
+        });
         
         // Ground tiles
         urls.push('/converted/trash_collect_game/ground/soil.webp');
@@ -169,13 +169,12 @@
         const gender = currentStudent?.studentGender ?? 'Male';
 
         const genderFolder = gender === 'Female' ? 'girl' : 'boy';
-        // Front sprite only has 1 frame, use it for all 3 frames in animation
-        const frontSprite = await loadImage(`/converted/assets/Level_Walkthrough/shenievia/${genderFolder}/front/1.webp`);
+        // Load proper trash game sprites for all 4 directions
         const character = {
-            walking_right: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/converted/assets/Level_Walkthrough/shenievia/${genderFolder}/forward/${i+1}.webp`))),
-            walking_left: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/converted/assets/Level_Walkthrough/shenievia/${genderFolder}/back/${i+1}.webp`))),
-            walking_front: [frontSprite, frontSprite, frontSprite],
-            walking_back: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/converted/assets/Level_Walkthrough/shenievia/${genderFolder}/back/${i+1}.webp`)))
+            walking_right: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/assets/trash_collect_game/${genderFolder}/walking_sprite/walking_right/${i+1}.png`))),
+            walking_left: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/assets/trash_collect_game/${genderFolder}/walking_sprite/walking_left/${i+1}.png`))),
+            walking_front: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/assets/trash_collect_game/${genderFolder}/walking_sprite/walking_front/${i+1}.png`))),
+            walking_back: await Promise.all(Array(3).fill(null).map((_, i) => loadImage(`/assets/trash_collect_game/${genderFolder}/walking_sprite/walking_back/${i+1}.png`)))
         };
 
         const ground = {
@@ -227,11 +226,14 @@
 
         const placedObjects: { x: number; y: number; type: number }[] = [];
         const START_AREA_WIDTH = 5;
+        const MIN_SPACING = 3; // Minimum tiles between obstacles to ensure walkable paths
 
         for (let i = 0; i < 30; i++) {
             let x: number, y: number;
             let isValidPosition = false;
             const isHouse = Math.random() < 0.5;
+            let attempts = 0;
+            const maxAttempts = 100;
 
             do {
                 x = Math.floor(Math.random() * (GRID_WIDTH - START_AREA_WIDTH)) + START_AREA_WIDTH;
@@ -243,33 +245,40 @@
                 const objectBottom = objectTop + objectSize;
 
                 isValidPosition = true;
+                
+                // Check spacing with all placed objects
                 for (const placed of placedObjects) {
-                    if (placed.type === 2) {
-                        const placedSize = HOUSE_SIZE;
-                        const placedLeft = placed.x * TILE_SIZE + (TILE_SIZE - placedSize) / 2;
-                        const placedRight = placedLeft + placedSize;
-                        const placedTop = placed.y * TILE_SIZE + (TILE_SIZE - placedSize) / 2;
-                        const placedBottom = placedTop + placedSize;
+                    const placedSize = placed.type === 2 ? HOUSE_SIZE : TREE_SIZE;
+                    const placedLeft = placed.x * TILE_SIZE + (TILE_SIZE - placedSize) / 2;
+                    const placedRight = placedLeft + placedSize;
+                    const placedTop = placed.y * TILE_SIZE + (TILE_SIZE - placedSize) / 2;
+                    const placedBottom = placedTop + placedSize;
 
-                        if (
-                            objectLeft < placedRight &&
-                            objectRight > placedLeft &&
-                            objectTop < placedBottom &&
-                            objectBottom > placedTop
-                        ) {
-                            isValidPosition = false;
-                            break;
-                        }
+                    // Add buffer spacing for walkable paths
+                    const bufferSize = MIN_SPACING * TILE_SIZE;
+                    if (
+                        objectLeft < placedRight + bufferSize &&
+                        objectRight > placedLeft - bufferSize &&
+                        objectTop < placedBottom + bufferSize &&
+                        objectBottom > placedTop - bufferSize
+                    ) {
+                        isValidPosition = false;
+                        break;
                     }
                 }
 
                 if (x < START_AREA_WIDTH || x >= GRID_WIDTH || y < 0 || y >= GRID_HEIGHT) {
                     isValidPosition = false;
                 }
+                
+                attempts++;
+                if (attempts >= maxAttempts) break; // Prevent infinite loop
             } while (!isValidPosition);
 
-            map[y][x] = isHouse ? 2 : 3;
-            placedObjects.push({ x, y, type: isHouse ? 2 : 3 });
+            if (isValidPosition) {
+                map[y][x] = isHouse ? 2 : 3;
+                placedObjects.push({ x, y, type: isHouse ? 2 : 3 });
+            }
         }
 
         trashes = [];
@@ -489,15 +498,16 @@
         const playerImg = assets.character[`walking_${player.direction}`][Math.floor(player.frame)];
         ctx.save();
         ctx.translate(player.x, player.y);
-        const originalWidth = 30;
-        const originalHeight = 60;
-        const aspectRatio = originalWidth / originalHeight;
-        const displayWidth = PLAYER_SIZE;
-        const displayHeight = PLAYER_SIZE / aspectRatio;
-        if (player.isMoving) {
-            const bounceScale = 1 + Math.sin(Date.now() / 100) * 0.05;
-            ctx.scale(1, bounceScale);
-        }
+        
+        // Use actual sprite dimensions for proper aspect ratio
+        const spriteWidth = playerImg.width || playerImg.naturalWidth;
+        const spriteHeight = playerImg.height || playerImg.naturalHeight;
+        const aspectRatio = spriteWidth / spriteHeight;
+        
+        // Calculate display size maintaining aspect ratio
+        const displayWidth = PLAYER_SIZE * scaleFactor;
+        const displayHeight = displayWidth / aspectRatio;
+        
         ctx.drawImage(playerImg, -displayWidth / 2, -displayHeight / 2, displayWidth, displayHeight);
         ctx.restore();
 
@@ -744,10 +754,17 @@
                 console.log('Update successful:', data);
                 studentData.update(current => {
                     if (current) {
+                        // Clear Level 2 answers when trash game is completed
+                        const answeredQuestions = current.answeredQuestions || {};
+                        const clearedQuestions = Object.fromEntries(
+                            Object.entries(answeredQuestions).filter(([key]) => !key.startsWith('story2'))
+                        );
+                        
                         return { 
                             ...current, 
                             studentColtrash: data.studentColtrash,
-                            studentLevel: data.studentLevel
+                            studentLevel: data.studentLevel,
+                            answeredQuestions: clearedQuestions
                         };
                     }
                     return current;
@@ -781,13 +798,15 @@
 
         // Use document.createElement instead of new Audio() to avoid Vite StubAudio
         collectSound = document.createElement('audio');
-        collectSound.src = '/trash_collect_game/audio/collect_effect.mp3';
+        collectSound.src = '/assets/trash_collect_game/audio/collect_effect.mp3';
         collectSound.volume = 0.7;
+        collectSound.load(); // Explicitly load the audio
 
         bgMusic = document.createElement('audio');
-        bgMusic.src = '/trash_collect_game/audio/game_bg.mp3';
+        bgMusic.src = '/assets/trash_collect_game/audio/game_bg.mp3';
         bgMusic.loop = true;
         bgMusic.volume = 0.5;
+        bgMusic.load(); // Explicitly load the audio
 
         trashCollectedSession = 0;
 
@@ -940,7 +959,7 @@
             <!-- Character Preview -->
             {#if $studentData}
             <div class="loading-character">
-                <img src="/converted/assets/Level_Walkthrough/shenievia/{$studentData.studentGender === 'Female' ? 'girl' : 'boy'}/front/1.webp" alt="Character" />
+                <img src="/assets/trash_collect_game/{$studentData.studentGender === 'Female' ? 'girl' : 'boy'}/walking_sprite/walking_front/1.png" alt="Character" />
             </div>
             {/if}
             

@@ -427,13 +427,27 @@
 
     async function continueWithoutSaving() {
         try { localStorage.removeItem('pending_story'); } catch {}
-        // If the student has already leveled up, clear answers for this story each time they close
-        try {
-            if (isLevelCompleted) {
-                resetLevelAnswers(storyKey);
-            }
-        } catch (e) { console.warn('Failed to reset answers on close', e); }
+        // DON'T clear answers here - they should persist until trash game is completed or user explicitly retakes
         showSummary = false; showConfirm = false; goto('/student/game/trash_2');
+    }
+
+    async function closeModalOnly() {
+        try { localStorage.removeItem('pending_story'); } catch {}
+        showSummary = false; showConfirm = false;
+        
+        // Navigate back to where user came from
+        try {
+            localStorage.removeItem('retakeLevel2');
+            localStorage.removeItem('openStory2Modal');
+        } catch {}
+        
+        const returnScene = localStorage.getItem('villageReturnScene');
+        if (returnScene !== null) {
+            console.log('Returning to village scene:', returnScene);
+            await goto('/student/village');
+        } else {
+            await goto('/student/dashboard');
+        }
     }
 
     function retakeLevel() {
@@ -682,7 +696,7 @@
                             <div class="ribbon-message" role="status" aria-live="polite">{ribbonMessage}</div>
                         {/if}
                     </div>
-                    <button class="btn-close" on:click={continueWithoutSaving}>Close</button>
+                    <button class="btn-close" on:click={isLevelCompleted ? closeModalOnly : continueWithoutSaving}>Close</button>
                 </footer>
             </div>
         </div>

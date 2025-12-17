@@ -172,10 +172,7 @@
                 await saveQuizToDatabase();
             }
             
-            // Clear answers for this story if level already completed
-            if (isLevelCompleted) {
-                resetLevelAnswers(storyKey);
-            }
+            // DON'T clear answers here - they should persist until trash game is completed or user explicitly retakes
         } catch (e) {
             console.warn('Failed to save quiz or reset answers', e);
         }
